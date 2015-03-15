@@ -1,9 +1,7 @@
 #ifndef SMARTTEXTEDIT_H
 #define SMARTTEXTEDIT_H
 
-#include <QWidget>
 #include <QTextEdit>
-#include <QTimer>
 
 class SourceCodeInputTextEdit : public QTextEdit
 {

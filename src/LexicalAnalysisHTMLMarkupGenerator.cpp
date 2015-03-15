@@ -1,5 +1,6 @@
 #include <QTime>
-
+#include <QRegExp>
+#include <QStringList>
 #include "Token.h"
 #include "LexicalAnalyzer.h"
 #include "LexicalAnalysisHTMLMarkupGenerator.h"

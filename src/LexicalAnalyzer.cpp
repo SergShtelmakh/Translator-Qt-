@@ -1,11 +1,10 @@
 #include "LexicalAnalyzer.h"
-#include <QDebug>
+#include <QRegExp>
+#include <QStringList>
 
 const QRegExp LexicalAnalyzer::possibleTokenEndRegExp = QRegExp("[ \t\\+\\-\\*\\/\\=\\<\\>\\,\\(\\)\"]");
 const QRegExp LexicalAnalyzer::numberLiteralRegExp = QRegExp("\\d*(\\.\\d+)?(E[\\+\\-]?\\d+)?");
 const QRegExp LexicalAnalyzer::identifierRegExp = QRegExp("[A-Z]+[A-Z0-9]*");
-
-
 
 void LexicalAnalyzer::analyzeLine(QString line, int lineNumber)
 {

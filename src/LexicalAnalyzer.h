@@ -1,12 +1,9 @@
 #ifndef LEXICALANALYZER_H
 #define LEXICALANALYZER_H
 
-#include <QObject>
-#include <QStringListIterator>
-#include <QColor>
 #include <QHash>
-#include "Identifier.h"
 #include "Token.h"
+#include "Identifier.h"
 
 /*!
  * @brief This class provides lexical analysis.
@@ -86,7 +83,6 @@ private:
     bool isHashEmpty();
 
 };
-
 
 QString TokenListListToString(QList<QList<Token> > tokenListList);
 

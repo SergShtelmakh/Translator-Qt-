@@ -1,7 +1,7 @@
 #ifndef COMPILEOUTPUT_H
 #define COMPILEOUTPUT_H
-#include <QTextEdit>
 
+#include <QTextEdit>
 
 class CompileOutputTextEdit : public QTextEdit
 {

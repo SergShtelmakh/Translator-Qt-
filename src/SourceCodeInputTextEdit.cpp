@@ -1,6 +1,7 @@
 #include "SourceCodeInputTextEdit.h"
 #include "LexicalAnalysisHTMLMarkupGenerator.h"
 #include <QScrollBar>
+#include <QTimer>
 
 SourceCodeInputTextEdit::SourceCodeInputTextEdit(QWidget *parent) : QTextEdit(parent)
 {

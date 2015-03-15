@@ -1,5 +1,4 @@
 #include "Token.h"
-#include "GlobalObjects.h"
 
 Token::Token(const Token &newToken)
 {
