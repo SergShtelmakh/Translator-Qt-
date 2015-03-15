@@ -40,8 +40,8 @@ QString IdentifierPositionsCountToString(const Identifier &identifier)
 QString IdentifierPositionsToString(const Identifier &identifier)
 {
     QString allPositionString;
-    foreach (QPoint position, identifier.getPositionsList()) {
+    foreach (QPoint position, identifier.getPositionsList())
         allPositionString += QString("(%1:%2) ").arg(position.x()).arg(position.y());
-    }
+
     return allPositionString;
 }

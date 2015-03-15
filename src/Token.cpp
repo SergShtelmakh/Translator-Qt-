@@ -26,9 +26,9 @@ Token::Token(QString newLexeme, Token::TokenCategory newTokenCategory, QString n
 
 Token &Token::operator=(const Token &newToken)
 {
-    if(this == &newToken){
+    if (this == &newToken)
         return *this;
-    }
+
     lexeme = newToken.getLexeme();
     tokenCategory = newToken.getTokenCategory();
     position = newToken.getPosition();
@@ -67,9 +67,9 @@ int Token::getEndIndexInLine() const
 
 QString Token::getTokenRepresentation()
 {
-    if(!this->isCorrect()){
+    if (!this->isCorrect())
         return "";
-    }
+
     switch (tokenCategory) {
     case Token::categoryIdentifier:
         return "<id, \"" + lexeme + "\">";

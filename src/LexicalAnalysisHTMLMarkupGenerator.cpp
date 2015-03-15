@@ -14,15 +14,14 @@ QString LexicalAnalysisHTMLMarkupGenerator::getMessageForLog(const LexicalAnalyz
     } else {
         newLineInLog = this->getFailedResultMessage(analyzer.getErrorText());
     }
-
     return newLineInLog;
 }
 
 QString LexicalAnalysisHTMLMarkupGenerator::getSuccessfulResultMessage() const
 {
-    QString newLine = "<font color=" + HTMLColors::darkBlue + ">Lexical analysis completed successfully ";
-    newLine += QTime::currentTime().toString() + "\n</font>";
-
+    QString newLine = "<font color=" + HTMLColors::darkBlue + ">"
+            + "Lexical analysis completed successfully "
+            + QTime::currentTime().toString() + "\n</font>";
     return newLine;
 }
 
@@ -65,21 +64,23 @@ QString LexicalAnalysisHTMLMarkupGenerator::getTokenColorName(const Token& token
 QString LexicalAnalysisHTMLMarkupGenerator::getTokenHTMLRepresentation(const Token &token) const
 {
     QString lexeme = token.getLexeme().replace("<","&lt;").replace(">","&gt;");
-    if(!token.isCorrect()){
+
+    if (!token.isCorrect())
         return "<u>" + lexeme + "</u>";
-    }
-    if(token.getTokenCategory() == Token::categorySpace){
+
+    if (token.getTokenCategory() == Token::categorySpace)
         return lexeme;
-    }
-    if(token.getTokenCategory() == Token::categoryLineFeed){
+
+    if (token.getTokenCategory() == Token::categoryLineFeed)
         return "<br>";
-    }
+
     return "<font color=" + getTokenColorName(token) + ">" + lexeme + "</font>";
 }
 
 QString LexicalAnalysisHTMLMarkupGenerator::getSourceCodeHTMLMarkup(const LexicalAnalyzer& analyzer) const
 {
     QString html;
+
     foreach (QList < Token > currentTokenSubList, analyzer.getTokenListList()) {
         foreach (Token currentToken, currentTokenSubList) {
             html += getTokenHTMLRepresentation(currentToken);
@@ -93,9 +94,10 @@ QString PlainTextToHTML(QString plainText)
 {
     QStringList plainTextList = plainText.split("\n");
     QString html = "<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body>";
-    for(int currentTextLine = 0; currentTextLine < plainTextList.count() - 1; currentTextLine++){
+
+    for (int currentTextLine = 0; currentTextLine < plainTextList.count() - 1; currentTextLine++)
         html += plainTextList.at(currentTextLine) + "<br>";
-    }
+
     html += plainTextList.last() + "</body></html>";
     return html;
 }

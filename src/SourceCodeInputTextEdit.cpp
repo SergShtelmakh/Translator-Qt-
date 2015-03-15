@@ -42,9 +42,8 @@ void SourceCodeInputTextEdit::onCursorPositionChangedSlot()
 
 void SourceCodeInputTextEdit::onTextChangedSlot()
 {
-    if(!textUpdateTimer->isActive()){
+    if (!textUpdateTimer->isActive())
         textUpdateTimer->start(100);
-    }
 }
 
 void SourceCodeInputTextEdit::onTextUpdateTimerTimeoutSlot()

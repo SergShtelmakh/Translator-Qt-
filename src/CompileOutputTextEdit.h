@@ -5,6 +5,7 @@
 
 class CompileOutputTextEdit : public QTextEdit
 {
+
 public:
 
     explicit CompileOutputTextEdit(QWidget *parent = 0);

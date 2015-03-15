@@ -19,7 +19,7 @@ public:
     QPoint getFirstPosition();
     void addPosition(QPoint); 
 
-    bool operator==(const Identifier& id1)const
+    bool operator==(const Identifier &id1)const
     {
         return name == id1.getName();
     }

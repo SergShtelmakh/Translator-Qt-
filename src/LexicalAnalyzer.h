@@ -8,13 +8,13 @@
 #include "Identifier.h"
 #include "Token.h"
 
-
 /*!
  * @brief This class provides lexical analysis.
  *
  * Lexical analyzer parses source code and returns it as a tokens sequence.
  *
  */
+
 class LexicalAnalyzer
 {
 
@@ -29,7 +29,6 @@ public:
         keyWordOther,           //!< END.
         keyWordTypeName         //!< BOOLEAN,INTEGER,DOUBLE,STRING.
     };
-
 
     static const QRegExp possibleTokenEndRegExp;    //!< RegExp that can separate tokens.
     static const QRegExp numberLiteralRegExp;       //!< RegExp for searching number literals.
@@ -85,7 +84,9 @@ private:
     QHash <QString, Token::TokenCategory> oneCharacterTokensHash;
     QHash <QString, Token::TokenCategory> twoCharacterTokensHash;
     bool isHashEmpty();
+
 };
+
 
 QString TokenListListToString(QList<QList<Token> > tokenListList);
 

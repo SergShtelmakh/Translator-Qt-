@@ -9,11 +9,11 @@ class Token;
 /*!
  * @brief This class provides HTML markup.
  *
- *
- *
  */
+
 class LexicalAnalysisHTMLMarkupGenerator
 {
+
 public:
 
     /*!
@@ -22,7 +22,7 @@ public:
      * @param[in] analyzer Lexical analyzer.
      * @return Result of lexical analysis.
      */
-    QString getMessageForLog(const LexicalAnalyzer& analyzer) const;
+    QString getMessageForLog(const LexicalAnalyzer &analyzer) const;
 
     /*!
      * This method returns marked up source code.
@@ -30,14 +30,16 @@ public:
      * @param[in] analyzer Lexixal analyzer.
      * @return Marked up source code.
      */
-    QString getSourceCodeHTMLMarkup(const LexicalAnalyzer& analyzer) const;
+    QString getSourceCodeHTMLMarkup(const LexicalAnalyzer &analyzer) const;
 
 private:
+
     QString getSuccessfulResultMessage() const;
     QString getFailedResultMessage(QString errors) const;
 
-    QString getTokenColorName(const Token& token) const;
-    QString getTokenHTMLRepresentation(const Token& token) const;
+    QString getTokenColorName(const Token &token) const;
+    QString getTokenHTMLRepresentation(const Token &token) const;
+
 };
 
 /*!

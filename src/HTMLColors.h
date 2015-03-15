@@ -7,6 +7,7 @@ class HTMLColors
 {
 
 public:
+
     static const QString darkBlue;
     static const QString blue;
     static const QString violet;
@@ -15,6 +16,7 @@ public:
     static const QString gold;
     static const QString red;
     static const QString gray;
+
 };
 
 #endif // HTMLCOLORS_H

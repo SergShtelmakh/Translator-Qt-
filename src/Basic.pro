@@ -20,8 +20,7 @@ SOURCES += main.cpp\
     SourceCodeInputTextEdit.cpp \
     CompileOutputTextEdit.cpp \
     LexicalAnalysisHTMLMarkupGenerator.cpp \
-    HTMLColors.cpp \
-    GlobalObjects.cpp
+    HTMLColors.cpp
 
 HEADERS += mainwindow.h\
     LexicalAnalyzer.h \
@@ -30,8 +29,7 @@ HEADERS += mainwindow.h\
     SourceCodeInputTextEdit.h \
     CompileOutputTextEdit.h \
     LexicalAnalysisHTMLMarkupGenerator.h \
-    HTMLColors.h \
-    GlobalObjects.h
+    HTMLColors.h
 
 FORMS  += mainwindow.ui
 

@@ -2,13 +2,12 @@
 #include "ui_mainwindow.h"
 #include "LexicalAnalyzer.h"
 #include "LexicalAnalysisHTMLMarkupGenerator.h"
-#include "GlobalObjects.h"
 #include <QTextStream>
 #include <QFile>
 #include <QFileDialog>
 #include <QTime>
 
-LexicalAnalyzer GlobalObjects::lexicalAnalyzer;
+Q_GLOBAL_STATIC(LexicalAnalyzer,globalLexicalAnalyzer)
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -32,21 +31,21 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionRun_triggered()
 {
-    GlobalObjects::lexicalAnalyzer.analyze(ui->sourceCodeInputTextEdit->toPlainText());
+    globalLexicalAnalyzer->analyze(ui->sourceCodeInputTextEdit->toPlainText());
 
     // Add new message to log
-    ui->compileOutputTextEdit->addHTMLString(this->getLexicalAnalysisMarkupGenerator()->getMessageForLog(GlobalObjects::lexicalAnalyzer));
+    ui->compileOutputTextEdit->addHTMLString(this->getLexicalAnalysisMarkupGenerator()->getMessageForLog(*globalLexicalAnalyzer));
 
     // Write information about tokens
+    ui->tokenSequenceTextEdit->setText(TokenListListToString(globalLexicalAnalyzer->getTokenListList()));
 
-    ui->tokenSequenceTextEdit->setText(TokenListListToString(GlobalObjects::lexicalAnalyzer.getTokenListList()));
-
-    QList <Identifier> identifierList = GlobalObjects::lexicalAnalyzer.getIdentifierList();
+    // Write information about identifiers
+    QList <Identifier> identifierList = globalLexicalAnalyzer->getIdentifierList();
     ui->identifierTableWidget->setRowCount(identifierList.count());
-    for(int currentIdentifierIndex = 0; currentIdentifierIndex < identifierList.count(); currentIdentifierIndex++){
-        ui->identifierTableWidget->setItem(currentIdentifierIndex,0,new QTableWidgetItem(identifierList.at(currentIdentifierIndex).getName()));
-        ui->identifierTableWidget->setItem(currentIdentifierIndex,1,new QTableWidgetItem(IdentifierPositionsCountToString(identifierList.at(currentIdentifierIndex))));
-        ui->identifierTableWidget->setItem(currentIdentifierIndex,2,new QTableWidgetItem(IdentifierPositionsToString(identifierList.at(currentIdentifierIndex))));
+    for (int i = 0; i < identifierList.count(); i++) {
+        ui->identifierTableWidget->setItem(i,0,new QTableWidgetItem(identifierList.at(i).getName()));
+        ui->identifierTableWidget->setItem(i,1,new QTableWidgetItem(IdentifierPositionsCountToString(identifierList.at(i))));
+        ui->identifierTableWidget->setItem(i,2,new QTableWidgetItem(IdentifierPositionsToString(identifierList.at(i))));
     }
 }
 
@@ -57,9 +56,9 @@ void MainWindow::updateStatusBarSlot(int line, int pos)
 
 void MainWindow::updateSourceCodeInputTextEditSlot()
 {
-    GlobalObjects::lexicalAnalyzer.analyze(ui->sourceCodeInputTextEdit->toPlainText().toUpper());
+    globalLexicalAnalyzer->analyze(ui->sourceCodeInputTextEdit->toPlainText().toUpper());
 
-    ui->sourceCodeInputTextEdit->setHtml(this->getLexicalAnalysisMarkupGenerator()->getSourceCodeHTMLMarkup(GlobalObjects::lexicalAnalyzer));
+    ui->sourceCodeInputTextEdit->setHtml(this->getLexicalAnalysisMarkupGenerator()->getSourceCodeHTMLMarkup(*globalLexicalAnalyzer));
 }
 
 LexicalAnalysisHTMLMarkupGenerator* MainWindow::getLexicalAnalysisMarkupGenerator() const
@@ -71,9 +70,10 @@ void MainWindow::on_actionSave_triggered()
 {
     QFile file (QFileDialog::getSaveFileName(this, tr("Save File"),"untitled.bas",tr("Basic (*.bas)")));
     if (!file.open(QIODevice::ReadWrite | QIODevice::Text))
-        return;
+       return;
+
     QTextStream out(&file);
-         out << ui->sourceCodeInputTextEdit->toPlainText();
+    out << ui->sourceCodeInputTextEdit->toPlainText();
 
 }
 
@@ -81,14 +81,14 @@ void MainWindow::on_actionOpen_triggered()
 {
     QFile file (QFileDialog::getOpenFileName(this, tr("Open File"),"", tr("Basic (*.bas)")));
     if (!file.open(QIODevice::ReadWrite | QIODevice::Text))
-          return;
+        return;
 
-    QTextStream in(&file);
+    QTextStream inputTextStream(&file);
     QString text;
-         QString line = in.readLine();
+         QString line = inputTextStream.readLine();
          while (!line.isNull()) {
              text += line +"\n";
-             line = in.readLine();
+             line = inputTextStream.readLine();
          }
 
     ui->sourceCodeInputTextEdit->clear();
