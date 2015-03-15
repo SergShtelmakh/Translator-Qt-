@@ -72,7 +72,7 @@ QString Token::getTokenRepresentation()
     }
     switch (tokenCategory) {
     case Token::categoryIdentifier:
-        return "<id, " + QString("%1").arg(GlobalObjects::lexicalAnalyzer.getIdentifierIndex(lexeme) + 1) + ">";
+        return "<id, \"" + lexeme + "\">";
     case Token::categoryNumberLiteral:
         return "<numb, \"" + lexeme + "\">";
     case Token::categoryStringLiteral:

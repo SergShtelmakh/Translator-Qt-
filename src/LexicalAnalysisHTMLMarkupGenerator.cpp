@@ -20,7 +20,7 @@ QString LexicalAnalysisHTMLMarkupGenerator::getMessageForLog(const LexicalAnalyz
 
 QString LexicalAnalysisHTMLMarkupGenerator::getSuccessfulResultMessage() const
 {
-    QString newLine = "<font color=" + HTMLColors::darkBlue + ">Compilation completed successfully ";
+    QString newLine = "<font color=" + HTMLColors::darkBlue + ">Lexical analysis completed successfully ";
     newLine += QTime::currentTime().toString() + "\n</font>";
 
     return newLine;
@@ -30,6 +30,7 @@ QString LexicalAnalysisHTMLMarkupGenerator::getFailedResultMessage(QString error
 {
     int errorCount = errors.split(QRegExp("\n")).count() - 1;
     QString newLine = "<font color=" + HTMLColors::red + ">"
+            + "Lexical analyzer:\n"
             + errors
             + QString("Detected %1 errors    ").arg(errorCount)
             + QTime::currentTime().toString() + "\n</font>";

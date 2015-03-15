@@ -108,11 +108,6 @@ bool LexicalAnalyzer::isHashEmpty()
     return keyWordsHash.isEmpty();
 }
 
-QStringList LexicalAnalyzer::getPlainTextList() const
-{
-    return plainTextList;
-}
-
 Token LexicalAnalyzer::getSpaceToken(QString sourceString)
 {
     QString lexema = sourceString.mid(0,sourceString.indexOf(QRegExp("[^\t ]")));
@@ -153,28 +148,28 @@ void LexicalAnalyzer::setupHash()
     twoCharacterTokensHash.insert("<=",Token::categoryComparator);
     twoCharacterTokensHash.insert(">=",Token::categoryComparator);
 
-    keyWordsHash.insert("BOOLEAN",LexicalAnalyzer::typeTypeNameKeyWord);
-    keyWordsHash.insert("DOUBLE",LexicalAnalyzer::typeTypeNameKeyWord);
-    keyWordsHash.insert("INTEGER",LexicalAnalyzer::typeTypeNameKeyWord);
-    keyWordsHash.insert("STRING",LexicalAnalyzer::typeTypeNameKeyWord);
+    keyWordsHash.insert("BOOLEAN",LexicalAnalyzer::keyWordTypeName);
+    keyWordsHash.insert("DOUBLE",LexicalAnalyzer::keyWordTypeName);
+    keyWordsHash.insert("INTEGER",LexicalAnalyzer::keyWordTypeName);
+    keyWordsHash.insert("STRING",LexicalAnalyzer::keyWordTypeName);
 
-    keyWordsHash.insert("FALSE",LexicalAnalyzer::typeBooleanLiteralKeyWord);
-    keyWordsHash.insert("TRUE",LexicalAnalyzer::typeBooleanLiteralKeyWord);
+    keyWordsHash.insert("FALSE",LexicalAnalyzer::keyWordBooleanLiteral);
+    keyWordsHash.insert("TRUE",LexicalAnalyzer::keyWordBooleanLiteral);
 
-    keyWordsHash.insert("IF",LexicalAnalyzer::typeIfStatementKeyWord);
-    keyWordsHash.insert("THEN",LexicalAnalyzer::typeIfStatementKeyWord);
+    keyWordsHash.insert("IF",LexicalAnalyzer::keyWordIfStatement);
+    keyWordsHash.insert("THEN",LexicalAnalyzer::keyWordIfStatement);
 
-    keyWordsHash.insert("AS",LexicalAnalyzer::typeAssignmentKeyWord);
-    keyWordsHash.insert("DATA",LexicalAnalyzer::typeAssignmentKeyWord);
-    keyWordsHash.insert("DIM",LexicalAnalyzer::typeAssignmentKeyWord);
-    keyWordsHash.insert("READ",LexicalAnalyzer::typeAssignmentKeyWord);
+    keyWordsHash.insert("AS",LexicalAnalyzer::keyWordAssignment);
+    keyWordsHash.insert("DATA",LexicalAnalyzer::keyWordAssignment);
+    keyWordsHash.insert("DIM",LexicalAnalyzer::keyWordAssignment);
+    keyWordsHash.insert("READ",LexicalAnalyzer::keyWordAssignment);
 
-    keyWordsHash.insert("FOR",LexicalAnalyzer::typeForLoopKeyWord);
-    keyWordsHash.insert("NEXT",LexicalAnalyzer::typeForLoopKeyWord);
-    keyWordsHash.insert("STEP",LexicalAnalyzer::typeForLoopKeyWord);
-    keyWordsHash.insert("TO",LexicalAnalyzer::typeForLoopKeyWord);
+    keyWordsHash.insert("FOR",LexicalAnalyzer::keyWordForLoop);
+    keyWordsHash.insert("NEXT",LexicalAnalyzer::keyWordForLoop);
+    keyWordsHash.insert("STEP",LexicalAnalyzer::keyWordForLoop);
+    keyWordsHash.insert("TO",LexicalAnalyzer::keyWordForLoop);
 
-    keyWordsHash.insert("END",LexicalAnalyzer::typeOtherKeyWord);
+    keyWordsHash.insert("END",LexicalAnalyzer::keyWordOther);
 }
 
 QList<QList<Token> > LexicalAnalyzer::getTokenListList() const
@@ -187,13 +182,13 @@ QString LexicalAnalyzer::getErrorText() const
     return errorText;
 }
 
-void LexicalAnalyzer::analyze(QString newPlainText)
+void LexicalAnalyzer::analyze(QString sourceCode)
 {
     if(isHashEmpty()){
         setupHash();
     }
     clearAllAnalyzingData();
-    plainTextList = newPlainText.split("\n");
+    QStringList plainTextList = sourceCode.split("\n");
     for(int lineIndex = 0; lineIndex < plainTextList.count(); lineIndex ++){
         analyzeLine(plainTextList[lineIndex], lineIndex);
     }

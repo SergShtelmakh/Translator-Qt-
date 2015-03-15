@@ -8,45 +8,61 @@
 #include "Identifier.h"
 #include "Token.h"
 
+
+/*!
+ * @brief This class provides lexical analysis.
+ *
+ * Lexical analyzer parses source code and returns it as a tokens sequence.
+ *
+ */
 class LexicalAnalyzer
 {
 
 public:
 
+    //! This enumerator consists of the most used keyword types.
     enum KeyWordType{
-        typeAssignmentKeyWord,
-        typeBooleanLiteralKeyWord,
-        typeForLoopKeyWord,
-        typeIfStatementKeyWord,
-        typeOtherKeyWord,
-        typeTypeNameKeyWord
+        keyWordAssignment,      //!< DATA,DIM,AS,READ.
+        keyWordBooleanLiteral,  //!< TRUE,FALSE.
+        keyWordForLoop,         //!< FOR, TO, STEP, NEXT.
+        keyWordIfStatement,     //!< IF,THEN,ELSE.
+        keyWordOther,           //!< END.
+        keyWordTypeName         //!< BOOLEAN,INTEGER,DOUBLE,STRING.
     };
 
 
-    static const QRegExp possibleTokenEndRegExp;
-    static const QRegExp numberLiteralRegExp;
-    static const QRegExp identifierRegExp;
+    static const QRegExp possibleTokenEndRegExp;    //!< RegExp that can separate tokens.
+    static const QRegExp numberLiteralRegExp;       //!< RegExp for searching number literals.
+    static const QRegExp identifierRegExp;          //!< RegExp for searching identifiers.
 
-    static const int maxNumberLiteralLenght = 25;
-    static const int maxStringLiteralLenght = 80;
-    static const int maxIdentifierNameLenght = 20;
-
+    static const int maxNumberLiteralLenght = 25;   //!< Maximum number literal lenght.
+    static const int maxStringLiteralLenght = 80;   //!< Maximum string literal lenght.
+    static const int maxIdentifierNameLenght = 20;  //!< Maximum identifier name lenght.
 
     LexicalAnalyzer(){}
 
-    void analyze(QString source);
+    /*!
+     * This method makes lexical analysis.
+     *
+     * @param[in] sourceCode Source code for lexical analysis.
+     */
+    void analyze(QString sourceCode);
 
     QString getErrorText() const;
     QList<QList<Token> > getTokenListList() const;
     QList<Identifier> getIdentifierList() const;
-    QStringList getPlainTextList() const;
 
-    int getIdentifierIndex(QString);
+    /*!
+     * This method searches identifier in table by name.
+     *
+     * @param[in] identifierName Identifier name.
+     * @return Index of identifier in table or -1 when identifier not exists.
+     */
+    int getIdentifierIndex(QString identifierName);
 
 private:
 
     void setupHash();
-
     Token getNextToken(QString sourceString);
     Token getSpaceToken(QString sourceString);
     Token getNumberLiteralToken(QString sourceString);
@@ -63,7 +79,6 @@ private:
 
     QList <Identifier> identifierList;
     QList < QList <Token> > tokenListList;
-    QStringList plainTextList;
     QString errorText;
 
     QHash <QString, KeyWordType> keyWordsHash;
