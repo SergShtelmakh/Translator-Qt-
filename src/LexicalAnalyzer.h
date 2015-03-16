@@ -2,6 +2,7 @@
 #define LEXICALANALYZER_H
 
 #include <QHash>
+#include <QRegExp>
 #include "Token.h"
 #include "Identifier.h"
 
@@ -27,15 +28,7 @@ public:
         keyWordTypeName         //!< BOOLEAN,INTEGER,DOUBLE,STRING.
     };
 
-    static const QRegExp possibleTokenEndRegExp;    //!< RegExp that can separate tokens.
-    static const QRegExp numberLiteralRegExp;       //!< RegExp for searching number literals.
-    static const QRegExp identifierRegExp;          //!< RegExp for searching identifiers.
-
-    static const int maxNumberLiteralLenght = 25;   //!< Maximum number literal lenght.
-    static const int maxStringLiteralLenght = 80;   //!< Maximum string literal lenght.
-    static const int maxIdentifierNameLenght = 20;  //!< Maximum identifier name lenght.
-
-    LexicalAnalyzer(){}
+    LexicalAnalyzer();
 
     /*!
      * This method makes lexical analysis.
@@ -44,9 +37,9 @@ public:
      */
     void analyze(QString sourceCode);
 
-    QString getErrorText() const;
-    QList<QList<Token> > getTokenListList() const;
-    QList<Identifier> getIdentifierList() const;
+    QString errorText() const;
+    QList<QList<Token> > tokenListList() const;
+    QList<Identifier> identifierList() const;
 
     /*!
      * This method searches identifier in table by name.
@@ -56,34 +49,57 @@ public:
      */
     int getIdentifierIndex(QString identifierName);
 
-private:
+    int maxNumberLiteralLenght() const;
+    void setMaxNumberLiteralLenght(int maxNumberLiteralLenght);
 
-    void setupHash();
+    int maxStringLiteralLenght() const;
+    void setMaxStringLiteralLenght(int maxStringLiteralLenght);
+
+    int maxIdentifierNameLenght() const;
+    void setMaxIdentifierNameLenght(int maxIdentifierNameLenght);
+
+    void addKeyword(QString keyword, KeyWordType keywordType);
+    void addCharacterToken(QString lexeme, Token::TokenCategory tokenCategory);
+
+    QString beginStringLiteral() const;
+    void setBeginStringLiteral(const QString &beginStringLiteral);
+
+protected:
+
     Token getNextToken(QString sourceString);
     Token getSpaceToken(QString sourceString);
     Token getNumberLiteralToken(QString sourceString);
     Token getKeyWordToken(QString sourceString);
     Token getIdentifierToken(QString sourceString);
     Token getStringLiteralToken(QString sourceString);
-    Token getTwoCharacterToken(QString sourceString);
-    Token getOneCharacterToken(QString sourceString);
+    Token getCharacterToken(QString sourceString);
+
+private:
 
     void analyzeLine(QString sourceLine, int lineNumber);
     void addIdentifier(Identifier);
     void addError(QString);
     void clearAllAnalyzingData();
 
-    QList <Identifier> identifierList;
-    QList < QList <Token> > tokenListList;
-    QString errorText;
+    QList <Identifier> m_identifierList;
+    QList < QList <Token> > m_tokenListList;
+    QString m_errorText;
 
-    QHash <QString, KeyWordType> keyWordsHash;
-    QHash <QString, Token::TokenCategory> oneCharacterTokensHash;
-    QHash <QString, Token::TokenCategory> twoCharacterTokensHash;
-    bool isHashEmpty();
+    QHash <QString, KeyWordType> m_keyWordsHash;
+    QHash <QString, Token::TokenCategory> m_definedCharacterTokensHash;
 
+    QRegExp m_possibleTokenEndRegExp;   //!< RegExp that can separate tokens.
+    QRegExp m_numberLiteralRegExp;      //!< RegExp for searching number literals.
+    QRegExp m_identifierRegExp;         //!< RegExp for searching identifiers.
+    QString m_beginStringLiteral;
+
+    int m_maxNumberLiteralLenght;       //!< Maximum number literal lenght.
+    int m_maxStringLiteralLenght;       //!< Maximum string literal lenght.
+    int m_maxIdentifierNameLenght;      //!< Maximum identifier name lenght.
+    int m_maxCharacterTokensLenght;
 };
 
 QString TokenListListToString(QList<QList<Token> > tokenListList);
+QRegExp AddPossibleVariantToRegExpPattern(QRegExp oldRegExp, QString string);
 
 #endif // LEXICALANALYZER_H

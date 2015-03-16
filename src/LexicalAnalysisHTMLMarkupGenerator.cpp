@@ -10,10 +10,10 @@ QString LexicalAnalysisHTMLMarkupGenerator::getMessageForLog(const LexicalAnalyz
 {
     QString newLineInLog;
 
-    if (analyzer.getErrorText().isEmpty()) {
+    if (analyzer.errorText().isEmpty()) {
         newLineInLog = this->getSuccessfulResultMessage();
     } else {
-        newLineInLog = this->getFailedResultMessage(analyzer.getErrorText());
+        newLineInLog = this->getFailedResultMessage(analyzer.errorText());
     }
     return newLineInLog;
 }
@@ -82,7 +82,7 @@ QString LexicalAnalysisHTMLMarkupGenerator::getSourceCodeHTMLMarkup(const Lexica
 {
     QString html;
 
-    foreach (QList < Token > currentTokenSubList, analyzer.getTokenListList()) {
+    foreach (QList < Token > currentTokenSubList, analyzer.tokenListList()) {
         foreach (Token currentToken, currentTokenSubList) {
             html += getTokenHTMLRepresentation(currentToken);
         }

@@ -1,13 +1,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "LexicalAnalyzer.h"
+#include "BasicLexicalAnalyzer.h"
 #include "LexicalAnalysisHTMLMarkupGenerator.h"
 #include <QTextStream>
 #include <QFile>
 #include <QFileDialog>
 #include <QTime>
 
-Q_GLOBAL_STATIC(LexicalAnalyzer,globalLexicalAnalyzer)
+Q_GLOBAL_STATIC(BasicLexicalAnalyzer,globalBasicLexicalAnalyzer)
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -31,16 +31,16 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionRun_triggered()
 {
-    globalLexicalAnalyzer->analyze(ui->sourceCodeInputTextEdit->toPlainText());
+    globalBasicLexicalAnalyzer->analyze(ui->sourceCodeInputTextEdit->toPlainText());
 
     // Add new message to log
-    ui->compileOutputTextEdit->addHTMLString(this->getLexicalAnalysisMarkupGenerator()->getMessageForLog(*globalLexicalAnalyzer));
+    ui->compileOutputTextEdit->addHTMLString(this->getLexicalAnalysisMarkupGenerator()->getMessageForLog(*globalBasicLexicalAnalyzer));
 
     // Write information about tokens
-    ui->tokenSequenceTextEdit->setText(TokenListListToString(globalLexicalAnalyzer->getTokenListList()));
+    ui->tokenSequenceTextEdit->setText(TokenListListToString(globalBasicLexicalAnalyzer->tokenListList()));
 
     // Write information about identifiers
-    QList <Identifier> identifierList = globalLexicalAnalyzer->getIdentifierList();
+    QList <Identifier> identifierList = globalBasicLexicalAnalyzer->identifierList();
     ui->identifierTableWidget->setRowCount(identifierList.count());
     for (int i = 0; i < identifierList.count(); i++) {
         ui->identifierTableWidget->setItem(i,0,new QTableWidgetItem(identifierList.at(i).getName()));
@@ -56,9 +56,9 @@ void MainWindow::updateStatusBarSlot(int line, int pos)
 
 void MainWindow::updateSourceCodeInputTextEditSlot()
 {
-    globalLexicalAnalyzer->analyze(ui->sourceCodeInputTextEdit->toPlainText().toUpper());
+    globalBasicLexicalAnalyzer->analyze(ui->sourceCodeInputTextEdit->toPlainText().toUpper());
 
-    ui->sourceCodeInputTextEdit->setHtml(this->getLexicalAnalysisMarkupGenerator()->getSourceCodeHTMLMarkup(*globalLexicalAnalyzer));
+    ui->sourceCodeInputTextEdit->setHtml(this->getLexicalAnalysisMarkupGenerator()->getSourceCodeHTMLMarkup(*globalBasicLexicalAnalyzer));
 }
 
 LexicalAnalysisHTMLMarkupGenerator* MainWindow::getLexicalAnalysisMarkupGenerator() const

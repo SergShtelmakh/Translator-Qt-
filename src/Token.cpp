@@ -79,7 +79,7 @@ QString Token::getTokenRepresentation()
     case Token::categorySpace:
         return "";
     case Token::categoryLineFeed:
-        return "\n";
+        return "<linefeed>\n";
     default:
         return "<" + lexeme + ">";
     }

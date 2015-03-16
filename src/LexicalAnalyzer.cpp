@@ -1,18 +1,13 @@
 #include "LexicalAnalyzer.h"
-#include <QRegExp>
 #include <QStringList>
-
-const QRegExp LexicalAnalyzer::possibleTokenEndRegExp = QRegExp("[ \t\\+\\-\\*\\/\\=\\<\\>\\,\\(\\)\"]");
-const QRegExp LexicalAnalyzer::numberLiteralRegExp = QRegExp("\\d*(\\.\\d+)?(E[\\+\\-]?\\d+)?");
-const QRegExp LexicalAnalyzer::identifierRegExp = QRegExp("[A-Z]+[A-Z0-9]*");
 
 void LexicalAnalyzer::analyzeLine(QString line, int lineNumber)
 {
     int tokenBeginIndexInLine = 0;
     QList <Token> currentLineTokenList;
 
-    if (!tokenListList.isEmpty())
-        tokenListList.last().append(Token("\n",Token::categoryLineFeed));
+    if (!m_tokenListList.isEmpty())
+        m_tokenListList.last().append(Token("\n",Token::categoryLineFeed));
 
     while (tokenBeginIndexInLine < line.length()) {
 
@@ -28,29 +23,38 @@ void LexicalAnalyzer::analyzeLine(QString line, int lineNumber)
 
         tokenBeginIndexInLine += nextToken.getLexeme().length();
     }
-    tokenListList.append(currentLineTokenList);
+    m_tokenListList.append(currentLineTokenList);
 }
 
 void LexicalAnalyzer::addIdentifier(Identifier newIdentifier)
 {
-    int newIdentifierIndex = identifierList.indexOf(newIdentifier);
-    if (identifierList.contains(newIdentifier)) {
-        identifierList[newIdentifierIndex].addPosition(newIdentifier.getFirstPosition());
+    int newIdentifierIndex = m_identifierList.indexOf(newIdentifier);
+    if (m_identifierList.contains(newIdentifier)) {
+        m_identifierList[newIdentifierIndex].addPosition(newIdentifier.getFirstPosition());
     } else {
-        identifierList.append(newIdentifier);
+        m_identifierList.append(newIdentifier);
     }
 }
 
 void LexicalAnalyzer::addError(QString error)
 {
-    errorText += error + "\n";
+    m_errorText += error + "\n";
 }
 
 void LexicalAnalyzer::clearAllAnalyzingData()
 {
-    errorText.clear();
-    identifierList.clear();
-    tokenListList.clear();
+    m_errorText.clear();
+    m_identifierList.clear();
+    m_tokenListList.clear();
+}
+QString LexicalAnalyzer::beginStringLiteral() const
+{
+    return m_beginStringLiteral;
+}
+
+void LexicalAnalyzer::setBeginStringLiteral(const QString &beginStringLiteral)
+{
+    m_beginStringLiteral = beginStringLiteral;
 }
 
 Token LexicalAnalyzer::getNextToken(QString sourceString)
@@ -67,7 +71,7 @@ Token LexicalAnalyzer::getNextToken(QString sourceString)
         return getNumberLiteralToken(sourceString);
 
     // try to get keyWord or identifier
-    if (firstChar.contains(QRegExp("[A-Z]"))) {
+    if (firstChar.contains(QRegExp("[A-Za-z_]"))) {
         nextToken = getKeyWordToken(sourceString);
         if (nextToken.isCorrect()) {
             return nextToken;
@@ -77,29 +81,64 @@ Token LexicalAnalyzer::getNextToken(QString sourceString)
     }
 
     // try to get string literal
-    if (firstChar.contains("\""))
+    if (sourceString.indexOf(m_beginStringLiteral) == 0)
         return getStringLiteralToken(sourceString);
 
     // try to get two-character token
-    nextToken = getTwoCharacterToken(sourceString);
-    if (nextToken.isCorrect())
-        return nextToken;
-
-    // try to get one-character token
-    nextToken = getOneCharacterToken(sourceString);
+    nextToken = getCharacterToken(sourceString);
     if (nextToken.isCorrect())
         return nextToken;
 
     // return incorrect token
-    QString wrongLexema = sourceString.mid(0,sourceString.indexOf(possibleTokenEndRegExp));
+    QString wrongLexema = sourceString.mid(0,sourceString.indexOf(m_possibleTokenEndRegExp));
     return Token(wrongLexema,Token::categoryNone,"Unknown string");
 
 }
 
-bool LexicalAnalyzer::isHashEmpty()
+int LexicalAnalyzer::maxIdentifierNameLenght() const
 {
-    return keyWordsHash.isEmpty();
+    return m_maxIdentifierNameLenght;
 }
+
+void LexicalAnalyzer::setMaxIdentifierNameLenght(int maxIdentifierNameLenght)
+{
+    m_maxIdentifierNameLenght = maxIdentifierNameLenght;
+}
+
+void LexicalAnalyzer::addKeyword(QString keyword, KeyWordType keywordType)
+{
+    m_keyWordsHash.insert(keyword,keywordType);
+}
+
+void LexicalAnalyzer::addCharacterToken(QString lexeme, Token::TokenCategory tokenCategory)
+{
+    m_possibleTokenEndRegExp = AddPossibleVariantToRegExpPattern(m_possibleTokenEndRegExp, lexeme.mid(0,1));
+
+    if (lexeme.length() > m_maxCharacterTokensLenght)
+        m_maxCharacterTokensLenght = lexeme.length();
+    m_definedCharacterTokensHash.insert(lexeme,tokenCategory);
+}
+
+int LexicalAnalyzer::maxStringLiteralLenght() const
+{
+    return m_maxStringLiteralLenght;
+}
+
+void LexicalAnalyzer::setMaxStringLiteralLenght(int maxStringLiteralLenght)
+{
+    m_maxStringLiteralLenght = maxStringLiteralLenght;
+}
+
+int LexicalAnalyzer::maxNumberLiteralLenght() const
+{
+    return m_maxNumberLiteralLenght;
+}
+
+void LexicalAnalyzer::setMaxNumberLiteralLenght(int maxNumberLiteralLenght)
+{
+    m_maxNumberLiteralLenght = maxNumberLiteralLenght;
+}
+
 
 Token LexicalAnalyzer::getSpaceToken(QString sourceString)
 {
@@ -107,79 +146,46 @@ Token LexicalAnalyzer::getSpaceToken(QString sourceString)
     return Token(lexema,Token::categorySpace);
 }
 
-QList<Identifier> LexicalAnalyzer::getIdentifierList() const
+QList<Identifier> LexicalAnalyzer::identifierList() const
 {
-    return identifierList;
+    return m_identifierList;
 }
 
 int LexicalAnalyzer::getIdentifierIndex(QString identifierName)
 {
-    for (int identifierIndex = 0; identifierIndex < identifierList.count(); identifierIndex ++) {
-        if (identifierList[identifierIndex].getName() == identifierName) {
+    for (int identifierIndex = 0; identifierIndex < m_identifierList.count(); identifierIndex ++) {
+        if (m_identifierList[identifierIndex].getName() == identifierName) {
             return identifierIndex;
         }
     }
     return -1;
 }
 
-void LexicalAnalyzer::setupHash()
+QList<QList<Token> > LexicalAnalyzer::tokenListList() const
 {
-    oneCharacterTokensHash.insert("+",Token::categoryOperation);
-    oneCharacterTokensHash.insert("-",Token::categoryOperation);
-    oneCharacterTokensHash.insert("/",Token::categoryOperation);
-    oneCharacterTokensHash.insert("*",Token::categoryOperation);
-
-    oneCharacterTokensHash.insert("=",Token::categoryComparator);
-    oneCharacterTokensHash.insert("<",Token::categoryComparator);
-    oneCharacterTokensHash.insert(">",Token::categoryComparator);
-
-    oneCharacterTokensHash.insert(",",Token::categoryComma);
-
-    oneCharacterTokensHash.insert("(",Token::categoryBracket);
-    oneCharacterTokensHash.insert(")",Token::categoryBracket);
-
-    twoCharacterTokensHash.insert("<=",Token::categoryComparator);
-    twoCharacterTokensHash.insert(">=",Token::categoryComparator);
-
-    keyWordsHash.insert("BOOLEAN",LexicalAnalyzer::keyWordTypeName);
-    keyWordsHash.insert("DOUBLE",LexicalAnalyzer::keyWordTypeName);
-    keyWordsHash.insert("INTEGER",LexicalAnalyzer::keyWordTypeName);
-    keyWordsHash.insert("STRING",LexicalAnalyzer::keyWordTypeName);
-
-    keyWordsHash.insert("FALSE",LexicalAnalyzer::keyWordBooleanLiteral);
-    keyWordsHash.insert("TRUE",LexicalAnalyzer::keyWordBooleanLiteral);
-
-    keyWordsHash.insert("IF",LexicalAnalyzer::keyWordIfStatement);
-    keyWordsHash.insert("THEN",LexicalAnalyzer::keyWordIfStatement);
-
-    keyWordsHash.insert("AS",LexicalAnalyzer::keyWordAssignment);
-    keyWordsHash.insert("DATA",LexicalAnalyzer::keyWordAssignment);
-    keyWordsHash.insert("DIM",LexicalAnalyzer::keyWordAssignment);
-    keyWordsHash.insert("READ",LexicalAnalyzer::keyWordAssignment);
-
-    keyWordsHash.insert("FOR",LexicalAnalyzer::keyWordForLoop);
-    keyWordsHash.insert("NEXT",LexicalAnalyzer::keyWordForLoop);
-    keyWordsHash.insert("STEP",LexicalAnalyzer::keyWordForLoop);
-    keyWordsHash.insert("TO",LexicalAnalyzer::keyWordForLoop);
-
-    keyWordsHash.insert("END",LexicalAnalyzer::keyWordOther);
+    return m_tokenListList;
 }
 
-QList<QList<Token> > LexicalAnalyzer::getTokenListList() const
+QString LexicalAnalyzer::errorText() const
 {
-    return tokenListList;
+    return m_errorText;
 }
 
-QString LexicalAnalyzer::getErrorText() const
+LexicalAnalyzer::LexicalAnalyzer()
 {
-    return errorText;
+    //set default values
+    m_maxNumberLiteralLenght = 25;
+    m_maxStringLiteralLenght = 80;
+    m_maxIdentifierNameLenght = 20;
+    m_possibleTokenEndRegExp = QRegExp("( |\t)");
+    m_numberLiteralRegExp = QRegExp("\\d*(\\.\\d+)?(E[\\+\\-]?\\d+)?");
+    m_identifierRegExp = QRegExp("^[A-Z][A-Z0-9]*");
+    m_beginStringLiteral = "\"";
+    m_maxCharacterTokensLenght = 0;
 }
 
 void LexicalAnalyzer::analyze(QString sourceCode)
 {
-    if (isHashEmpty())
-        setupHash();
-
     clearAllAnalyzingData();
     QStringList plainTextList = sourceCode.split("\n");
     for (int lineIndex = 0; lineIndex < plainTextList.count(); lineIndex ++)
@@ -188,12 +194,12 @@ void LexicalAnalyzer::analyze(QString sourceCode)
 
 Token LexicalAnalyzer::getNumberLiteralToken(QString sourceString)
 {
-    QString lexema = sourceString.mid(0,sourceString.indexOf(possibleTokenEndRegExp));
-    if (numberLiteralRegExp.exactMatch(lexema)) {
-        if (lexema.count() <= maxNumberLiteralLenght) {
+    QString lexema = sourceString.mid(0,sourceString.indexOf(QRegExp("[^0-9\\.E]")));
+    if (m_numberLiteralRegExp.exactMatch(lexema)) {
+        if (lexema.count() <= m_maxNumberLiteralLenght) {
             return Token(lexema,Token::categoryNumberLiteral);
         } else {
-            return Token(lexema,Token::categoryNone,QString("Number literal lenght greater than %1 characters.").arg(maxNumberLiteralLenght));
+            return Token(lexema,Token::categoryNone,QString("Number literal lenght greater than %1 characters.").arg(m_maxNumberLiteralLenght));
         }
     } else {
         return Token(lexema,Token::categoryNone,"Wrong number literal");
@@ -202,8 +208,8 @@ Token LexicalAnalyzer::getNumberLiteralToken(QString sourceString)
 
 Token LexicalAnalyzer::getKeyWordToken(QString sourceString)
 {
-    QString lexema = sourceString.mid(0,sourceString.indexOf(possibleTokenEndRegExp));
-    if (keyWordsHash.contains(lexema)) {
+    QString lexema = sourceString.mid(0,sourceString.indexOf(QRegExp("\\W")));
+    if (m_keyWordsHash.contains(lexema)) {
         return Token(lexema,Token::categoryKeyWord);
     } else {
         return Token(lexema,Token::categoryNone);
@@ -212,12 +218,12 @@ Token LexicalAnalyzer::getKeyWordToken(QString sourceString)
 
 Token LexicalAnalyzer::getIdentifierToken(QString sourceString)
 {
-    QString lexema = sourceString.mid(0,sourceString.indexOf(possibleTokenEndRegExp));
-    if (identifierRegExp.exactMatch(lexema)) {
-        if (lexema.count() <= maxIdentifierNameLenght) {
+    QString lexema = sourceString.mid(0,sourceString.indexOf(QRegExp("\\W")));
+    if (m_identifierRegExp.exactMatch(lexema)) {
+        if (lexema.count() <= m_maxIdentifierNameLenght) {
             return Token(lexema,Token::categoryIdentifier);
         } else {
-            return Token(lexema,Token::categoryNone,QString("Identifier lenght greater than %1 characters.").arg(maxIdentifierNameLenght));
+            return Token(lexema,Token::categoryNone,QString("Identifier lenght greater than %1 characters.").arg(m_maxIdentifierNameLenght));
         }
     } else {
         return Token(lexema,Token::categoryNone,"Wrong identifier");
@@ -226,37 +232,28 @@ Token LexicalAnalyzer::getIdentifierToken(QString sourceString)
 
 Token LexicalAnalyzer::getStringLiteralToken(QString sourceString)
 {
-    int lexemaEndIndex = sourceString.indexOf("\"",1);
+    int lexemaEndIndex = sourceString.indexOf(m_beginStringLiteral,1);
     if (lexemaEndIndex == -1) {
-        return Token(sourceString,Token::categoryNone,"Character \" is missing");
+        return Token(sourceString,Token::categoryNone,"Character " + m_beginStringLiteral +" is missing");
     } else {
-        QString lexema = sourceString.mid(0,lexemaEndIndex + 1);
-        if (lexema.length() <= maxStringLiteralLenght) {
+        QString lexema = sourceString.mid(0,lexemaEndIndex + m_beginStringLiteral.length());
+        if (lexema.length() <= m_maxStringLiteralLenght) {
             return Token(lexema,Token::categoryStringLiteral);
         } else {
-            return Token(lexema,Token::categoryNone,QString("Identifier lenght greater than %1 characters.").arg(maxStringLiteralLenght));
+            return Token(lexema,Token::categoryNone,QString("Identifier lenght greater than %1 characters.").arg(m_maxStringLiteralLenght));
         }
     }
 }
 
-Token LexicalAnalyzer::getTwoCharacterToken(QString sourceString)
+Token LexicalAnalyzer::getCharacterToken(QString sourceString)
 {
-    QString lexema = sourceString.mid(0,2);
-    if (twoCharacterTokensHash.contains(lexema)) {
-        return Token(lexema,twoCharacterTokensHash.value(lexema));
-    } else {
-        return Token(lexema,Token::categoryNone);
+    QString lexema;
+    for (int i = maxIdentifierNameLenght(); i > 0; i--) {
+        lexema = sourceString.mid(0,i);
+        if (m_definedCharacterTokensHash.contains(lexema))
+            return Token(lexema,m_definedCharacterTokensHash.value(lexema));
     }
-}
-
-Token LexicalAnalyzer::getOneCharacterToken(QString sourceString)
-{
-    QString lexema = sourceString.mid(0,1);
-    if (oneCharacterTokensHash.contains(lexema)) {
-        return Token(lexema,oneCharacterTokensHash.value(lexema));
-    } else {
-        return Token(lexema,Token::categoryNone);
-    }
+    return Token(lexema,Token::categoryNone);
 }
 
 QString TokenListListToString(QList<QList<Token> > tokenListList)
@@ -268,4 +265,14 @@ QString TokenListListToString(QList<QList<Token> > tokenListList)
         }
     }
     return tokenSequenceString;
+}
+
+QRegExp AddPossibleVariantToRegExpPattern(QRegExp oldRegExp, QString variant)
+{
+    if (oldRegExp.exactMatch(variant))
+        return oldRegExp;
+    QString oldPattern = oldRegExp.pattern();
+    QString pattern = "(" + oldPattern + "|" + "(" + QRegExp::escape(variant) + "))";
+    oldRegExp.setPattern(pattern);
+    return oldRegExp;
 }
