@@ -2,12 +2,15 @@
 #include "ui_mainwindow.h"
 #include "BasicLexicalAnalyzer.h"
 #include "LexicalAnalysisHTMLMarkupGenerator.h"
+#include "SyntacticAnalyzer.h"
 #include <QTextStream>
 #include <QFile>
 #include <QFileDialog>
 #include <QTime>
 
 Q_GLOBAL_STATIC(BasicLexicalAnalyzer,globalBasicLexicalAnalyzer)
+
+Q_GLOBAL_STATIC(SyntacticAnalyzer,globalSyntacticAnalyzer)
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -47,6 +50,8 @@ void MainWindow::on_actionRun_triggered()
         ui->identifierTableWidget->setItem(i,1,new QTableWidgetItem(IdentifierPositionsCountToString(identifierList.at(i))));
         ui->identifierTableWidget->setItem(i,2,new QTableWidgetItem(IdentifierPositionsToString(identifierList.at(i))));
     }
+
+    globalSyntacticAnalyzer->analyze(globalBasicLexicalAnalyzer->getTokenListWithoutSpaces());
 }
 
 void MainWindow::updateStatusBarSlot(int line, int pos)

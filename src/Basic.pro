@@ -21,7 +21,10 @@ SOURCES += main.cpp\
     CompileOutputTextEdit.cpp \
     LexicalAnalysisHTMLMarkupGenerator.cpp \
     HTMLColors.cpp \
-    BasicLexicalAnalyzer.cpp
+    BasicLexicalAnalyzer.cpp \
+    SyntacticAnalyzer.cpp \
+    SyntacticSymbol.cpp \
+    Production.cpp
 
 HEADERS += mainwindow.h\
     LexicalAnalyzer.h \
@@ -31,7 +34,10 @@ HEADERS += mainwindow.h\
     CompileOutputTextEdit.h \
     LexicalAnalysisHTMLMarkupGenerator.h \
     HTMLColors.h \
-    BasicLexicalAnalyzer.h
+    BasicLexicalAnalyzer.h \
+    SyntacticAnalyzer.h \
+    SyntacticSymbol.h \
+    Production.h
 
 FORMS  += mainwindow.ui
 

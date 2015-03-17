@@ -48,6 +48,7 @@ public:
      * @return Index of identifier in table or -1 when identifier not exists.
      */
     int getIdentifierIndex(QString identifierName);
+    QList<Token> getTokenListWithoutSpaces() const;
 
     int maxNumberLiteralLenght() const;
     void setMaxNumberLiteralLenght(int maxNumberLiteralLenght);

@@ -171,6 +171,16 @@ int LexicalAnalyzer::getIdentifierIndex(QString identifierName)
     return -1;
 }
 
+QList<Token> LexicalAnalyzer::getTokenListWithoutSpaces() const
+{
+    QList <Token> listWithoutSpaces;
+    foreach (Token currentToken, m_tokenList) {
+        if (currentToken.tokenCategory() != Token::categorySpace)
+            listWithoutSpaces << currentToken;
+    }
+    return listWithoutSpaces;
+}
+
 QList<Token> LexicalAnalyzer::tokenList() const
 {
     return m_tokenList;
