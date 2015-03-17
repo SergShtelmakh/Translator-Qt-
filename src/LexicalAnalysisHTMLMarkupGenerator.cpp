@@ -82,10 +82,8 @@ QString LexicalAnalysisHTMLMarkupGenerator::getSourceCodeHTMLMarkup(const Lexica
 {
     QString html;
 
-    foreach (QList < Token > currentTokenSubList, analyzer.tokenListList()) {
-        foreach (Token currentToken, currentTokenSubList) {
-            html += getTokenHTMLRepresentation(currentToken);
-        }
+    foreach (Token currentToken, analyzer.tokenList()) {
+        html += getTokenHTMLRepresentation(currentToken);
     }
     return PlainTextToHTML(html);
 }

@@ -40,7 +40,6 @@ public:
     int getEndIndexInLine()const;
     QString getTokenRepresentation();
 
-
     bool isCorrect() const;
 
 private:

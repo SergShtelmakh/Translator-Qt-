@@ -4,16 +4,15 @@
 void LexicalAnalyzer::analyzeLine(QString line, int lineNumber)
 {
     int tokenBeginIndexInLine = 0;
-    QList <Token> currentLineTokenList;
 
-    if (!m_tokenListList.isEmpty())
-        m_tokenListList.last().append(Token("\n",Token::categoryLineFeed));
+    if (!m_tokenList.isEmpty())
+        m_tokenList.append(Token("\n",Token::categoryLineFeed));
 
     while (tokenBeginIndexInLine < line.length()) {
 
         Token nextToken = getNextToken(line.mid(tokenBeginIndexInLine));
         nextToken.setPosition(QPoint(lineNumber,tokenBeginIndexInLine));
-        currentLineTokenList.append(nextToken);
+        m_tokenList.append(nextToken);
 
         if (nextToken.tokenCategory() == Token::categoryIdentifier)
             addIdentifier(Identifier(nextToken.lexeme(),nextToken.position()));
@@ -23,7 +22,6 @@ void LexicalAnalyzer::analyzeLine(QString line, int lineNumber)
 
         tokenBeginIndexInLine += nextToken.lexeme().length();
     }
-    m_tokenListList.append(currentLineTokenList);
 }
 
 void LexicalAnalyzer::addIdentifier(Identifier newIdentifier)
@@ -45,8 +43,9 @@ void LexicalAnalyzer::clearAllAnalyzingData()
 {
     m_errorText.clear();
     m_identifierList.clear();
-    m_tokenListList.clear();
+    m_tokenList.clear();
 }
+
 QRegExp LexicalAnalyzer::spaceRegExp() const
 {
     return m_spaceRegExp;
@@ -172,9 +171,9 @@ int LexicalAnalyzer::getIdentifierIndex(QString identifierName)
     return -1;
 }
 
-QList<QList<Token> > LexicalAnalyzer::tokenListList() const
+QList<Token> LexicalAnalyzer::tokenList() const
 {
-    return m_tokenListList;
+    return m_tokenList;
 }
 
 QString LexicalAnalyzer::errorText() const
@@ -268,13 +267,11 @@ Token LexicalAnalyzer::getCharacterToken(QString sourceString)
     return Token(lexema,Token::categoryNone);
 }
 
-QString TokenListListToString(QList<QList<Token> > tokenListList)
+QString TokenListToString(QList<Token> tokenList)
 {
     QString tokenSequenceString;
-    foreach (QList <Token> tokenSubList, tokenListList) {
-        foreach (Token currentToken, tokenSubList) {
-            tokenSequenceString += currentToken.getTokenRepresentation();
-        }
+    foreach (Token currentToken, tokenList) {
+        tokenSequenceString += currentToken.getTokenRepresentation();
     }
     return tokenSequenceString;
 }

@@ -38,7 +38,7 @@ public:
     void analyze(QString sourceCode);
 
     QString errorText() const;
-    QList<QList<Token> > tokenListList() const;
+    QList<Token> tokenList() const;
     QList<Identifier> identifierList() const;
 
     /*!
@@ -85,7 +85,7 @@ private:
     void clearAllAnalyzingData();
 
     QList <Identifier> m_identifierList;
-    QList < QList <Token> > m_tokenListList;
+    QList <Token> m_tokenList;
     QString m_errorText;
 
     QHash <QString, KeyWordType> m_keyWordsHash;
@@ -103,7 +103,7 @@ private:
     int m_maxCharacterTokensLenght;
 };
 
-QString TokenListListToString(QList<QList<Token> > tokenListList);
+QString TokenListToString(QList<Token> tokenListList);
 QRegExp AddPossibleVariantToRegExpPattern(QRegExp oldRegExp, QString string);
 
 #endif // LEXICALANALYZER_H

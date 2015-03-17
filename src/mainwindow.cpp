@@ -37,7 +37,7 @@ void MainWindow::on_actionRun_triggered()
     ui->compileOutputTextEdit->addHTMLString(this->getLexicalAnalysisMarkupGenerator()->getMessageForLog(*globalBasicLexicalAnalyzer));
 
     // Write information about tokens
-    ui->tokenSequenceTextEdit->setText(TokenListListToString(globalBasicLexicalAnalyzer->tokenListList()));
+    ui->tokenSequenceTextEdit->setText(TokenListToString(globalBasicLexicalAnalyzer->tokenList()));
 
     // Write information about identifiers
     QList <Identifier> identifierList = globalBasicLexicalAnalyzer->identifierList();
