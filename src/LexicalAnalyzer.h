@@ -64,6 +64,9 @@ public:
     QString beginStringLiteral() const;
     void setBeginStringLiteral(const QString &beginStringLiteral);
 
+    QRegExp spaceRegExp() const;
+    void setSpaceRegExp(const QRegExp &spaceRegExp);
+
 protected:
 
     Token getNextToken(QString sourceString);
@@ -91,6 +94,7 @@ private:
     QRegExp m_possibleTokenEndRegExp;   //!< RegExp that can separate tokens.
     QRegExp m_numberLiteralRegExp;      //!< RegExp for searching number literals.
     QRegExp m_identifierRegExp;         //!< RegExp for searching identifiers.
+    QRegExp m_spaceRegExp;
     QString m_beginStringLiteral;
 
     int m_maxNumberLiteralLenght;       //!< Maximum number literal lenght.

@@ -27,7 +27,7 @@ public slots:
 
 private:
 
-    QTimer *textUpdateTimer;
+    QTimer *m_textUpdateTimer;
 
 };
 

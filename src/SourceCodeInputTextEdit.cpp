@@ -5,11 +5,11 @@
 
 SourceCodeInputTextEdit::SourceCodeInputTextEdit(QWidget *parent) : QTextEdit(parent)
 {
-    textUpdateTimer = new QTimer(this);
+    m_textUpdateTimer = new QTimer(this);
 
     connect(this,SIGNAL(textChanged()),SLOT(onTextChangedSlot()));
     connect(this,SIGNAL(cursorPositionChanged()),SLOT(onCursorPositionChangedSlot()));
-    connect(textUpdateTimer,SIGNAL(timeout()),SLOT(onTextUpdateTimerTimeoutSlot()));
+    connect(m_textUpdateTimer,SIGNAL(timeout()),SLOT(onTextUpdateTimerTimeoutSlot()));
 
     this->setFont(QFont("Courier New", 16));
     this->setTabStopWidth(40);
@@ -17,7 +17,7 @@ SourceCodeInputTextEdit::SourceCodeInputTextEdit(QWidget *parent) : QTextEdit(pa
 
 SourceCodeInputTextEdit::~SourceCodeInputTextEdit()
 {
-    delete textUpdateTimer;
+    delete m_textUpdateTimer;
 }
 
 QPoint SourceCodeInputTextEdit::getCursorCoordinate()
@@ -43,8 +43,8 @@ void SourceCodeInputTextEdit::onCursorPositionChangedSlot()
 
 void SourceCodeInputTextEdit::onTextChangedSlot()
 {
-    if (!textUpdateTimer->isActive())
-        textUpdateTimer->start(100);
+    if (!m_textUpdateTimer->isActive())
+        m_textUpdateTimer->start(100);
 }
 
 void SourceCodeInputTextEdit::onTextUpdateTimerTimeoutSlot()
@@ -61,6 +61,6 @@ void SourceCodeInputTextEdit::onTextUpdateTimerTimeoutSlot()
     QScrollBar *scrollBar = verticalScrollBar();
     scrollBar->setValue(scrollPos);
 
-    textUpdateTimer->stop();
+    m_textUpdateTimer->stop();
 }
 

@@ -15,13 +15,13 @@ void LexicalAnalyzer::analyzeLine(QString line, int lineNumber)
         nextToken.setPosition(QPoint(lineNumber,tokenBeginIndexInLine));
         currentLineTokenList.append(nextToken);
 
-        if (nextToken.getTokenCategory() == Token::categoryIdentifier)
-            addIdentifier(Identifier(nextToken.getLexeme(),nextToken.getPosition()));
+        if (nextToken.tokenCategory() == Token::categoryIdentifier)
+            addIdentifier(Identifier(nextToken.lexeme(),nextToken.position()));
 
         if (!nextToken.isCorrect())
-            addError(QString("(%1:%2)\t ").arg(lineNumber).arg(tokenBeginIndexInLine) + nextToken.getErrorInformation());
+            addError(QString("(%1:%2)\t ").arg(lineNumber).arg(tokenBeginIndexInLine) + nextToken.errorInformation());
 
-        tokenBeginIndexInLine += nextToken.getLexeme().length();
+        tokenBeginIndexInLine += nextToken.lexeme().length();
     }
     m_tokenListList.append(currentLineTokenList);
 }
@@ -47,6 +47,16 @@ void LexicalAnalyzer::clearAllAnalyzingData()
     m_identifierList.clear();
     m_tokenListList.clear();
 }
+QRegExp LexicalAnalyzer::spaceRegExp() const
+{
+    return m_spaceRegExp;
+}
+
+void LexicalAnalyzer::setSpaceRegExp(const QRegExp &spaceRegExp)
+{
+    m_spaceRegExp = spaceRegExp;
+}
+
 QString LexicalAnalyzer::beginStringLiteral() const
 {
     return m_beginStringLiteral;
@@ -63,7 +73,7 @@ Token LexicalAnalyzer::getNextToken(QString sourceString)
     Token nextToken;
 
     // get space token
-    if (firstChar.contains(QRegExp("[ \t]")))
+    if (firstChar.contains(m_spaceRegExp))
         return getSpaceToken(sourceString);
 
     // try to get number
@@ -142,7 +152,8 @@ void LexicalAnalyzer::setMaxNumberLiteralLenght(int maxNumberLiteralLenght)
 
 Token LexicalAnalyzer::getSpaceToken(QString sourceString)
 {
-    QString lexema = sourceString.mid(0,sourceString.indexOf(QRegExp("[^\t ]")));
+
+    QString lexema = sourceString.mid(0,sourceString.indexOf(QRegExp("[^ \t]")));
     return Token(lexema,Token::categorySpace);
 }
 
@@ -154,7 +165,7 @@ QList<Identifier> LexicalAnalyzer::identifierList() const
 int LexicalAnalyzer::getIdentifierIndex(QString identifierName)
 {
     for (int identifierIndex = 0; identifierIndex < m_identifierList.count(); identifierIndex ++) {
-        if (m_identifierList[identifierIndex].getName() == identifierName) {
+        if (m_identifierList[identifierIndex].name() == identifierName) {
             return identifierIndex;
         }
     }
@@ -180,6 +191,7 @@ LexicalAnalyzer::LexicalAnalyzer()
     m_possibleTokenEndRegExp = QRegExp("( |\t)");
     m_numberLiteralRegExp = QRegExp("\\d*(\\.\\d+)?(E[\\+\\-]?\\d+)?");
     m_identifierRegExp = QRegExp("^[A-Z][A-Z0-9]*");
+    m_spaceRegExp = QRegExp("[ \t]");
     m_beginStringLiteral = "\"";
     m_maxCharacterTokensLenght = 0;
 }
@@ -276,3 +288,4 @@ QRegExp AddPossibleVariantToRegExpPattern(QRegExp oldRegExp, QString variant)
     oldRegExp.setPattern(pattern);
     return oldRegExp;
 }
+

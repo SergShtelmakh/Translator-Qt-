@@ -43,7 +43,7 @@ void MainWindow::on_actionRun_triggered()
     QList <Identifier> identifierList = globalBasicLexicalAnalyzer->identifierList();
     ui->identifierTableWidget->setRowCount(identifierList.count());
     for (int i = 0; i < identifierList.count(); i++) {
-        ui->identifierTableWidget->setItem(i,0,new QTableWidgetItem(identifierList.at(i).getName()));
+        ui->identifierTableWidget->setItem(i,0,new QTableWidgetItem(identifierList.at(i).name()));
         ui->identifierTableWidget->setItem(i,1,new QTableWidgetItem(IdentifierPositionsCountToString(identifierList.at(i))));
         ui->identifierTableWidget->setItem(i,2,new QTableWidgetItem(IdentifierPositionsToString(identifierList.at(i))));
     }

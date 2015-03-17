@@ -13,21 +13,18 @@ public:
     Identifier(const Identifier &other);
     Identifier(QString, QPoint);
 
-    QList<QPoint> getPositionsList() const;
-    QString getName() const;
+    QList<QPoint> positionsList() const;
+    QString name() const;
 
     QPoint getFirstPosition();
     void addPosition(QPoint); 
 
-    bool operator==(const Identifier &id1)const
-    {
-        return name == id1.getName();
-    }
+    bool operator==(const Identifier &id1)const;
 
 private:
 
-    QString name;
-    QList <QPoint> positionsList;
+    QString m_name;
+    QList <QPoint> m_positionsList;
 
 };
 

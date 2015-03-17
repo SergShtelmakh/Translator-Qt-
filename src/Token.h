@@ -30,24 +30,25 @@ public:
 
     Token& operator=(const Token& newToken);
 
-    QString getLexeme() const;
-    TokenCategory getTokenCategory() const;
+    QString lexeme() const;
+    TokenCategory tokenCategory() const;
+    QString errorInformation() const;
     void setPosition(const QPoint &value);
-    QPoint getPosition() const;
+    QPoint position() const;
 
     int getBeginIndexInLine()const;
     int getEndIndexInLine()const;
     QString getTokenRepresentation();
-    QString getErrorInformation() const;
+
 
     bool isCorrect() const;
 
 private:
 
-    QString lexeme;
-    TokenCategory tokenCategory;
-    QPoint position;
-    QString errorInformation;
+    QString m_lexeme;
+    TokenCategory m_tokenCategory;
+    QPoint m_position;
+    QString m_errorInformation;
 
 };
 

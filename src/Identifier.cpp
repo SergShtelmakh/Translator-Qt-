@@ -2,45 +2,50 @@
 
 Identifier::Identifier(const Identifier &newIdentifier)
 {
-    name = newIdentifier.getName();
-    positionsList = newIdentifier.getPositionsList();
+    m_name = newIdentifier.name();
+    m_positionsList = newIdentifier.positionsList();
 }
 
 Identifier::Identifier(QString newName, QPoint newPosition)
 {
-    name = newName;
-    positionsList.append(newPosition);
+    m_name = newName;
+    m_positionsList.append(newPosition);
 }
 
 QPoint Identifier::getFirstPosition()
 {
-    return positionsList.first();
+    return m_positionsList.first();
 }
 
 void Identifier::addPosition(QPoint newPosition)
 {
-    positionsList.append(newPosition);
+    m_positionsList.append(newPosition);
 }
 
-QList<QPoint> Identifier::getPositionsList() const
+bool Identifier::operator==(const Identifier &id1) const
 {
-    return positionsList;
+    return m_name == id1.name();
 }
 
-QString Identifier::getName() const
+QList<QPoint> Identifier::positionsList() const
 {
-    return name;
+    return m_positionsList;
+}
+
+QString Identifier::name() const
+{
+    return m_name;
 }
 
 QString IdentifierPositionsCountToString(const Identifier &identifier)
 {
-    return QString("%1").arg(identifier.getPositionsList().count());
+    return QString("%1").arg(identifier.positionsList().count());
 }
 
 QString IdentifierPositionsToString(const Identifier &identifier)
 {
     QString allPositionString;
-    foreach (QPoint position, identifier.getPositionsList())
+    foreach (QPoint position, identifier.positionsList())
         allPositionString += QString("(%1:%2) ").arg(position.x()).arg(position.y());
 
     return allPositionString;

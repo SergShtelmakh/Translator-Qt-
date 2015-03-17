@@ -40,7 +40,7 @@ QString LexicalAnalysisHTMLMarkupGenerator::getFailedResultMessage(QString error
 
 QString LexicalAnalysisHTMLMarkupGenerator::getTokenColorName(const Token& token) const
 {
-    switch (token.getTokenCategory()) {
+    switch (token.tokenCategory()) {
     case Token::categoryIdentifier:
         return HTMLColors::blue;
     case Token::categoryOperation:
@@ -64,15 +64,15 @@ QString LexicalAnalysisHTMLMarkupGenerator::getTokenColorName(const Token& token
 
 QString LexicalAnalysisHTMLMarkupGenerator::getTokenHTMLRepresentation(const Token &token) const
 {
-    QString lexeme = token.getLexeme().replace("<","&lt;").replace(">","&gt;");
+    QString lexeme = token.lexeme().replace("<","&lt;").replace(">","&gt;");
 
     if (!token.isCorrect())
         return "<u>" + lexeme + "</u>";
 
-    if (token.getTokenCategory() == Token::categorySpace)
+    if (token.tokenCategory() == Token::categorySpace)
         return lexeme;
 
-    if (token.getTokenCategory() == Token::categoryLineFeed)
+    if (token.tokenCategory() == Token::categoryLineFeed)
         return "<br>";
 
     return "<font color=" + getTokenColorName(token) + ">" + lexeme + "</font>";

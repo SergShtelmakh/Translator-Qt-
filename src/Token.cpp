@@ -2,25 +2,25 @@
 
 Token::Token(const Token &newToken)
 {
-    lexeme = newToken.getLexeme();
-    tokenCategory = newToken.getTokenCategory();
-    position = newToken.getPosition();
-    errorInformation = newToken.getErrorInformation();
+    m_lexeme = newToken.lexeme();
+    m_tokenCategory = newToken.tokenCategory();
+    m_position = newToken.position();
+    m_errorInformation = newToken.errorInformation();
 }
 
 Token::Token(QString newLexeme, Token::TokenCategory newTokenCategory, QPoint newPosition, QString newErrorInformation)
 {
-    lexeme = newLexeme;
-    tokenCategory = newTokenCategory;
-    position = newPosition;
-    errorInformation = newErrorInformation;
+    m_lexeme = newLexeme;
+    m_tokenCategory = newTokenCategory;
+    m_position = newPosition;
+    m_errorInformation = newErrorInformation;
 }
 
 Token::Token(QString newLexeme, Token::TokenCategory newTokenCategory, QString newErrorInformation)
 {
-    lexeme = newLexeme;
-    tokenCategory = newTokenCategory;
-    errorInformation = newErrorInformation;
+    m_lexeme = newLexeme;
+    m_tokenCategory = newTokenCategory;
+    m_errorInformation = newErrorInformation;
 }
 
 Token &Token::operator=(const Token &newToken)
@@ -28,40 +28,40 @@ Token &Token::operator=(const Token &newToken)
     if (this == &newToken)
         return *this;
 
-    lexeme = newToken.getLexeme();
-    tokenCategory = newToken.getTokenCategory();
-    position = newToken.getPosition();
+    m_lexeme = newToken.lexeme();
+    m_tokenCategory = newToken.tokenCategory();
+    m_position = newToken.position();
     return *this;
 }
 
-QString Token::getLexeme() const
+QString Token::lexeme() const
 {
-    return lexeme;
+    return m_lexeme;
 }
 
-Token::TokenCategory Token::getTokenCategory() const
+Token::TokenCategory Token::tokenCategory() const
 {
-    return tokenCategory;
+    return m_tokenCategory;
 }
 
-QPoint Token::getPosition() const
+QPoint Token::position() const
 {
-    return position;
+    return m_position;
 }
 
 void Token::setPosition(const QPoint &value)
 {
-    position = value;
+    m_position = value;
 }
 
 int Token::getBeginIndexInLine() const
 {
-    return position.y();
+    return m_position.y();
 }
 
 int Token::getEndIndexInLine() const
 {
-    return position.y() + lexeme.length();
+    return m_position.y() + m_lexeme.length();
 }
 
 QString Token::getTokenRepresentation()
@@ -69,30 +69,30 @@ QString Token::getTokenRepresentation()
     if (!this->isCorrect())
         return "";
 
-    switch (tokenCategory) {
+    switch (m_tokenCategory) {
     case Token::categoryIdentifier:
-        return "<id, \"" + lexeme + "\">";
+        return "<id, \"" + m_lexeme + "\">";
     case Token::categoryNumberLiteral:
-        return "<numb, \"" + lexeme + "\">";
+        return "<numb, \"" + m_lexeme + "\">";
     case Token::categoryStringLiteral:
-        return "<literal, " + lexeme + ">";
+        return "<literal, " + m_lexeme + ">";
     case Token::categorySpace:
         return "";
     case Token::categoryLineFeed:
         return "<linefeed>\n";
     default:
-        return "<" + lexeme + ">";
+        return "<" + m_lexeme + ">";
     }
 }
 
 bool Token::isCorrect() const
 {
-    return tokenCategory != Token::categoryNone;
+    return m_tokenCategory != Token::categoryNone;
 }
 
-QString Token::getErrorInformation() const
+QString Token::errorInformation() const
 {
-    return errorInformation + " " + lexeme;
+    return m_errorInformation + " " + m_lexeme;
 }
 
 
