@@ -10,15 +10,12 @@ class Token
 public:
 
     enum TokenCategory{
-        categoryBracket,
-        categoryComma,
-        categoryComparator,
+        categoryCharToken,
         categoryIdentifier,
         categoryKeyWord,
         categoryLineFeed,
         categoryNone,
         categoryNumberLiteral,
-        categoryOperation,
         categorySpace,
         categoryStringLiteral
     };

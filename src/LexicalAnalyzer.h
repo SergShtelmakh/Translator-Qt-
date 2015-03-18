@@ -18,16 +18,6 @@ class LexicalAnalyzer
 
 public:
 
-    //! This enumerator consists of the most used keyword types.
-    enum KeyWordType{
-        keyWordAssignment,      //!< DATA,DIM,AS,READ.
-        keyWordBooleanLiteral,  //!< TRUE,FALSE.
-        keyWordForLoop,         //!< FOR, TO, STEP, NEXT.
-        keyWordIfStatement,     //!< IF,THEN,ELSE.
-        keyWordOther,           //!< END.
-        keyWordTypeName         //!< BOOLEAN,INTEGER,DOUBLE,STRING.
-    };
-
     LexicalAnalyzer();
 
     /*!
@@ -59,7 +49,7 @@ public:
     int maxIdentifierNameLenght() const;
     void setMaxIdentifierNameLenght(int maxIdentifierNameLenght);
 
-    void addKeyword(QString keyword, KeyWordType keywordType);
+    void addKeyword(QString keyword);
     void addCharacterToken(QString lexeme, Token::TokenCategory tokenCategory);
 
     QString beginStringLiteral() const;
@@ -89,7 +79,7 @@ private:
     QList <Token> m_tokenList;
     QString m_errorText;
 
-    QHash <QString, KeyWordType> m_keyWordsHash;
+    QHash <QString, int> m_keyWordsHash;
     QHash <QString, Token::TokenCategory> m_definedCharacterTokensHash;
 
     QRegExp m_possibleTokenEndRegExp;   //!< RegExp that can separate tokens.
@@ -102,6 +92,7 @@ private:
     int m_maxStringLiteralLenght;       //!< Maximum string literal lenght.
     int m_maxIdentifierNameLenght;      //!< Maximum identifier name lenght.
     int m_maxCharacterTokensLenght;
+
 };
 
 QString TokenListToString(QList<Token> tokenListList);

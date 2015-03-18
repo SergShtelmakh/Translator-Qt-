@@ -20,10 +20,12 @@ public:
     void setSyntacticSymbolList(const QList<SyntacticSymbol> &syntacticSymbolList);
 
     SyntacticSymbol getFirstSymbol();
+
 private:
 
     int m_number;
     QList <SyntacticSymbol> m_syntacticSymbolList;
+
 };
 
 #endif // PRODUCTION_H

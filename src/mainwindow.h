@@ -15,10 +15,12 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
 private slots:
+
     void on_actionRun_triggered();
     void on_actionSave_triggered();
     void on_actionOpen_triggered();
@@ -27,12 +29,14 @@ private slots:
     void updateSourceCodeInputTextEditSlot();
 
 private:
+
     LexicalAnalysisHTMLMarkupGenerator* getLexicalAnalysisMarkupGenerator() const;
 
     void setDefaultWindowProperty();
 
     Ui::MainWindow *ui;
     LexicalAnalysisHTMLMarkupGenerator* m_markupGenerator;
+
 };
 
 #endif // MAINWINDOW_H

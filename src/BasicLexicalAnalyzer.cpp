@@ -2,45 +2,45 @@
 
 BasicLexicalAnalyzer::BasicLexicalAnalyzer()
 {
-    addKeyword("BOOLEAN",LexicalAnalyzer::keyWordTypeName);
-    addKeyword("DOUBLE",LexicalAnalyzer::keyWordTypeName);
-    addKeyword("INTEGER",LexicalAnalyzer::keyWordTypeName);
-    addKeyword("STRING",LexicalAnalyzer::keyWordTypeName);
+    addKeyword("BOOLEAN");
+    addKeyword("DOUBLE");
+    addKeyword("INTEGER");
+    addKeyword("STRING");
 
-    addKeyword("FALSE",LexicalAnalyzer::keyWordBooleanLiteral);
-    addKeyword("TRUE",LexicalAnalyzer::keyWordBooleanLiteral);
+    addKeyword("FALSE");
+    addKeyword("TRUE");
 
-    addKeyword("IF",LexicalAnalyzer::keyWordIfStatement);
-    addKeyword("THEN",LexicalAnalyzer::keyWordIfStatement);
+    addKeyword("IF");
+    addKeyword("THEN");
 
-    addKeyword("AS",LexicalAnalyzer::keyWordAssignment);
-    addKeyword("DATA",LexicalAnalyzer::keyWordAssignment);
-    addKeyword("DIM",LexicalAnalyzer::keyWordAssignment);
-    addKeyword("READ",LexicalAnalyzer::keyWordAssignment);
+    addKeyword("AS");
+    addKeyword("DATA");
+    addKeyword("DIM");
+    addKeyword("READ");
 
-    addKeyword("FOR",LexicalAnalyzer::keyWordForLoop);
-    addKeyword("NEXT",LexicalAnalyzer::keyWordForLoop);
-    addKeyword("STEP",LexicalAnalyzer::keyWordForLoop);
-    addKeyword("TO",LexicalAnalyzer::keyWordForLoop);
+    addKeyword("FOR");
+    addKeyword("NEXT");
+    addKeyword("STEP");
+    addKeyword("TO");
 
-    addKeyword("END",LexicalAnalyzer::keyWordOther);
+    addKeyword("END");
 
-    addCharacterToken("+",Token::categoryOperation);
-    addCharacterToken("-",Token::categoryOperation);
-    addCharacterToken("/",Token::categoryOperation);
-    addCharacterToken("*",Token::categoryOperation);
+    addCharacterToken("+",Token::categoryCharToken);
+    addCharacterToken("-",Token::categoryCharToken);
+    addCharacterToken("/",Token::categoryCharToken);
+    addCharacterToken("*",Token::categoryCharToken);
 
-    addCharacterToken("=",Token::categoryComparator);
-    addCharacterToken("<",Token::categoryComparator);
-    addCharacterToken(">",Token::categoryComparator);
+    addCharacterToken("=",Token::categoryCharToken);
+    addCharacterToken("<",Token::categoryCharToken);
+    addCharacterToken(">",Token::categoryCharToken);
 
-    addCharacterToken(",",Token::categoryComma);
+    addCharacterToken(",",Token::categoryCharToken);
 
-    addCharacterToken("(",Token::categoryBracket);
-    addCharacterToken(")",Token::categoryBracket);
+    addCharacterToken("(",Token::categoryCharToken);
+    addCharacterToken(")",Token::categoryCharToken);
 
-    addCharacterToken("<=",Token::categoryComparator);
-    addCharacterToken(">=",Token::categoryComparator);
+    addCharacterToken("<=",Token::categoryCharToken);
+    addCharacterToken(">=",Token::categoryCharToken);
 
 }
 

@@ -9,7 +9,7 @@ SyntacticAnalyzer::SyntacticAnalyzer()
 
     SyntacticSymbol dataSymbol = SyntacticSymbol("DATA",SyntacticSymbol::terminalSymbol,Token::categoryKeyWord);
     SyntacticSymbol idSymbol = SyntacticSymbol("id",SyntacticSymbol::terminalSymbol,Token::categoryIdentifier);
-    SyntacticSymbol commaSymbol = SyntacticSymbol(",",SyntacticSymbol::terminalSymbol,Token::categoryComma);
+    SyntacticSymbol commaSymbol = SyntacticSymbol(",",SyntacticSymbol::terminalSymbol,Token::categoryCharToken);
     SyntacticSymbol lineFeedSymbol = SyntacticSymbol("\n",SyntacticSymbol::terminalSymbol,Token::categoryLineFeed);
 
     QList < SyntacticSymbol > ruleList1;

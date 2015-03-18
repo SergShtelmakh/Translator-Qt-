@@ -114,9 +114,10 @@ void LexicalAnalyzer::setMaxIdentifierNameLenght(int maxIdentifierNameLenght)
     m_maxIdentifierNameLenght = maxIdentifierNameLenght;
 }
 
-void LexicalAnalyzer::addKeyword(QString keyword, KeyWordType keywordType)
+void LexicalAnalyzer::addKeyword(QString keyword)
 {
-    m_keyWordsHash.insert(keyword,keywordType);
+    int number = m_keyWordsHash.size();
+    m_keyWordsHash.insert(keyword,number);
 }
 
 void LexicalAnalyzer::addCharacterToken(QString lexeme, Token::TokenCategory tokenCategory)

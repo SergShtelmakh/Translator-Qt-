@@ -43,16 +43,10 @@ QString LexicalAnalysisHTMLMarkupGenerator::getTokenColorName(const Token& token
     switch (token.tokenCategory()) {
     case Token::categoryIdentifier:
         return HTMLColors::blue;
-    case Token::categoryOperation:
+    case Token::categoryCharToken:
         return HTMLColors::green;
     case Token::categoryNumberLiteral:
         return HTMLColors::violet;
-    case Token::categoryComparator:
-        return HTMLColors::green;
-    case Token::categoryComma:
-        return HTMLColors::green;
-    case Token::categoryBracket:
-        return HTMLColors::green;
     case Token::categoryKeyWord:
         return HTMLColors::gold;
     case Token::categoryStringLiteral:

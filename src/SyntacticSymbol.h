@@ -9,7 +9,6 @@ class Token;
 class SyntacticSymbol
 {
 
-
 public:
 
     enum SyntacticSymbolType{
@@ -36,14 +35,12 @@ private:
     QString m_name;
     SyntacticSymbolType m_type;
     Token::TokenCategory m_category;
+
 };
 
 bool operator==(const SyntacticSymbol &symbol1,const SyntacticSymbol &symbol2);
-
 bool operator==(const Token &token,const SyntacticSymbol &symbol);
-
 bool operator==(const SyntacticSymbol &symbol,const Token &token);
-
 uint qHash(const SyntacticSymbol &symbol);
 
 #endif // SYNTACTICSYMBOL_H
