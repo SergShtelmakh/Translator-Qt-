@@ -12,9 +12,9 @@ class SyntacticSymbol
 public:
 
     enum SyntacticSymbolType{
-        nonterminalSymbol,
-        startSymbol,
-        terminalSymbol
+        nonterminalSymbol   = 0,
+        startSymbol         = 1,
+        terminalSymbol      = 2
     };
 
     SyntacticSymbol(QString name, SyntacticSymbolType type, Token::TokenCategory category = Token::categoryNone);

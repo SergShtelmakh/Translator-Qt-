@@ -3,6 +3,7 @@
 #include "BasicLexicalAnalyzer.h"
 #include "LexicalAnalysisHTMLMarkupGenerator.h"
 #include "SyntacticAnalyzer.h"
+#include "FileReader.h"
 #include <QTextStream>
 #include <QFile>
 #include <QFileDialog>
@@ -73,29 +74,14 @@ LexicalAnalysisHTMLMarkupGenerator* MainWindow::getLexicalAnalysisMarkupGenerato
 
 void MainWindow::on_actionSave_triggered()
 {
-    QFile file (QFileDialog::getSaveFileName(this, tr("Save File"),"untitled.bas",tr("Basic (*.bas)")));
-    if (!file.open(QIODevice::ReadWrite | QIODevice::Text))
-       return;
-
-    QTextStream out(&file);
-    out << ui->sourceCodeInputTextEdit->toPlainText();
-
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),"untitled.bas",tr("Basic (*.bas)"));
+    FileReader::writeTextToFile(fileName,ui->sourceCodeInputTextEdit->toPlainText());
 }
 
 void MainWindow::on_actionOpen_triggered()
 {
-    QFile file (QFileDialog::getOpenFileName(this, tr("Open File"),"", tr("Basic (*.bas)")));
-    if (!file.open(QIODevice::ReadWrite | QIODevice::Text))
-        return;
-
-    QTextStream inputTextStream(&file);
-    QString text;
-         QString line = inputTextStream.readLine();
-         while (!line.isNull()) {
-             text += line +"\n";
-             line = inputTextStream.readLine();
-         }
-
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),"", tr("Basic (*.bas)"));
+    QString text = FileReader::getTextFromFile(fileName);
     ui->sourceCodeInputTextEdit->clear();
     ui->sourceCodeInputTextEdit->setText(text);
 }

@@ -24,7 +24,8 @@ SOURCES += main.cpp\
         BasicLexicalAnalyzer.cpp \
         SyntacticAnalyzer.cpp \
         SyntacticSymbol.cpp \
-        Production.cpp
+        Production.cpp \
+    FileReader.cpp
 
 HEADERS += mainwindow.h\
         LexicalAnalyzer.h \
@@ -37,7 +38,8 @@ HEADERS += mainwindow.h\
         BasicLexicalAnalyzer.h \
         SyntacticAnalyzer.h \
         SyntacticSymbol.h \
-        Production.h
+        Production.h \
+    FileReader.h
 
 FORMS  += mainwindow.ui
 

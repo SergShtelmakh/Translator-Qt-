@@ -16,14 +16,14 @@ public:
      * @brief This enumerate include tokens category.
      */
     enum TokenCategory{
-        categoryCharToken,      //!< Character token (e.g. +, -, *, / ...).
-        categoryIdentifier,     //!< Identifier (e.g. var1, var2 ...).
-        categoryKeyword,        //!< Keyword (e.g. int, bool, double ...).
-        categoryLineFeed,       //!< Line feed.
-        categoryNone,           //!< Incorrect token.
-        categoryNumberLiteral,  //!< Number literal (e.g. 5.54, 48.21E-45 ...).
-        categorySpace,          //!< Space token.
-        categoryStringLiteral   //!< String litaral (e.g. "literal1", "literal2" ...).
+        categoryCharToken       = 1,    //!< Character token (e.g. +, -, *, / ...).
+        categoryIdentifier      = 2,    //!< Identifier (e.g. var1, var2 ...).
+        categoryKeyword         = 3,    //!< Keyword (e.g. int, bool, double ...).
+        categoryLineFeed        = 4,    //!< Line feed.
+        categoryNone            = 0,    //!< Incorrect token.
+        categoryNumberLiteral   = 5,    //!< Number literal (e.g. 5.54, 48.21E-45 ...).
+        categorySpace           = 6,    //!< Space token.
+        categoryStringLiteral   = 7     //!< String litaral (e.g. "literal1", "literal2" ...).
     };
 
     Token(){}
