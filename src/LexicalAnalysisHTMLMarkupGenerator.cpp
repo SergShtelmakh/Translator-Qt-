@@ -47,7 +47,7 @@ QString LexicalAnalysisHTMLMarkupGenerator::getTokenColorName(const Token& token
         return HTMLColors::green;
     case Token::categoryNumberLiteral:
         return HTMLColors::violet;
-    case Token::categoryKeyWord:
+    case Token::categoryKeyword:
         return HTMLColors::gold;
     case Token::categoryStringLiteral:
         return HTMLColors::red;
@@ -58,14 +58,18 @@ QString LexicalAnalysisHTMLMarkupGenerator::getTokenColorName(const Token& token
 
 QString LexicalAnalysisHTMLMarkupGenerator::getTokenHTMLRepresentation(const Token &token) const
 {
+    // In HTML &lt; and &gt; use to represent < and >
     QString lexeme = token.lexeme().replace("<","&lt;").replace(">","&gt;");
 
+    // Underlining incorrect lexeme
     if (!token.isCorrect())
         return "<u>" + lexeme + "</u>";
 
+    // Spaces represent without markup
     if (token.tokenCategory() == Token::categorySpace)
         return lexeme;
 
+    // In HTML <br> use as line feed
     if (token.tokenCategory() == Token::categoryLineFeed)
         return "<br>";
 
@@ -85,12 +89,9 @@ QString LexicalAnalysisHTMLMarkupGenerator::getSourceCodeHTMLMarkup(const Lexica
 
 QString PlainTextToHTML(QString plainText)
 {
-    QStringList plainTextList = plainText.split("\n");
-    QString html = "<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body>";
-
-    for (int currentTextLine = 0; currentTextLine < plainTextList.count() - 1; currentTextLine++)
-        html += plainTextList.at(currentTextLine) + "<br>";
-
-    html += plainTextList.last() + "</body></html>";
+    QString html = "<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body>"
+            + plainText
+            + "</body></html>";
+    html.replace("\n","<br>");
     return html;
 }

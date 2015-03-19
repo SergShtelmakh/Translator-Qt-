@@ -25,22 +25,22 @@ BasicLexicalAnalyzer::BasicLexicalAnalyzer()
 
     addKeyword("END");
 
-    addCharacterToken("+",Token::categoryCharToken);
-    addCharacterToken("-",Token::categoryCharToken);
-    addCharacterToken("/",Token::categoryCharToken);
-    addCharacterToken("*",Token::categoryCharToken);
+    addCharacterToken("+");
+    addCharacterToken("-");
+    addCharacterToken("/");
+    addCharacterToken("*");
 
-    addCharacterToken("=",Token::categoryCharToken);
-    addCharacterToken("<",Token::categoryCharToken);
-    addCharacterToken(">",Token::categoryCharToken);
+    addCharacterToken("=");
+    addCharacterToken("<");
+    addCharacterToken(">");
 
-    addCharacterToken(",",Token::categoryCharToken);
+    addCharacterToken(",");
 
-    addCharacterToken("(",Token::categoryCharToken);
-    addCharacterToken(")",Token::categoryCharToken);
+    addCharacterToken("(");
+    addCharacterToken(")");
 
-    addCharacterToken("<=",Token::categoryCharToken);
-    addCharacterToken(">=",Token::categoryCharToken);
+    addCharacterToken("<=");
+    addCharacterToken(">=");
 
 }
 

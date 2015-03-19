@@ -11,11 +11,6 @@ Production::Production(int number, QList<SyntacticSymbol> syntacticSymbolList)
     m_syntacticSymbolList = syntacticSymbolList;
 }
 
-Production::~Production()
-{
-
-}
-
 int Production::number() const
 {
     return m_number;

@@ -6,10 +6,10 @@ Identifier::Identifier(const Identifier &newIdentifier)
     m_positionsList = newIdentifier.positionsList();
 }
 
-Identifier::Identifier(QString newName, QPoint newPosition)
+Identifier::Identifier(QString name, QPoint position)
 {
-    m_name = newName;
-    m_positionsList.append(newPosition);
+    m_name = name;
+    m_positionsList.append(position);
 }
 
 QPoint Identifier::getFirstPosition()
@@ -17,14 +17,14 @@ QPoint Identifier::getFirstPosition()
     return m_positionsList.first();
 }
 
-void Identifier::addPosition(QPoint newPosition)
+void Identifier::addPosition(QPoint position)
 {
-    m_positionsList.append(newPosition);
+    m_positionsList.append(position);
 }
 
-bool Identifier::operator==(const Identifier &id1) const
+bool Identifier::operator==(const Identifier &otherIdentifier) const
 {
-    return m_name == id1.name();
+    return m_name == otherIdentifier.name();
 }
 
 QList<QPoint> Identifier::positionsList() const
@@ -35,11 +35,6 @@ QList<QPoint> Identifier::positionsList() const
 QString Identifier::name() const
 {
     return m_name;
-}
-
-QString IdentifierPositionsCountToString(const Identifier &identifier)
-{
-    return QString("%1").arg(identifier.positionsList().count());
 }
 
 QString IdentifierPositionsToString(const Identifier &identifier)

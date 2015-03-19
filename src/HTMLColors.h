@@ -3,6 +3,9 @@
 
 #include <QString>
 
+/*!
+ * @brief This class stores colors codes and used to make HTML markup.
+ */
 class HTMLColors
 {
 

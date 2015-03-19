@@ -17,9 +17,7 @@ public:
         terminalSymbol
     };
 
-    SyntacticSymbol();
     SyntacticSymbol(QString name, SyntacticSymbolType type, Token::TokenCategory category = Token::categoryNone);
-    ~SyntacticSymbol();
 
     QString name() const;
     void setName(const QString &name);
@@ -41,6 +39,7 @@ private:
 bool operator==(const SyntacticSymbol &symbol1,const SyntacticSymbol &symbol2);
 bool operator==(const Token &token,const SyntacticSymbol &symbol);
 bool operator==(const SyntacticSymbol &symbol,const Token &token);
+
 uint qHash(const SyntacticSymbol &symbol);
 
 #endif // SYNTACTICSYMBOL_H

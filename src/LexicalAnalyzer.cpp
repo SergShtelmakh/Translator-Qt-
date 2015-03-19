@@ -24,13 +24,13 @@ void LexicalAnalyzer::analyzeLine(QString line, int lineNumber)
     }
 }
 
-void LexicalAnalyzer::addIdentifier(Identifier newIdentifier)
+void LexicalAnalyzer::addIdentifier(Identifier identifier)
 {
-    int newIdentifierIndex = m_identifierList.indexOf(newIdentifier);
-    if (m_identifierList.contains(newIdentifier)) {
-        m_identifierList[newIdentifierIndex].addPosition(newIdentifier.getFirstPosition());
+    int newIdentifierIndex = m_identifierList.indexOf(identifier);
+    if (m_identifierList.contains(identifier)) {
+        m_identifierList[newIdentifierIndex].addPosition(identifier.getFirstPosition());
     } else {
-        m_identifierList.append(newIdentifier);
+        m_identifierList.append(identifier);
     }
 }
 
@@ -81,7 +81,7 @@ Token LexicalAnalyzer::getNextToken(QString sourceString)
 
     // try to get keyWord or identifier
     if (firstChar.contains(QRegExp("[A-Za-z_]"))) {
-        nextToken = getKeyWordToken(sourceString);
+        nextToken = getKeywordToken(sourceString);
         if (nextToken.isCorrect()) {
             return nextToken;
         } else {
@@ -120,13 +120,14 @@ void LexicalAnalyzer::addKeyword(QString keyword)
     m_keyWordsHash.insert(keyword,number);
 }
 
-void LexicalAnalyzer::addCharacterToken(QString lexeme, Token::TokenCategory tokenCategory)
+void LexicalAnalyzer::addCharacterToken(QString characterToken)
 {
-    m_possibleTokenEndRegExp = AddPossibleVariantToRegExpPattern(m_possibleTokenEndRegExp, lexeme.mid(0,1));
+    int number = m_keyWordsHash.size();
+    m_possibleTokenEndRegExp = AddPossibleVariantToRegExpPattern(m_possibleTokenEndRegExp, characterToken.mid(0,1));
 
-    if (lexeme.length() > m_maxCharacterTokensLenght)
-        m_maxCharacterTokensLenght = lexeme.length();
-    m_definedCharacterTokensHash.insert(lexeme,tokenCategory);
+    if (characterToken.length() > m_maxCharacterTokensLenght)
+        m_maxCharacterTokensLenght = characterToken.length();
+    m_characterTokensHash.insert(characterToken,number);
 }
 
 int LexicalAnalyzer::maxStringLiteralLenght() const
@@ -194,7 +195,7 @@ QString LexicalAnalyzer::errorText() const
 
 LexicalAnalyzer::LexicalAnalyzer()
 {
-    //set default values
+    // Set default values
     m_maxNumberLiteralLenght = 25;
     m_maxStringLiteralLenght = 80;
     m_maxIdentifierNameLenght = 20;
@@ -228,11 +229,11 @@ Token LexicalAnalyzer::getNumberLiteralToken(QString sourceString)
     }
 }
 
-Token LexicalAnalyzer::getKeyWordToken(QString sourceString)
+Token LexicalAnalyzer::getKeywordToken(QString sourceString)
 {
     QString lexema = sourceString.mid(0,sourceString.indexOf(QRegExp("\\W")));
     if (m_keyWordsHash.contains(lexema)) {
-        return Token(lexema,Token::categoryKeyWord);
+        return Token(lexema,Token::categoryKeyword);
     } else {
         return Token(lexema,Token::categoryNone);
     }
@@ -272,8 +273,8 @@ Token LexicalAnalyzer::getCharacterToken(QString sourceString)
     QString lexema;
     for (int i = maxIdentifierNameLenght(); i > 0; i--) {
         lexema = sourceString.mid(0,i);
-        if (m_definedCharacterTokensHash.contains(lexema))
-            return Token(lexema,m_definedCharacterTokensHash.value(lexema));
+        if (m_characterTokensHash.contains(lexema))
+            return Token(lexema,Token::categoryCharToken);
     }
     return Token(lexema,Token::categoryNone);
 }

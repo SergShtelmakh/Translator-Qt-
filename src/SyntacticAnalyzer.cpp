@@ -7,7 +7,7 @@ SyntacticAnalyzer::SyntacticAnalyzer()
     SyntacticSymbol nonterminalSymbol1 = SyntacticSymbol("val",SyntacticSymbol::nonterminalSymbol);
     SyntacticSymbol nonterminalSymbol2 = SyntacticSymbol("val2",SyntacticSymbol::nonterminalSymbol);
 
-    SyntacticSymbol dataSymbol = SyntacticSymbol("DATA",SyntacticSymbol::terminalSymbol,Token::categoryKeyWord);
+    SyntacticSymbol dataSymbol = SyntacticSymbol("DATA",SyntacticSymbol::terminalSymbol,Token::categoryKeyword);
     SyntacticSymbol idSymbol = SyntacticSymbol("id",SyntacticSymbol::terminalSymbol,Token::categoryIdentifier);
     SyntacticSymbol commaSymbol = SyntacticSymbol(",",SyntacticSymbol::terminalSymbol,Token::categoryCharToken);
     SyntacticSymbol lineFeedSymbol = SyntacticSymbol("\n",SyntacticSymbol::terminalSymbol,Token::categoryLineFeed);

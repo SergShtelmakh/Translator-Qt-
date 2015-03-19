@@ -5,30 +5,49 @@
 #include <QPoint>
 #include <QString>
 
+/*!
+ * @brief This class used to store informations about identifiers.
+ */
 class Identifier
 {
 
 public:
 
     Identifier(const Identifier &other);
-    Identifier(QString, QPoint);
+    Identifier(QString name, QPoint position);
 
-    QList<QPoint> positionsList() const;
+    QList <QPoint> positionsList() const;
     QString name() const;
 
+    /*!
+     * This method returns first position of identifier in source code.
+     *
+     * @return First positions in source code.
+     */
     QPoint getFirstPosition();
-    void addPosition(QPoint); 
 
-    bool operator==(const Identifier &id1)const;
+    /*!
+     * This method add new position of identifier in source code.
+     *
+     * @param[in] posistion New position.
+     */
+    void addPosition(QPoint position);
+
+    bool operator==(const Identifier &otherIdentifier)const;
 
 private:
 
-    QString m_name;
-    QList <QPoint> m_positionsList;
+    QString m_name;                     //!< Identifiers name.
+    QList <QPoint> m_positionsList;     //!< List of identifiers positions.
 
 };
 
-QString IdentifierPositionsCountToString(const Identifier &identifier);
+/*!
+ * This function gets all identifiers positions and returns that as string.
+ *
+ * @param[in] identifier Identifier.
+ * @return Identifiers position list as string.
+ */
 QString IdentifierPositionsToString(const Identifier &identifier);
 
 #endif // IDENTIFIER_H

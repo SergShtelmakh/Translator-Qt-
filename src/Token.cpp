@@ -54,16 +54,6 @@ void Token::setPosition(const QPoint &value)
     m_position = value;
 }
 
-int Token::getBeginIndexInLine() const
-{
-    return m_position.y();
-}
-
-int Token::getEndIndexInLine() const
-{
-    return m_position.y() + m_lexeme.length();
-}
-
 QString Token::getTokenRepresentation()
 {
     if (!this->isCorrect())

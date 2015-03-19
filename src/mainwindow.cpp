@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->sourceCodeInputTextEdit, SIGNAL(updateStatusBarSignal(int,int)), SLOT(updateStatusBarSlot(int,int)));
     connect(ui->sourceCodeInputTextEdit, SIGNAL(updateTextByTimerSignal()), SLOT(updateSourceCodeInputTextEditSlot()));
 
-    setDefaultWindowProperty();
+    ui->tokenSequenceTextEdit->setFont(QFont("Courier New", 12));
 }
 
 MainWindow::~MainWindow()
@@ -47,7 +47,7 @@ void MainWindow::on_actionRun_triggered()
     ui->identifierTableWidget->setRowCount(identifierList.count());
     for (int i = 0; i < identifierList.count(); i++) {
         ui->identifierTableWidget->setItem(i,0,new QTableWidgetItem(identifierList.at(i).name()));
-        ui->identifierTableWidget->setItem(i,1,new QTableWidgetItem(IdentifierPositionsCountToString(identifierList.at(i))));
+        ui->identifierTableWidget->setItem(i,1,new QTableWidgetItem(QString("%1").arg(identifierList.at(i).positionsList().count())));
         ui->identifierTableWidget->setItem(i,2,new QTableWidgetItem(IdentifierPositionsToString(identifierList.at(i))));
     }
 
@@ -103,9 +103,4 @@ void MainWindow::on_actionOpen_triggered()
 void MainWindow::on_actionNew_triggered()
 {
     ui->sourceCodeInputTextEdit->clear();
-}
-
-void MainWindow::setDefaultWindowProperty()
-{
-    ui->tokenSequenceTextEdit->setFont(QFont("Courier New", 12));
 }
