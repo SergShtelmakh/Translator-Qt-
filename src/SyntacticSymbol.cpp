@@ -2,11 +2,20 @@
 #include "Token.h"
 #include <QHash>
 
+QHash <QString, SyntacticSymbol::SyntacticSymbolType> SyntacticSymbol::m_convertingStringToSyntacticSymbolTypeHash;
+
 SyntacticSymbol::SyntacticSymbol(QString name, SyntacticSymbol::SyntacticSymbolType type, Token::TokenCategory category)
 {
     m_name = name;
     m_type = type;
     m_category = category;
+}
+
+SyntacticSymbol::SyntacticSymbol(QString name, QString type, QString category)
+{
+    m_name = name;
+    m_type = SyntacticSymbol::toSyntacticSymbolType(type);
+    m_category = Token::toTokenCategory(category);
 }
 
 QString SyntacticSymbol::name() const
@@ -37,6 +46,17 @@ Token::TokenCategory SyntacticSymbol::category() const
 void SyntacticSymbol::setCategory(const Token::TokenCategory &category)
 {
     m_category = category;
+}
+
+SyntacticSymbol::SyntacticSymbolType SyntacticSymbol::toSyntacticSymbolType(QString string)
+{
+    if (m_convertingStringToSyntacticSymbolTypeHash.isEmpty()) {
+        m_convertingStringToSyntacticSymbolTypeHash.insert("nonterminalSymbol",SyntacticSymbol::nonterminalSymbol);
+        m_convertingStringToSyntacticSymbolTypeHash.insert("startSymbol",SyntacticSymbol::startSymbol);
+        m_convertingStringToSyntacticSymbolTypeHash.insert("terminalSymbol",SyntacticSymbol::terminalSymbol);
+    }
+
+    return m_convertingStringToSyntacticSymbolTypeHash.value(string);
 }
 
 bool operator==(const SyntacticSymbol &symbol1, const SyntacticSymbol &symbol2)

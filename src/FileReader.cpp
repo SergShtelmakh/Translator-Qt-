@@ -1,6 +1,12 @@
 #include "FileReader.h"
 #include <QFile>
 #include <QTextStream>
+#include <QFileDialog>
+#include <QObject>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonValue>
+#include "SyntacticSymbol.h"
 
 FileReader::FileReader()
 {
@@ -37,4 +43,78 @@ void FileReader::writeTextToFile(QString fileName, QString text)
     QTextStream out(&file);
     out << text;
 }
+
+void FileReader::loadAnalyzerSettings(QString fileName, LexicalAnalyzer& lexicalAnalyzer, SyntacticAnalyzer &syntacticAnalyzer)
+{
+    QJsonDocument jsonDocument = loadJson(fileName);
+    QJsonObject mainObject = jsonDocument.object();
+    QJsonObject lexicalAnalyzerJsonObject = mainObject["LexicalAnalyser"].toObject();
+    loadLexicalAnalyzerSettings(lexicalAnalyzerJsonObject,lexicalAnalyzer);
+    QJsonObject syntacticAnalyzerJsonObject = mainObject["SyntacticAnalyzer"].toObject();
+    loadSyntacticAnalyzerSettings(syntacticAnalyzerJsonObject,syntacticAnalyzer);
+
+}
+
+bool FileReader::isFileExist(QString fileName)
+{
+    QFile file (fileName);
+    if (!file.isReadable())
+        return false;
+    return true;
+}
+
+void FileReader::loadLexicalAnalyzerSettings(QJsonObject jsonObject, LexicalAnalyzer& lexicalAnalyzer)
+{
+    lexicalAnalyzer.setMaxNumberLiteralLenght(jsonObject["maxNumberLiteralLenght"].toInt());
+    lexicalAnalyzer.setMaxIdentifierNameLenght(jsonObject["maxIdentifierNameLenght"].toInt());
+    lexicalAnalyzer.setMaxStringLiteralLenght(jsonObject["maxStringLiteralLenght"].toInt());
+    lexicalAnalyzer.setIdentifierRegExp(QRegExp(jsonObject["identifierRegExp"].toString()));
+    lexicalAnalyzer.setSpaceRegExp(QRegExp(jsonObject["spaceRegExp"].toString()));
+    lexicalAnalyzer.setBeginStringLiteral(jsonObject["beginStringLiteral"].toString());
+
+    QJsonArray keywordsArray = jsonObject["keywords"].toArray();
+    foreach (const QJsonValue& value, keywordsArray) {
+        lexicalAnalyzer.addKeyword(value.toString());
+    }
+
+    QJsonArray characterTokenArray = jsonObject["characterToken"].toArray();
+    foreach (const QJsonValue& value, characterTokenArray) {
+        lexicalAnalyzer.addCharacterToken(value.toString());
+    }
+}
+
+void FileReader::loadSyntacticAnalyzerSettings(QJsonObject syntacticAnalyzerJsonObject, SyntacticAnalyzer &syntacticAnalyzer)
+{
+    QJsonArray productRulesJsonArray = syntacticAnalyzerJsonObject["ProductRules"].toArray();
+    foreach (const QJsonValue& produtRuleJsonValue, productRulesJsonArray) {
+        QJsonObject productRuleJsonObject = produtRuleJsonValue.toObject();
+
+        QJsonObject leftPartJsonObject = productRuleJsonObject["LeftPart"].toObject();
+
+        QList <SyntacticSymbol> rightSyntacticSymbolList;
+        QJsonArray rightPartJsonArray = productRuleJsonObject["RightPart"].toArray();
+        foreach (const QJsonValue& rightPartSymbolJsonValue, rightPartJsonArray) {
+            QJsonObject rightPartJsonObject = rightPartSymbolJsonValue.toObject();
+            rightSyntacticSymbolList << jsonObjectToSyntacticSymbol(rightPartJsonObject);
+        }
+
+        syntacticAnalyzer.addProductRule(jsonObjectToSyntacticSymbol(leftPartJsonObject),rightSyntacticSymbolList);
+    }
+}
+
+QJsonDocument FileReader::loadJson(QString fileName)
+{
+    QFile jsonFile(fileName);
+    jsonFile.open(QFile::ReadOnly);
+    return QJsonDocument().fromJson(jsonFile.readAll());
+}
+
+SyntacticSymbol jsonObjectToSyntacticSymbol(QJsonObject object)
+{
+    SyntacticSymbol syntacticSymbol = SyntacticSymbol(object["name"].toString(),
+            object["symbolType"].toString(),
+            object["tokenCategory"].toString());
+    return syntacticSymbol;
+}
+
 

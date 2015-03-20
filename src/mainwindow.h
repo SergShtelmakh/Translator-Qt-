@@ -53,6 +53,7 @@ private:
      * @return Markup generator.
      */
     LexicalAnalysisHTMLMarkupGenerator* getLexicalAnalysisMarkupGenerator() const;
+    void loadSettings();
 
     Ui::MainWindow *ui;                                     //!< Main window.
     LexicalAnalysisHTMLMarkupGenerator* m_markupGenerator;  //!< Markup generator.

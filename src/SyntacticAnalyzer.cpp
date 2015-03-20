@@ -3,33 +3,6 @@
 
 SyntacticAnalyzer::SyntacticAnalyzer()
 {
-    SyntacticSymbol startSymbol = SyntacticSymbol("",SyntacticSymbol::startSymbol);
-    SyntacticSymbol nonterminalSymbol1 = SyntacticSymbol("val",SyntacticSymbol::nonterminalSymbol);
-    SyntacticSymbol nonterminalSymbol2 = SyntacticSymbol("val2",SyntacticSymbol::nonterminalSymbol);
-
-    SyntacticSymbol dataSymbol = SyntacticSymbol("DATA",SyntacticSymbol::terminalSymbol,Token::categoryKeyword);
-    SyntacticSymbol idSymbol = SyntacticSymbol("id",SyntacticSymbol::terminalSymbol,Token::categoryIdentifier);
-    SyntacticSymbol commaSymbol = SyntacticSymbol(",",SyntacticSymbol::terminalSymbol,Token::categoryCharToken);
-    SyntacticSymbol lineFeedSymbol = SyntacticSymbol("\n",SyntacticSymbol::terminalSymbol,Token::categoryLineFeed);
-
-    QList < SyntacticSymbol > ruleList1;
-    ruleList1 << dataSymbol << nonterminalSymbol1;
-    addProductRule(1,startSymbol,ruleList1);
-
-    QList < SyntacticSymbol > ruleList2;
-    ruleList2 << idSymbol << nonterminalSymbol2;
-    addProductRule(2,nonterminalSymbol1,ruleList2);
-
-    QList < SyntacticSymbol > ruleList3;
-    ruleList3 << commaSymbol << nonterminalSymbol1;
-    addProductRule(3,nonterminalSymbol2,ruleList3);
-
-    QList < SyntacticSymbol > ruleList4;
-    ruleList4 << lineFeedSymbol;
-    addProductRule(4,nonterminalSymbol2,ruleList4);
-
-    QList < SyntacticSymbol > ruleList5;
-    addProductRule(5,nonterminalSymbol2,ruleList5);
 
 }
 
@@ -38,9 +11,10 @@ SyntacticAnalyzer::~SyntacticAnalyzer()
 
 }
 
-void SyntacticAnalyzer::addProductRule(int number, SyntacticSymbol firstSymbol, QList<SyntacticSymbol> productionList)
+void SyntacticAnalyzer::addProductRule(SyntacticSymbol firstSymbol, QList<SyntacticSymbol> productionList)
 {
-    m_productRules.insert(firstSymbol, Production(number,productionList));
+    int ruleNumber = m_productRules.size();
+    m_productRules.insert(firstSymbol, Production(ruleNumber,productionList));
 }
 
 void SyntacticAnalyzer::analyze(QList<Token> tokenList)

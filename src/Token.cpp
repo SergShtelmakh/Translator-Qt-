@@ -1,5 +1,7 @@
 #include "Token.h"
 
+QHash<QString,Token::TokenCategory> Token::m_convertingStringToTokenCategoryHash;
+
 Token::Token(const Token &newToken)
 {
     m_lexeme = newToken.lexeme();
@@ -78,6 +80,22 @@ QString Token::getTokenRepresentation()
 bool Token::isCorrect() const
 {
     return m_tokenCategory != Token::categoryNone;
+}
+
+Token::TokenCategory Token::toTokenCategory(QString string)
+{
+    if (m_convertingStringToTokenCategoryHash.isEmpty()) {
+        m_convertingStringToTokenCategoryHash.insert("categoryCharToken",Token::categoryCharToken);
+        m_convertingStringToTokenCategoryHash.insert("categoryIdentifier",Token::categoryIdentifier);
+        m_convertingStringToTokenCategoryHash.insert("categoryKeyword",Token::categoryKeyword);
+        m_convertingStringToTokenCategoryHash.insert("categoryLineFeed",Token::categoryLineFeed);
+        m_convertingStringToTokenCategoryHash.insert("categoryNone",Token::categoryNone);
+        m_convertingStringToTokenCategoryHash.insert("categoryNumberLiteral",Token::categoryNumberLiteral);
+        m_convertingStringToTokenCategoryHash.insert("categorySpace",Token::categorySpace);
+        m_convertingStringToTokenCategoryHash.insert("categoryStringLiteral",Token::categoryStringLiteral);
+    }
+
+    return m_convertingStringToTokenCategoryHash.value(string);
 }
 
 QString Token::errorInformation() const

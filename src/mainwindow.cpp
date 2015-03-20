@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "BasicLexicalAnalyzer.h"
 #include "LexicalAnalysisHTMLMarkupGenerator.h"
 #include "SyntacticAnalyzer.h"
 #include "FileReader.h"
@@ -9,7 +8,7 @@
 #include <QFileDialog>
 #include <QTime>
 
-Q_GLOBAL_STATIC(BasicLexicalAnalyzer,globalBasicLexicalAnalyzer)
+Q_GLOBAL_STATIC(LexicalAnalyzer,globalLexicalAnalyzer)
 
 Q_GLOBAL_STATIC(SyntacticAnalyzer,globalSyntacticAnalyzer)
 
@@ -25,6 +24,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->sourceCodeInputTextEdit, SIGNAL(updateTextByTimerSignal()), SLOT(updateSourceCodeInputTextEditSlot()));
 
     ui->tokenSequenceTextEdit->setFont(QFont("Courier New", 12));
+
+    loadSettings();
 }
 
 MainWindow::~MainWindow()
@@ -35,16 +36,16 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionRun_triggered()
 {
-    globalBasicLexicalAnalyzer->analyze(ui->sourceCodeInputTextEdit->toPlainText());
+    globalLexicalAnalyzer->analyze(ui->sourceCodeInputTextEdit->toPlainText());
 
     // Add new message to log
-    ui->compileOutputTextEdit->addHTMLString(this->getLexicalAnalysisMarkupGenerator()->getMessageForLog(*globalBasicLexicalAnalyzer));
+    ui->compileOutputTextEdit->addHTMLString(this->getLexicalAnalysisMarkupGenerator()->getMessageForLog(*globalLexicalAnalyzer));
 
     // Write information about tokens
-    ui->tokenSequenceTextEdit->setText(TokenListToString(globalBasicLexicalAnalyzer->tokenList()));
+    ui->tokenSequenceTextEdit->setText(TokenListToString(globalLexicalAnalyzer->tokenList()));
 
     // Write information about identifiers
-    QList <Identifier> identifierList = globalBasicLexicalAnalyzer->identifierList();
+    QList <Identifier> identifierList = globalLexicalAnalyzer->identifierList();
     ui->identifierTableWidget->setRowCount(identifierList.count());
     for (int i = 0; i < identifierList.count(); i++) {
         ui->identifierTableWidget->setItem(i,0,new QTableWidgetItem(identifierList.at(i).name()));
@@ -52,7 +53,7 @@ void MainWindow::on_actionRun_triggered()
         ui->identifierTableWidget->setItem(i,2,new QTableWidgetItem(IdentifierPositionsToString(identifierList.at(i))));
     }
 
-    globalSyntacticAnalyzer->analyze(globalBasicLexicalAnalyzer->getTokenListWithoutSpaces());
+    globalSyntacticAnalyzer->analyze(globalLexicalAnalyzer->getTokenListWithoutSpaces());
 }
 
 void MainWindow::updateStatusBarSlot(int line, int pos)
@@ -62,14 +63,22 @@ void MainWindow::updateStatusBarSlot(int line, int pos)
 
 void MainWindow::updateSourceCodeInputTextEditSlot()
 {
-    globalBasicLexicalAnalyzer->analyze(ui->sourceCodeInputTextEdit->toPlainText().toUpper());
+    globalLexicalAnalyzer->analyze(ui->sourceCodeInputTextEdit->toPlainText().toUpper());
 
-    ui->sourceCodeInputTextEdit->setHtml(this->getLexicalAnalysisMarkupGenerator()->getSourceCodeHTMLMarkup(*globalBasicLexicalAnalyzer));
+    ui->sourceCodeInputTextEdit->setHtml(this->getLexicalAnalysisMarkupGenerator()->getSourceCodeHTMLMarkup(*globalLexicalAnalyzer));
 }
 
 LexicalAnalysisHTMLMarkupGenerator* MainWindow::getLexicalAnalysisMarkupGenerator() const
 {
     return m_markupGenerator;
+}
+
+void MainWindow::loadSettings()
+{
+    QString fileName = "defaultSettings.json";
+    if (!FileReader::isFileExist(fileName))
+        fileName = QFileDialog::getOpenFileName(this, tr("Open Settings File"),"defaultSettings.json", tr("JSON (*.json)"));
+    FileReader::loadAnalyzerSettings(fileName,*globalLexicalAnalyzer, *globalSyntacticAnalyzer);
 }
 
 void MainWindow::on_actionSave_triggered()

@@ -1,0 +1,137 @@
+{
+    "programming language": "BASIC",
+    "LexicalAnalyser": {
+        "maxNumberLiteralLenght": 25,
+        "maxStringLiteralLenght": 6,
+        "maxIdentifierNameLenght": 20,
+        "identifierRegExp": "^[A-Z][A-Z0-9]*",
+        "spaceRegExp": "[ \t]",
+        "beginStringLiteral": "\"",
+        "keywords": [
+            "BOOLEAN",
+            "DOUBLE",
+            "INTEGER",
+            "STRING",
+            "FALSE",
+            "TRUE",
+            "IF",
+            "THEN",
+            "AS",
+            "DATA",
+            "DIM",
+            "READ",
+            "FOR",
+            "NEXT",
+            "STEP",
+            "TO",
+            "END"
+        ],
+        "characterToken": [
+            "+",
+            "-",
+            "/",
+            "*",
+            "=",
+            "<",
+            ">",
+            ",",
+            "(",
+            ")",
+            "<=",
+            ">="
+        ]
+    },
+    "SyntacticAnalyzer": {
+        "ProductRules": [
+            {
+                "LeftPart": {
+                    "SyntacticSymbol": {
+                        "name": "start",
+                        "symbolType": "startSymbol",
+                        "tokenCategory": "categoryNone"
+                    }
+                },
+                "RightPart": [
+                    {
+                        "name": "DATA",
+                        "symbolType": "terminalSymbol",
+                        "tokenCategory": "categoryKeyword"
+                    },
+                    {
+                        "name": "val",
+                        "symbolType": "nonterminalSymbol",
+                        "tokenCategory": "categoryNone"
+                    }
+                ]
+            },
+            {
+                "LeftPart": {
+                    "SyntacticSymbol": {
+                        "name": "val",
+                        "symbolType": "nonterminalSymbol",
+                        "tokenCategory": "categoryNone"
+                    }
+                },
+                "RightPart": [
+                    {
+                        "name": "id",
+                        "symbolType": "terminalSymbol",
+                        "tokenCategory": "categoryIdentifier"
+                    },
+                    {
+                        "name": "val2",
+                        "symbolType": "nonterminalSymbol",
+                        "tokenCategory": "categoryNone"
+                    }
+                ]
+            },
+            {
+                "LeftPart": {
+                    "SyntacticSymbol": {
+                        "name": "val2",
+                        "symbolType": "nonterminalSymbol",
+                        "tokenCategory": "categoryNone"
+                    }
+                },
+                "RightPart": [
+                    {
+                        "name": ",",
+                        "symbolType": "terminalSymbol",
+                        "tokenCategory": "categoryCharToken"
+                    },
+                    {
+                        "name": "val",
+                        "symbolType": "nonterminalSymbol",
+                        "tokenCategory": "categoryNone"
+                    }
+                ]
+            },
+            {
+                "LeftPart": {
+                    "SyntacticSymbol": {
+                        "name": "val2",
+                        "symbolType": "nonterminalSymbol",
+                        "tokenCategory": "categoryNone"
+                    }
+                },
+                "RightPart": [
+                    {
+                        "name": "linefeed",
+                        "symbolType": "terminalSymbol",
+                        "tokenCategory": "categoryLineFeed"
+                    }
+                ]
+            },
+            {
+                "LeftPart": {
+                    "SyntacticSymbol": {
+                        "name": "val2",
+                        "symbolType": "nonterminalSymbol",
+                        "tokenCategory": "categoryNone"
+                    }
+                },
+                "RightPart": []
+            }
+        ]
+    }
+}

@@ -18,6 +18,7 @@ public:
     };
 
     SyntacticSymbol(QString name, SyntacticSymbolType type, Token::TokenCategory category = Token::categoryNone);
+    SyntacticSymbol(QString name, QString type, QString category);
 
     QString name() const;
     void setName(const QString &name);
@@ -28,11 +29,15 @@ public:
     Token::TokenCategory category() const;
     void setCategory(const Token::TokenCategory &category);
 
+    static SyntacticSymbolType toSyntacticSymbolType(QString string);
+
 private:
 
     QString m_name;
     SyntacticSymbolType m_type;
     Token::TokenCategory m_category;
+
+    static QHash <QString, SyntacticSymbolType> m_convertingStringToSyntacticSymbolTypeHash;
 
 };
 

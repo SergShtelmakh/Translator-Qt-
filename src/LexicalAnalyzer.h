@@ -40,6 +40,9 @@ public:
     QRegExp spaceRegExp() const;
     void setSpaceRegExp(const QRegExp &spaceRegExp);
 
+    QRegExp identifierRegExp() const;
+    void setIdentifierRegExp(const QRegExp &identifierRegExp);
+
     /*!
      * This method makes lexical analysis.
      *
@@ -75,6 +78,8 @@ public:
      * @param[in] characterToken Character token.
      */
     void addCharacterToken(QString characterToken);
+
+
 
 protected:
 

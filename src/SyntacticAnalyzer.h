@@ -14,7 +14,7 @@ public:
     SyntacticAnalyzer();
     ~SyntacticAnalyzer();
 
-    void addProductRule(int number, SyntacticSymbol firstSymbol, QList <SyntacticSymbol> productionList);
+    void addProductRule(SyntacticSymbol firstSymbol, QList <SyntacticSymbol> productionList);
     void analyze(QList<Token> tokenList);
     SyntacticSymbol getNextSymbolToParse();
 

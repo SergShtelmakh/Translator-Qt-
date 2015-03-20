@@ -45,6 +45,16 @@ void LexicalAnalyzer::clearAllAnalyzingData()
     m_identifierList.clear();
     m_tokenList.clear();
 }
+QRegExp LexicalAnalyzer::identifierRegExp() const
+{
+    return m_identifierRegExp;
+}
+
+void LexicalAnalyzer::setIdentifierRegExp(const QRegExp &identifierRegExp)
+{
+    m_identifierRegExp = identifierRegExp;
+}
+
 
 QRegExp LexicalAnalyzer::spaceRegExp() const
 {
@@ -196,14 +206,8 @@ QString LexicalAnalyzer::errorText() const
 LexicalAnalyzer::LexicalAnalyzer()
 {
     // Set default values
-    m_maxNumberLiteralLenght = 25;
-    m_maxStringLiteralLenght = 80;
-    m_maxIdentifierNameLenght = 20;
     m_possibleTokenEndRegExp = QRegExp("( |\t)");
     m_numberLiteralRegExp = QRegExp("\\d*(\\.\\d+)?(E[\\+\\-]?\\d+)?");
-    m_identifierRegExp = QRegExp("^[A-Z][A-Z0-9]*");
-    m_spaceRegExp = QRegExp("[ \t]");
-    m_beginStringLiteral = "\"";
     m_maxCharacterTokensLenght = 0;
 }
 
@@ -260,7 +264,7 @@ Token LexicalAnalyzer::getStringLiteralToken(QString sourceString)
         return Token(sourceString,Token::categoryNone,"Character " + m_beginStringLiteral +" is missing");
     } else {
         QString lexema = sourceString.mid(0,lexemaEndIndex + m_beginStringLiteral.length());
-        if (lexema.length() <= m_maxStringLiteralLenght) {
+        if (lexema.length() <= m_maxStringLiteralLenght + (m_beginStringLiteral.length() * 2)) {
             return Token(lexema,Token::categoryStringLiteral);
         } else {
             return Token(lexema,Token::categoryNone,QString("Identifier lenght greater than %1 characters.").arg(m_maxStringLiteralLenght));
