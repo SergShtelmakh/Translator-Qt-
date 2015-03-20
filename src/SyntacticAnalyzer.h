@@ -22,6 +22,7 @@ private:
 
     Production findCongruentRule(SyntacticSymbol firstSymbol, Token firstProductSymbol);
     bool isFinalRuleExist(SyntacticSymbol firstSymbol);
+
     QMultiHash < SyntacticSymbol, Production > m_productRules;
     QList <SyntacticSymbol> m_symbolToParseList;
     QList <Token> m_tokenToParseList;

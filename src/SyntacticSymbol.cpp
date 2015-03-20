@@ -14,8 +14,8 @@ SyntacticSymbol::SyntacticSymbol(QString name, SyntacticSymbol::SyntacticSymbolT
 SyntacticSymbol::SyntacticSymbol(QString name, QString type, QString category)
 {
     m_name = name;
-    m_type = SyntacticSymbol::toSyntacticSymbolType(type);
-    m_category = Token::toTokenCategory(category);
+    m_type = SyntacticSymbol::stringToSyntacticSymbolType(type);
+    m_category = Token::stringToTokenCategory(category);
 }
 
 QString SyntacticSymbol::name() const
@@ -48,7 +48,7 @@ void SyntacticSymbol::setCategory(const Token::TokenCategory &category)
     m_category = category;
 }
 
-SyntacticSymbol::SyntacticSymbolType SyntacticSymbol::toSyntacticSymbolType(QString string)
+SyntacticSymbol::SyntacticSymbolType SyntacticSymbol::stringToSyntacticSymbolType(QString string)
 {
     if (m_convertingStringToSyntacticSymbolTypeHash.isEmpty()) {
         m_convertingStringToSyntacticSymbolTypeHash.insert("nonterminalSymbol",SyntacticSymbol::nonterminalSymbol);

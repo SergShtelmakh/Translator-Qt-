@@ -29,7 +29,7 @@ public:
     Token::TokenCategory category() const;
     void setCategory(const Token::TokenCategory &category);
 
-    static SyntacticSymbolType toSyntacticSymbolType(QString string);
+    static SyntacticSymbolType stringToSyntacticSymbolType(QString string);
 
 private:
 

@@ -83,13 +83,13 @@ void MainWindow::loadSettings()
 
 void MainWindow::on_actionSave_triggered()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),"untitled.bas",tr("Basic (*.bas)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File")," ",tr(" (*.*)"));
     FileReader::writeTextToFile(fileName,ui->sourceCodeInputTextEdit->toPlainText());
 }
 
 void MainWindow::on_actionOpen_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),"", tr("Basic (*.bas)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),"", tr(" (*.txt)"));
     QString text = FileReader::getTextFromFile(fileName);
     ui->sourceCodeInputTextEdit->clear();
     ui->sourceCodeInputTextEdit->setText(text);

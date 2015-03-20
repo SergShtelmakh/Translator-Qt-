@@ -2,7 +2,7 @@
     "programming language": "BASIC",
     "LexicalAnalyser": {
         "maxNumberLiteralLenght": 25,
-        "maxStringLiteralLenght": 6,
+        "maxStringLiteralLenght": 30,
         "maxIdentifierNameLenght": 20,
         "identifierRegExp": "^[A-Z][A-Z0-9]*",
         "spaceRegExp": "[ \t]",

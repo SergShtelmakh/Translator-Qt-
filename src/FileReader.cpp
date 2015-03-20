@@ -8,16 +8,6 @@
 #include <QJsonValue>
 #include "SyntacticSymbol.h"
 
-FileReader::FileReader()
-{
-
-}
-
-FileReader::~FileReader()
-{
-
-}
-
 QString FileReader::getTextFromFile(QString fileName)
 {
     QString text;
@@ -37,7 +27,7 @@ QString FileReader::getTextFromFile(QString fileName)
 void FileReader::writeTextToFile(QString fileName, QString text)
 {
     QFile file (fileName);
-    if (!file.open(QIODevice::ReadWrite | QIODevice::Text))
+    if (!file.open(QIODevice::ReadWrite| QIODevice::Text))
        return;
 
     QTextStream out(&file);
@@ -48,8 +38,10 @@ void FileReader::loadAnalyzerSettings(QString fileName, LexicalAnalyzer& lexical
 {
     QJsonDocument jsonDocument = loadJson(fileName);
     QJsonObject mainObject = jsonDocument.object();
+
     QJsonObject lexicalAnalyzerJsonObject = mainObject["LexicalAnalyser"].toObject();
     loadLexicalAnalyzerSettings(lexicalAnalyzerJsonObject,lexicalAnalyzer);
+
     QJsonObject syntacticAnalyzerJsonObject = mainObject["SyntacticAnalyzer"].toObject();
     loadSyntacticAnalyzerSettings(syntacticAnalyzerJsonObject,syntacticAnalyzer);
 
@@ -58,7 +50,7 @@ void FileReader::loadAnalyzerSettings(QString fileName, LexicalAnalyzer& lexical
 bool FileReader::isFileExist(QString fileName)
 {
     QFile file (fileName);
-    if (!file.isReadable())
+    if (!file.open(QIODevice::ReadOnly))
         return false;
     return true;
 }

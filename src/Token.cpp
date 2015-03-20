@@ -82,7 +82,7 @@ bool Token::isCorrect() const
     return m_tokenCategory != Token::categoryNone;
 }
 
-Token::TokenCategory Token::toTokenCategory(QString string)
+Token::TokenCategory Token::stringToTokenCategory(QString string)
 {
     if (m_convertingStringToTokenCategoryHash.isEmpty()) {
         m_convertingStringToTokenCategoryHash.insert("categoryCharToken",Token::categoryCharToken);

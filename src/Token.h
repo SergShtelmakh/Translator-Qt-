@@ -56,7 +56,9 @@ public:
      * @return If token is correct returns true other returns false.
      */
     bool isCorrect() const;
-    static TokenCategory toTokenCategory(QString string);
+
+    static TokenCategory stringToTokenCategory(QString string);
+
 private:
 
     QString m_lexeme;               //!< Tokens lexeme.

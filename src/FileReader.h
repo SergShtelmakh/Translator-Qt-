@@ -11,9 +11,6 @@ class FileReader
 
 public:
 
-    FileReader();
-    ~FileReader();
-
     static QString getTextFromFile(QString fileName);
 
     static void writeTextToFile(QString fileName, QString text);
