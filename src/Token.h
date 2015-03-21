@@ -40,6 +40,7 @@ public:
 
     QString errorInformation() const;
 
+    QString getAllErrorInformation() const;
     void setPosition(const QPoint &value);
     QPoint position() const;
 

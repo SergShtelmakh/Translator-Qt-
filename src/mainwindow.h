@@ -4,7 +4,7 @@
 #include <QMainWindow>
 
 class LexicalAnalyzer;
-class LexicalAnalysisHTMLMarkupGenerator;
+class HTMLMarkupGenerator;
 
 namespace Ui {
 class MainWindow;
@@ -52,11 +52,11 @@ private:
      *
      * @return Markup generator.
      */
-    LexicalAnalysisHTMLMarkupGenerator* getLexicalAnalysisMarkupGenerator() const;
+    HTMLMarkupGenerator* getMarkupGenerator() const;
     void loadSettings();
 
     Ui::MainWindow *ui;                                     //!< Main window.
-    LexicalAnalysisHTMLMarkupGenerator* m_markupGenerator;  //!< Markup generator.
+    HTMLMarkupGenerator* m_markupGenerator;  //!< Markup generator.
 
 };
 

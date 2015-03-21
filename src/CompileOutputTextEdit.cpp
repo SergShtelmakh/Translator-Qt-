@@ -1,6 +1,6 @@
 #include "CompileOutputTextEdit.h"
 #include "HTMLColors.h"
-#include "LexicalAnalysisHTMLMarkupGenerator.h"
+#include "HTMLMarkupGenerator.h"
 #include <QScrollBar>
 
 CompileOutputTextEdit::CompileOutputTextEdit(QWidget *parent): QTextEdit(parent)

@@ -3,34 +3,43 @@
 #include <QStringList>
 #include "Token.h"
 #include "LexicalAnalyzer.h"
-#include "LexicalAnalysisHTMLMarkupGenerator.h"
+#include "SyntacticAnalyzer.h"
+#include "HTMLMarkupGenerator.h"
 #include "HTMLColors.h"
 
-QString LexicalAnalysisHTMLMarkupGenerator::getMessageForLog(const LexicalAnalyzer& analyzer) const
+QString HTMLMarkupGenerator::getMessageForLog(const LexicalAnalyzer& lexicalAnalyzer, const SyntacticAnalyzer &syntacticAnalyzer) const
 {
     QString newLineInLog;
 
-    if (analyzer.errorText().isEmpty()) {
-        newLineInLog = this->getSuccessfulResultMessage();
+    if (lexicalAnalyzer.errorText().isEmpty()) {
+        newLineInLog += this->getSuccessfulResultMessage("Lexical analyzer");
     } else {
-        newLineInLog = this->getFailedResultMessage(analyzer.errorText());
+        newLineInLog += this->getFailedResultMessage("Lexical analyzer",lexicalAnalyzer.errorText());
     }
+
+    if (syntacticAnalyzer.errorText().isEmpty()) {
+        newLineInLog += this->getSuccessfulResultMessage("Syntactic analyzer");
+    } else {
+        newLineInLog += this->getFailedResultMessage("Syntactic analyzer",syntacticAnalyzer.errorText());
+    }
+
     return newLineInLog;
 }
 
-QString LexicalAnalysisHTMLMarkupGenerator::getSuccessfulResultMessage() const
+QString HTMLMarkupGenerator::getSuccessfulResultMessage(QString analyzerName) const
 {
     QString newLine = "<font color=" + HTMLColors::darkBlue + ">"
-            + "Lexical analysis completed successfully "
+            + analyzerName + ":\n"
+            + "Analysis completed successfully "
             + QTime::currentTime().toString() + "\n</font>";
     return newLine;
 }
 
-QString LexicalAnalysisHTMLMarkupGenerator::getFailedResultMessage(QString errors) const
+QString HTMLMarkupGenerator::getFailedResultMessage(QString analyzerName, QString errors) const
 {
     int errorCount = errors.split(QRegExp("\n")).count() - 1;
     QString newLine = "<font color=" + HTMLColors::red + ">"
-            + "Lexical analyzer:\n"
+            + analyzerName + ":\n"
             + errors
             + QString("Detected %1 errors    ").arg(errorCount)
             + QTime::currentTime().toString() + "\n</font>";
@@ -38,7 +47,7 @@ QString LexicalAnalysisHTMLMarkupGenerator::getFailedResultMessage(QString error
     return newLine;
 }
 
-QString LexicalAnalysisHTMLMarkupGenerator::getTokenColorName(const Token& token) const
+QString HTMLMarkupGenerator::getTokenColorName(const Token& token) const
 {
     switch (token.tokenCategory()) {
     case Token::categoryIdentifier:
@@ -56,7 +65,7 @@ QString LexicalAnalysisHTMLMarkupGenerator::getTokenColorName(const Token& token
     }
 }
 
-QString LexicalAnalysisHTMLMarkupGenerator::getTokenHTMLRepresentation(const Token &token) const
+QString HTMLMarkupGenerator::getTokenHTMLRepresentation(const Token &token) const
 {
     // In HTML &lt; and &gt; use to represent < and >
     QString lexeme = token.lexeme().replace("<","&lt;").replace(">","&gt;");
@@ -76,7 +85,7 @@ QString LexicalAnalysisHTMLMarkupGenerator::getTokenHTMLRepresentation(const Tok
     return "<font color=" + getTokenColorName(token) + ">" + lexeme + "</font>";
 }
 
-QString LexicalAnalysisHTMLMarkupGenerator::getSourceCodeHTMLMarkup(const LexicalAnalyzer& analyzer) const
+QString HTMLMarkupGenerator::getSourceCodeHTMLMarkup(const LexicalAnalyzer& analyzer) const
 {
     QString html;
 

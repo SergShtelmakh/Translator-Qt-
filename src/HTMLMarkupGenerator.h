@@ -4,12 +4,13 @@
 #include <QString>
 
 class LexicalAnalyzer;
+class SyntacticAnalyzer;
 class Token;
 
 /*!
  * @brief This class provides HTML markup.
  */
-class LexicalAnalysisHTMLMarkupGenerator
+class HTMLMarkupGenerator
 {
 
 public:
@@ -20,7 +21,7 @@ public:
      * @param[in] analyzer Lexical analyzer.
      * @return Result of lexical analysis.
      */
-    QString getMessageForLog(const LexicalAnalyzer &analyzer) const;
+    QString getMessageForLog(const LexicalAnalyzer &lexicalAnalyzer, const SyntacticAnalyzer &syntacticAnalyzer) const;
 
     /*!
      * This method returns marked up source code.
@@ -35,16 +36,20 @@ private:
     /*!
      * This method returns string with successful result.
      *
+     * @param[in] analyzerName Ananyzer name.
      * @return String with successful result.
      */
-    QString getSuccessfulResultMessage() const;
+    QString getSuccessfulResultMessage(QString analyzerName) const;
 
     /*!
      * This method returns string with failed result and errors list.
      *
+     * @param[in] analyzerName Ananyzer name.
+     * @param[in] errors Errors string.
      * @return String with failed result and errors list.
      */
-    QString getFailedResultMessage(QString errors) const;
+    QString getFailedResultMessage(QString analyzerName, QString errors) const;
+
 
     /*!
      * This method returns string with color code of token.

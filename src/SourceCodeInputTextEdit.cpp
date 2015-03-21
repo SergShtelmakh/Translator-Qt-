@@ -1,5 +1,5 @@
 #include "SourceCodeInputTextEdit.h"
-#include "LexicalAnalysisHTMLMarkupGenerator.h"
+#include "HTMLMarkupGenerator.h"
 #include <QScrollBar>
 #include <QTimer>
 

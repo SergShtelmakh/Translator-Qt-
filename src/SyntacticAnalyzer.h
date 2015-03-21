@@ -18,6 +18,8 @@ public:
     void analyze(QList<Token> tokenList);
     SyntacticSymbol getNextSymbolToParse();
 
+    QString errorText() const;
+
 private:
 
     Production findCongruentRule(SyntacticSymbol firstSymbol, Token firstProductSymbol);
@@ -26,6 +28,7 @@ private:
     QMultiHash < SyntacticSymbol, Production > m_productRules;
     QList <SyntacticSymbol> m_symbolToParseList;
     QList <Token> m_tokenToParseList;
+    QString m_errorText;
 
 };
 

@@ -21,7 +21,8 @@ void SyntacticAnalyzer::analyze(QList<Token> tokenList)
 {
     m_tokenToParseList = tokenList;
     m_symbolToParseList.clear();
-    m_symbolToParseList << SyntacticSymbol ("",SyntacticSymbol::startSymbol);
+    m_errorText.clear();
+    m_symbolToParseList << SyntacticSymbol ("S",SyntacticSymbol::startSymbol);
 
     qDebug() << "New analysis:";
     while (!m_tokenToParseList.isEmpty()) {
@@ -32,18 +33,22 @@ void SyntacticAnalyzer::analyze(QList<Token> tokenList)
             m_symbolToParseList.takeFirst();
         } else {
             Production production = findCongruentRule(firstSymbolToParse, firstTokenToParse);
-            if (production.syntacticSymbolList().isEmpty()) {
-                qDebug() << "Can't find rule ";
+            if (production.syntacticSymbolList().isEmpty()&&(!isFinalRuleExist(firstSymbolToParse))) {
+//                m_errorText += "Can't find rule \n";
+                qDebug() << "Can't find rule";
+//                m_errorText << "Can't find rule ";
                 return;
             }
             m_symbolToParseList.takeFirst();
             m_symbolToParseList = production.syntacticSymbolList() + m_symbolToParseList;
-            qDebug() << "Using " << production.number() << " rule";
+//            m_errorText += QString("Using %1 rule").arg(production.number() + 1);
+            qDebug() << "Using" << production.number() + 1 << "rule";
         }
     }
     while (!m_symbolToParseList.isEmpty()) {
         SyntacticSymbol symbol = m_symbolToParseList.takeFirst();
         if (!isFinalRuleExist(symbol)) {
+//            m_errorText += "Character is missing";
             qDebug() << "Character is missing";
             return;
         }
@@ -81,3 +86,8 @@ bool SyntacticAnalyzer::isFinalRuleExist(SyntacticSymbol firstSymbol)
     }
     return false;
 }
+QString SyntacticAnalyzer::errorText() const
+{
+    return m_errorText;
+}
+

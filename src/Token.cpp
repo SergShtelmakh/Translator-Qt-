@@ -100,6 +100,11 @@ Token::TokenCategory Token::stringToTokenCategory(QString string)
 
 QString Token::errorInformation() const
 {
+    return m_errorInformation ;
+}
+
+QString Token::getAllErrorInformation() const
+{
     return m_errorInformation + " " + m_lexeme;
 }
 

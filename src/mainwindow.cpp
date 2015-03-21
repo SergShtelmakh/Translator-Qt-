@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "LexicalAnalysisHTMLMarkupGenerator.h"
+#include "HTMLMarkupGenerator.h"
 #include "SyntacticAnalyzer.h"
 #include "FileReader.h"
 #include <QTextStream>
@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    m_markupGenerator = new LexicalAnalysisHTMLMarkupGenerator();
+    m_markupGenerator = new HTMLMarkupGenerator();
 
     ui->setupUi(this);
 
@@ -39,7 +39,7 @@ void MainWindow::on_actionRun_triggered()
     globalLexicalAnalyzer->analyze(ui->sourceCodeInputTextEdit->toPlainText());
 
     // Add new message to log
-    ui->compileOutputTextEdit->addHTMLString(this->getLexicalAnalysisMarkupGenerator()->getMessageForLog(*globalLexicalAnalyzer));
+    ui->compileOutputTextEdit->addHTMLString(this->getMarkupGenerator()->getMessageForLog(*globalLexicalAnalyzer, *globalSyntacticAnalyzer));
 
     // Write information about tokens
     ui->tokenSequenceTextEdit->setText(TokenListToString(globalLexicalAnalyzer->tokenList()));
@@ -65,10 +65,10 @@ void MainWindow::updateSourceCodeInputTextEditSlot()
 {
     globalLexicalAnalyzer->analyze(ui->sourceCodeInputTextEdit->toPlainText().toUpper());
 
-    ui->sourceCodeInputTextEdit->setHtml(this->getLexicalAnalysisMarkupGenerator()->getSourceCodeHTMLMarkup(*globalLexicalAnalyzer));
+    ui->sourceCodeInputTextEdit->setHtml(this->getMarkupGenerator()->getSourceCodeHTMLMarkup(*globalLexicalAnalyzer));
 }
 
-LexicalAnalysisHTMLMarkupGenerator* MainWindow::getLexicalAnalysisMarkupGenerator() const
+HTMLMarkupGenerator* MainWindow::getMarkupGenerator() const
 {
     return m_markupGenerator;
 }

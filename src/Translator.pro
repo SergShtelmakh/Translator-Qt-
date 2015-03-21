@@ -19,12 +19,12 @@ SOURCES += main.cpp\
         Token.cpp \
         SourceCodeInputTextEdit.cpp \
         CompileOutputTextEdit.cpp \
-        LexicalAnalysisHTMLMarkupGenerator.cpp \
         HTMLColors.cpp \
         SyntacticAnalyzer.cpp \
         SyntacticSymbol.cpp \
         Production.cpp \
-        FileReader.cpp
+        FileReader.cpp \
+    HTMLMarkupGenerator.cpp
 
 HEADERS += mainwindow.h\
         LexicalAnalyzer.h \
@@ -32,12 +32,12 @@ HEADERS += mainwindow.h\
         Token.h \
         SourceCodeInputTextEdit.h \
         CompileOutputTextEdit.h \
-        LexicalAnalysisHTMLMarkupGenerator.h \
         HTMLColors.h \
         SyntacticAnalyzer.h \
         SyntacticSymbol.h \
         Production.h \
-        FileReader.h
+        FileReader.h \
+    HTMLMarkupGenerator.h
 
 FORMS  += mainwindow.ui
 

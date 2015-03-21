@@ -18,7 +18,7 @@ void LexicalAnalyzer::analyzeLine(QString line, int lineNumber)
             addIdentifier(Identifier(nextToken.lexeme(),nextToken.position()));
 
         if (!nextToken.isCorrect())
-            addError(QString("(%1:%2)\t ").arg(lineNumber).arg(tokenBeginIndexInLine) + nextToken.errorInformation());
+            addError(QString("(%1:%2)\t ").arg(lineNumber).arg(tokenBeginIndexInLine) + nextToken.getAllErrorInformation());
 
         tokenBeginIndexInLine += nextToken.lexeme().length();
     }
@@ -54,7 +54,6 @@ void LexicalAnalyzer::setIdentifierRegExp(const QRegExp &identifierRegExp)
 {
     m_identifierRegExp = identifierRegExp;
 }
-
 
 QRegExp LexicalAnalyzer::spaceRegExp() const
 {
@@ -103,7 +102,7 @@ Token LexicalAnalyzer::getNextToken(QString sourceString)
     if (sourceString.indexOf(m_beginStringLiteral) == 0)
         return getStringLiteralToken(sourceString);
 
-    // try to get two-character token
+    // try to get character token
     nextToken = getCharacterToken(sourceString);
     if (nextToken.isCorrect())
         return nextToken;
@@ -207,7 +206,6 @@ LexicalAnalyzer::LexicalAnalyzer()
 {
     // Set default values
     m_possibleTokenEndRegExp = QRegExp("( |\t)");
-    m_numberLiteralRegExp = QRegExp("\\d*(\\.\\d+)?(E[\\+\\-]?\\d+)?");
     m_maxCharacterTokensLenght = 0;
 }
 
@@ -221,17 +219,121 @@ void LexicalAnalyzer::analyze(QString sourceCode)
 
 Token LexicalAnalyzer::getNumberLiteralToken(QString sourceString)
 {
-    QString lexema = sourceString.mid(0,sourceString.indexOf(QRegExp("[^0-9\\.E]")));
-    if (m_numberLiteralRegExp.exactMatch(lexema)) {
-        if (lexema.count() <= m_maxNumberLiteralLenght) {
-            return Token(lexema,Token::categoryNumberLiteral);
-        } else {
-            return Token(lexema,Token::categoryNone,QString("Number literal lenght greater than %1 characters.").arg(m_maxNumberLiteralLenght));
+    int state = 0;
+    int tokenEnd = 0;
+    QString currentChar;
+    for (;;) {
+        int possibleLexemeEnd = sourceString.indexOf(m_possibleTokenEndRegExp,tokenEnd);
+        QString possibleLexeme = sourceString.mid(0,possibleLexemeEnd);
+        switch (state) {
+        case 0: { //  0124
+            currentChar = sourceString.mid(tokenEnd,1);
+            if (currentChar.contains(QRegExp("[0-9]"))) {
+                state = 0;
+                tokenEnd++;
+                break;
+            }
+            if (currentChar.contains(".")) {
+                state = 1;
+                tokenEnd++;
+                break;
+            }
+            if (currentChar.contains("E")) {
+                state = 3;
+                tokenEnd++;
+                break;
+            }
+            if (currentChar.contains(m_possibleTokenEndRegExp)||currentChar.isEmpty()) {
+                if (tokenEnd > m_maxNumberLiteralLenght) {
+                    return Token(possibleLexeme,Token::categoryNone,QString("Number literal lenght greater than %1 characters.").arg(m_maxNumberLiteralLenght));
+                } else {
+                    return Token(possibleLexeme,Token::categoryNumberLiteral);
+                }
+            }
+            return Token(possibleLexeme,Token::categoryNone,"Wrong number literal. After digits might be \".\" or \"E\".");
         }
-    } else {
-        return Token(lexema,Token::categoryNone,"Wrong number literal");
+        case 1: { //  01234.
+            currentChar = sourceString.mid(tokenEnd,1);
+            if (currentChar.contains(QRegExp("[0-9]"))) {
+                state = 2;
+                tokenEnd++;
+                break;
+            }
+            if (currentChar.contains(m_possibleTokenEndRegExp)||currentChar.isEmpty()) {
+                if (tokenEnd > m_maxNumberLiteralLenght) {
+                    return Token(possibleLexeme,Token::categoryNone,QString("Number literal lenght greater than %1 characters.").arg(m_maxNumberLiteralLenght));
+                } else {
+                    return Token(possibleLexeme,Token::categoryNumberLiteral);
+                }
+            }
+            return Token(possibleLexeme,Token::categoryNone,"Wrong number literal. After \".\" must be digit!");
+        }
+        case 2: { //  01234.567
+            currentChar = sourceString.mid(tokenEnd,1);
+            if (currentChar.contains(QRegExp("[0-9]"))) {
+                state = 2;
+                tokenEnd++;
+                break;
+            }
+            if (currentChar.contains("E")) {
+                state = 3;
+                tokenEnd++;
+                break;
+            }
+            if (currentChar.contains(m_possibleTokenEndRegExp)||currentChar.isEmpty()) {
+                if (tokenEnd > m_maxNumberLiteralLenght) {
+                    return Token(possibleLexeme,Token::categoryNone,QString("Number literal lenght greater than %1 characters.").arg(m_maxNumberLiteralLenght));
+                } else {
+                    return Token(possibleLexeme,Token::categoryNumberLiteral);
+                }
+            }
+            return Token(possibleLexeme,Token::categoryNone,"Wrong number literal.");
+        }
+        case 3: { //  01234.567E
+            currentChar = sourceString.mid(tokenEnd,1);
+            if (currentChar.contains(QRegExp("[0-9]"))) {
+                state = 5;
+                tokenEnd++;
+                break;
+            }
+            if (currentChar.contains(QRegExp("[\\+\\-]"))) {
+                state = 4;
+                tokenEnd++;
+                break;
+            }
+            return Token(possibleLexeme,Token::categoryNone,"Wrong number literal. After \"E\" might be \"+\", \"-\" or digit.");
+        }
+        case 4: { //  01234.567E-
+            currentChar = sourceString.mid(tokenEnd,1);
+            if (currentChar.contains(QRegExp("[0-9]"))) {
+                state = 5;
+                tokenEnd++;
+                break;
+            }
+            return Token(possibleLexeme,Token::categoryNone,"Wrong number literal. Digits are missing.");
+        }
+        case 5: { //  01234.567E-89
+            currentChar = sourceString.mid(tokenEnd,1);
+            if (currentChar.contains(QRegExp("[0-9]"))) {
+                state = 5;
+                tokenEnd++;
+                break;
+            }
+            if (currentChar.contains(m_possibleTokenEndRegExp)||currentChar.isEmpty()) {
+                if (tokenEnd > m_maxNumberLiteralLenght) {
+                    return Token(possibleLexeme,Token::categoryNone,QString("Number literal lenght greater than %1 characters.").arg(m_maxNumberLiteralLenght));
+                } else {
+                    return Token(possibleLexeme,Token::categoryNumberLiteral);
+                }
+            }
+            return Token(possibleLexeme,Token::categoryNone,"Wrong number literal.");
+        }
+        default:
+            break;
+        }
     }
 }
+
 
 Token LexicalAnalyzer::getKeywordToken(QString sourceString)
 {

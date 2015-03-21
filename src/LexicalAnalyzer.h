@@ -176,7 +176,6 @@ private:
     QHash <QString, int> m_characterTokensHash; //!< Hash with character tokens.
 
     QRegExp m_possibleTokenEndRegExp;           //!< RegExp that can separate tokens.
-    QRegExp m_numberLiteralRegExp;              //!< RegExp for searching number literals.
     QRegExp m_identifierRegExp;                 //!< RegExp for searching identifiers.
     QRegExp m_spaceRegExp;                      //!< RegExp for searching spaces.
     QString m_beginStringLiteral;               //!< RegExp for searching string literal.
