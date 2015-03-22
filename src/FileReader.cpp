@@ -7,6 +7,7 @@
 #include <QJsonArray>
 #include <QJsonValue>
 #include "SyntacticSymbol.h"
+#include "BackusNaurFormParser.h"
 
 QString FileReader::getTextFromFile(QString fileName)
 {
@@ -28,23 +29,29 @@ void FileReader::writeTextToFile(QString fileName, QString text)
 {
     QFile file (fileName);
     if (!file.open(QIODevice::ReadWrite| QIODevice::Text))
-       return;
+        return;
 
     QTextStream out(&file);
     out << text;
 }
 
-void FileReader::loadAnalyzerSettings(QString fileName, LexicalAnalyzer& lexicalAnalyzer, SyntacticAnalyzer &syntacticAnalyzer)
+void FileReader::loadLexicalAnalyzerSettings(QString fileName, LexicalAnalyzer& lexicalAnalyzer)
 {
     QJsonDocument jsonDocument = loadJson(fileName);
     QJsonObject mainObject = jsonDocument.object();
 
     QJsonObject lexicalAnalyzerJsonObject = mainObject["LexicalAnalyser"].toObject();
     loadLexicalAnalyzerSettings(lexicalAnalyzerJsonObject,lexicalAnalyzer);
+}
 
-    QJsonObject syntacticAnalyzerJsonObject = mainObject["SyntacticAnalyzer"].toObject();
-    loadSyntacticAnalyzerSettings(syntacticAnalyzerJsonObject,syntacticAnalyzer);
-
+void FileReader::loadSyntacticAnalyzerRules(QString fileName, SyntacticAnalyzer &syntacticAnalyzer)
+{
+    QString rulesString = getTextFromFile(fileName);
+    QList <BackusNaurFormRule> rulesList;
+    rulesList = BackusNaurFormParser::parse(rulesString);
+    foreach (BackusNaurFormRule rule, rulesList) {
+        syntacticAnalyzer.addProductRule(rule.leftPart(),rule.rightPart());
+    }
 }
 
 bool FileReader::isFileExist(QString fileName)
@@ -75,38 +82,11 @@ void FileReader::loadLexicalAnalyzerSettings(QJsonObject jsonObject, LexicalAnal
     }
 }
 
-void FileReader::loadSyntacticAnalyzerSettings(QJsonObject syntacticAnalyzerJsonObject, SyntacticAnalyzer &syntacticAnalyzer)
-{
-    QJsonArray productRulesJsonArray = syntacticAnalyzerJsonObject["ProductRules"].toArray();
-    foreach (const QJsonValue& produtRuleJsonValue, productRulesJsonArray) {
-        QJsonObject productRuleJsonObject = produtRuleJsonValue.toObject();
-
-        QJsonObject leftPartJsonObject = productRuleJsonObject["LeftPart"].toObject();
-
-        QList <SyntacticSymbol> rightSyntacticSymbolList;
-        QJsonArray rightPartJsonArray = productRuleJsonObject["RightPart"].toArray();
-        foreach (const QJsonValue& rightPartSymbolJsonValue, rightPartJsonArray) {
-            QJsonObject rightPartJsonObject = rightPartSymbolJsonValue.toObject();
-            rightSyntacticSymbolList << jsonObjectToSyntacticSymbol(rightPartJsonObject);
-        }
-
-        syntacticAnalyzer.addProductRule(jsonObjectToSyntacticSymbol(leftPartJsonObject),rightSyntacticSymbolList);
-    }
-}
-
 QJsonDocument FileReader::loadJson(QString fileName)
 {
     QFile jsonFile(fileName);
     jsonFile.open(QFile::ReadOnly);
     return QJsonDocument().fromJson(jsonFile.readAll());
-}
-
-SyntacticSymbol jsonObjectToSyntacticSymbol(QJsonObject object)
-{
-    SyntacticSymbol syntacticSymbol = SyntacticSymbol(object["name"].toString(),
-            object["symbolType"].toString(),
-            object["tokenCategory"].toString());
-    return syntacticSymbol;
 }
 
 

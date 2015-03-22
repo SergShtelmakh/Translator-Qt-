@@ -78,7 +78,12 @@ void MainWindow::loadSettings()
     QString fileName = "defaultSettings.json";
     if (!FileReader::isFileExist(fileName))
         fileName = QFileDialog::getOpenFileName(this, tr("Open Settings File"),"defaultSettings.json", tr("JSON (*.json)"));
-    FileReader::loadAnalyzerSettings(fileName,*globalLexicalAnalyzer, *globalSyntacticAnalyzer);
+    FileReader::loadLexicalAnalyzerSettings(fileName,*globalLexicalAnalyzer);
+    fileName = "default.rules";
+    if (!FileReader::isFileExist(fileName))
+        fileName = QFileDialog::getOpenFileName(this, tr("Open Rules File"),"default.rules", tr("RULES (*.rules)"));
+    FileReader::loadSyntacticAnalyzerRules(fileName,*globalSyntacticAnalyzer);
+
 }
 
 void MainWindow::on_actionSave_triggered()

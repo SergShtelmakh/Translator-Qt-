@@ -59,6 +59,13 @@ SyntacticSymbol::SyntacticSymbolType SyntacticSymbol::stringToSyntacticSymbolTyp
     return m_convertingStringToSyntacticSymbolTypeHash.value(string);
 }
 
+bool SyntacticSymbol::isCorrect()
+{
+    if(m_name.isNull())
+        return false;
+    return true;
+}
+
 bool operator==(const SyntacticSymbol &symbol1, const SyntacticSymbol &symbol2)
 {
     bool areSymbolsTypeStart = (symbol1.type() == SyntacticSymbol::startSymbol)&&(symbol2.type() == SyntacticSymbol::startSymbol);

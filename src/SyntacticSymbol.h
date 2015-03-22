@@ -17,6 +17,7 @@ public:
         terminalSymbol      = 2
     };
 
+    SyntacticSymbol(){}
     SyntacticSymbol(QString name, SyntacticSymbolType type, Token::TokenCategory category = Token::categoryNone);
     SyntacticSymbol(QString name, QString type, QString category);
 
@@ -30,6 +31,8 @@ public:
     void setCategory(const Token::TokenCategory &category);
 
     static SyntacticSymbolType stringToSyntacticSymbolType(QString string);
+
+    bool isCorrect();
 
 private:
 

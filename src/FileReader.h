@@ -15,7 +15,9 @@ public:
 
     static void writeTextToFile(QString fileName, QString text);
 
-    static void loadAnalyzerSettings(QString fileName, LexicalAnalyzer &lexicalAnalyzer, SyntacticAnalyzer &syntacticAnalyzer);
+    static void loadLexicalAnalyzerSettings(QString fileName, LexicalAnalyzer &lexicalAnalyzer);
+
+    static void loadSyntacticAnalyzerRules(QString fileName, SyntacticAnalyzer &syntacticAnalyzer);
 
     static bool isFileExist(QString fileName);
 
@@ -25,10 +27,7 @@ private:
 
     static void loadLexicalAnalyzerSettings(QJsonObject lexicalAnalyzerJsonObject, LexicalAnalyzer &lexicalAnalyzer);
 
-    static void loadSyntacticAnalyzerSettings(QJsonObject syntacticAnalyzerJsonObject, SyntacticAnalyzer &syntacticAnalyzer);
-
 };
 
-SyntacticSymbol jsonObjectToSyntacticSymbol(QJsonObject object);
 
 #endif // FILEREADER_H

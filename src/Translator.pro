@@ -24,7 +24,9 @@ SOURCES += main.cpp\
         SyntacticSymbol.cpp \
         Production.cpp \
         FileReader.cpp \
-    HTMLMarkupGenerator.cpp
+    HTMLMarkupGenerator.cpp \
+    BackusNaurFormParser.cpp \
+    BackusNaurFormRule.cpp
 
 HEADERS += mainwindow.h\
         LexicalAnalyzer.h \
@@ -37,7 +39,9 @@ HEADERS += mainwindow.h\
         SyntacticSymbol.h \
         Production.h \
         FileReader.h \
-    HTMLMarkupGenerator.h
+    HTMLMarkupGenerator.h \
+    BackusNaurFormParser.h \
+    BackusNaurFormRule.h
 
 FORMS  += mainwindow.ui
 
