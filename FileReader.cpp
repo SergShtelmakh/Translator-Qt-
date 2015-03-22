@@ -1,8 +1,6 @@
 #include "FileReader.h"
 #include <QFile>
 #include <QTextStream>
-#include <QFileDialog>
-#include <QObject>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonValue>

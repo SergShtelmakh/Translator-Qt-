@@ -16,8 +16,6 @@ public:
 
     void addProductRule(SyntacticSymbol firstSymbol, QList <SyntacticSymbol> productionList);
     void analyze(QList<Token> tokenList);
-    SyntacticSymbol getNextSymbolToParse();
-
     QString errorText() const;
 
 private:

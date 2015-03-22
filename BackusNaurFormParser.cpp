@@ -8,8 +8,9 @@ QList<BackusNaurFormRule> BackusNaurFormParser::parse(QString sourceString)
     QStringList rulesStringList = sourceString.split("\n");
     QList<BackusNaurFormRule> rulesList;
     foreach (QString ruleString, rulesStringList) {
-        if (!ruleString.isEmpty())
+        if (!ruleString.isEmpty()) {
             rulesList << parseRule(ruleString);
+        }
     }
     return rulesList;
 }
@@ -32,7 +33,8 @@ int BackusNaurFormParser::findCommentBeginIndex(QString string, int startIndex)
     if (beginCommentIndex > 0) {
         if (!string.mid(beginCommentIndex - 1,1).contains("\"")) {
             return beginCommentIndex;
-        } return findCommentBeginIndex(string, beginCommentIndex + 2);
+        }
+        return findCommentBeginIndex(string, beginCommentIndex + 2);
     } else {
         return beginCommentIndex;
     }
@@ -44,77 +46,62 @@ int BackusNaurFormParser::findCommentEndIndex(QString string, int startIndex)
     if (endCommentIndex > 0) {
         if (!string.mid(endCommentIndex - 1,1).contains("\"")) {
             return endCommentIndex;
-        } return findCommentBeginIndex(string, endCommentIndex + 2);
+        }
+        return findCommentBeginIndex(string, endCommentIndex + 2);
     } else {
         return endCommentIndex;
     }
 }
 
-BackusNaurFormRule BackusNaurFormParser::parseRule(QString ruleString)
+BackusNaurFormRule BackusNaurFormParser::parseRule(QString ruleSourceString)
 {
-    int separatorIndex = ruleString.indexOf("::==");
+    int separatorIndex = ruleSourceString.indexOf("::==");
 
-    if (separatorIndex < 0) {
-        BackusNaurFormRule emptyRule;
-        return emptyRule;
-    }
+    if (separatorIndex < 0)
+        return BackusNaurFormRule();
 
-    SyntacticSymbol leftPart = parseLeftPart(ruleString.mid(0,separatorIndex));
-    QList <SyntacticSymbol> rightPart = parseRightPart(ruleString.mid(separatorIndex + 4));
+    SyntacticSymbol leftPart = parseLeftPart(ruleSourceString.mid(0,separatorIndex));
+    QList <SyntacticSymbol> rightPart = parseRightPart(ruleSourceString.mid(separatorIndex + 4));
     BackusNaurFormRule rule = BackusNaurFormRule(leftPart,rightPart);
     return rule;
 }
 
 SyntacticSymbol BackusNaurFormParser::parseLeftPart(QString leftPartString)
 {
-    if (leftPartString.indexOf("S") == 0) {
-        SyntacticSymbol startSymbol = SyntacticSymbol("S",SyntacticSymbol::startSymbol,Token::categoryNone);
-        return startSymbol;
-    }
+    deleteWhitespaceAtBegin(leftPartString);
+    if (leftPartString.indexOf("S") == 0)
+        return SyntacticSymbol("S",SyntacticSymbol::startSymbol,Token::categoryNone);
 
     return takeNonterminalSymbol(leftPartString);
 }
 
-QList<SyntacticSymbol> BackusNaurFormParser::parseRightPart(QString rightPartString)
+QList<SyntacticSymbol> BackusNaurFormParser::parseRightPart(QString rightPartSourceString)
 {
     QList<SyntacticSymbol> rightPart;
-    while(!rightPartString.isEmpty()) {
-        deleteWhitespaceAtBegin(rightPartString);
-        if (rightPartString.indexOf("<") == 0) {
-            SyntacticSymbol nonterminal = takeNonterminalSymbol(rightPartString);
-            if (nonterminal.isCorrect())
-                rightPart << nonterminal;
+    while(!rightPartSourceString.isEmpty()) {
+        deleteWhitespaceAtBegin(rightPartSourceString);
+
+        if (rightPartSourceString.indexOf("<") == 0)
+            appendListByCorrectItem(rightPart,takeNonterminalSymbol(rightPartSourceString));
+        if (rightPartSourceString.indexOf("\"") == 0)
+            appendListByCorrectItem(rightPart,takeTerminalSymbol(rightPartSourceString));
+        if (rightPartSourceString.indexOf("n") == 0)
+            appendListByCorrectItem(rightPart,takeNumberLiteral(rightPartSourceString));
+        if (rightPartSourceString.indexOf("i") == 0)
+            appendListByCorrectItem(rightPart,takeId(rightPartSourceString));
+        if (rightPartSourceString.indexOf("l") == 0)
+            appendListByCorrectItem(rightPart,takeLinefeed(rightPartSourceString));
+
+        if (rightPartSourceString.indexOf("lambda") == 0) {
+            return rightPart;
         }
-        if (rightPartString.indexOf("\"") == 0) {
-            SyntacticSymbol terminal = takeTerminalSymbol(rightPartString);
-            if (terminal.isCorrect())
-                rightPart << terminal;
-        }
-        if (rightPartString.indexOf("n") == 0) {
-            SyntacticSymbol numberLiteral = takeNumberLiteral(rightPartString);
-            if (numberLiteral.isCorrect())
-                rightPart << numberLiteral;
-        }
-        if (rightPartString.indexOf("i") == 0) {
-            SyntacticSymbol id = takeId(rightPartString);
-            if (id.isCorrect())
-                rightPart << id;
-        }
-        if (rightPartString.indexOf("l") == 0) {
-            SyntacticSymbol linefeed = takeLinefeed(rightPartString);
-            if (linefeed.isCorrect())
-                rightPart << linefeed;
-            if (rightPartString.indexOf("lambda") == 0)
-                return rightPart;
-        }
-        rightPartString.remove(0,1);
-        }
+        rightPartSourceString.remove(0,1);
+    }
     return rightPart;
 }
 
 SyntacticSymbol BackusNaurFormParser::takeNonterminalSymbol(QString &string)
 {
-    deleteWhitespaceAtBegin(string);
     int currentCharIndex = 0;
     int state = 0;
     while (currentCharIndex < string.length()) {
@@ -127,8 +114,7 @@ SyntacticSymbol BackusNaurFormParser::takeNonterminalSymbol(QString &string)
                 break;
             }
             string.remove(0,currentCharIndex);
-            SyntacticSymbol emptySymbol;
-            return emptySymbol;
+            return SyntacticSymbol();
         }
         case 1: {
             if (!currentChar.contains(QRegExp("[<>]"))) {
@@ -137,8 +123,7 @@ SyntacticSymbol BackusNaurFormParser::takeNonterminalSymbol(QString &string)
                 break;
             }
             string.remove(0,currentCharIndex);
-            SyntacticSymbol emptySymbol;
-            return emptySymbol;
+            return SyntacticSymbol();
         }
         case 2: {
             if (currentChar.contains(">")) {
@@ -153,20 +138,17 @@ SyntacticSymbol BackusNaurFormParser::takeNonterminalSymbol(QString &string)
                 break;
             }
             string.remove(0,currentCharIndex);
-            SyntacticSymbol emptySymbol;
-            return emptySymbol;
+            return SyntacticSymbol();
         }
         default:
             break;
         }
     }
-    SyntacticSymbol emptySymbol;
-    return emptySymbol;
+    return SyntacticSymbol();
 }
 
 SyntacticSymbol BackusNaurFormParser::takeTerminalSymbol(QString &string)
 {
-    deleteWhitespaceAtBegin(string);
     int currentCharIndex = 0;
     int state = 0;
     while (currentCharIndex < string.length()) {
@@ -179,8 +161,7 @@ SyntacticSymbol BackusNaurFormParser::takeTerminalSymbol(QString &string)
                 break;
             }
             string.remove(0,currentCharIndex);
-            SyntacticSymbol emptySymbol;
-            return emptySymbol;
+            return SyntacticSymbol();
         }
         case 1: {
             if (!currentChar.contains("\"")) {
@@ -189,72 +170,55 @@ SyntacticSymbol BackusNaurFormParser::takeTerminalSymbol(QString &string)
                 break;
             }
             string.remove(0,currentCharIndex);
-            SyntacticSymbol emptySymbol;
-            return emptySymbol;
+            return SyntacticSymbol();
         }
         case 2: {
             if (currentChar.contains("\"")) {
                 SyntacticSymbol terminal = SyntacticSymbol (string.mid(1,currentCharIndex - 1),
                                                             SyntacticSymbol::terminalSymbol,
                                                             Token::categoryKeyword);
-                if (!string.mid(1,1).contains(QRegExp("[a-zA-Z]")))
+                if (!string.mid(1,1).contains(QRegExp("[a-zA-Z]"))) {
                     terminal.setCategory(Token::categoryCharToken);
+                }
                 string.remove(0,currentCharIndex + 1);
                 return terminal;
-            } else {
-                currentCharIndex ++;
-                break;
             }
+            currentCharIndex ++;
+            break;
         }
         default:
             break;
         }
     }
     string.remove(0,currentCharIndex);
-    SyntacticSymbol emptySymbol;
-    return emptySymbol;
+    return SyntacticSymbol();
 }
 
 SyntacticSymbol BackusNaurFormParser::takeNumberLiteral(QString &string)
 {
-    if (string.indexOf("number") == 0) {
-        SyntacticSymbol numberLiteral = SyntacticSymbol ("number",
-                                                    SyntacticSymbol::terminalSymbol,
-                                                    Token::categoryNumberLiteral);
-        return numberLiteral;
+    if (string.indexOf("number") == 0)
+        return SyntacticSymbol ("number", SyntacticSymbol::terminalSymbol, Token::categoryNumberLiteral);
 
-    }
     string.remove(0,1);
-    SyntacticSymbol emptySymbol;
-    return emptySymbol;
+    return SyntacticSymbol();
 }
 
 SyntacticSymbol BackusNaurFormParser::takeId(QString &string)
 {
-    if (string.indexOf("id") == 0) {
-        SyntacticSymbol identifier = SyntacticSymbol ("id",
-                                                    SyntacticSymbol::terminalSymbol,
-                                                    Token::categoryIdentifier);
-        return identifier;
+    if (string.indexOf("id") == 0)
+        return SyntacticSymbol ("id", SyntacticSymbol::terminalSymbol, Token::categoryIdentifier);
 
-    }
     string.remove(0,1);
-    SyntacticSymbol emptySymbol;
-    return emptySymbol;
+    return SyntacticSymbol();
 }
 
 SyntacticSymbol BackusNaurFormParser::takeLinefeed(QString &string)
 {
-    if (string.indexOf("linefeed") == 0) {
-        SyntacticSymbol linefeed = SyntacticSymbol ("linefeed",
-                                                    SyntacticSymbol::terminalSymbol,
-                                                    Token::categoryLineFeed);
-        return linefeed;
+    if (string.indexOf("linefeed") == 0)
+        return SyntacticSymbol ("linefeed", SyntacticSymbol::terminalSymbol, Token::categoryLineFeed);
 
-    }
     string.remove(0,1);
-    SyntacticSymbol emptySymbol;
-    return emptySymbol;
+    return SyntacticSymbol();
 }
 
 void BackusNaurFormParser::deleteWhitespaceAtBegin(QString &string)
@@ -266,3 +230,8 @@ void BackusNaurFormParser::deleteWhitespaceAtBegin(QString &string)
     }
 }
 
+void appendListByCorrectItem(QList<SyntacticSymbol> &list, SyntacticSymbol item)
+{
+    if (item.isCorrect())
+        list.append(item);
+}
