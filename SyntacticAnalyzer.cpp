@@ -19,10 +19,7 @@ void SyntacticAnalyzer::addProductRule(SyntacticSymbol firstSymbol, QList<Syntac
 
 void SyntacticAnalyzer::analyze(QList<Token> tokenList)
 {
-    m_tokenToParseList = tokenList;
-    m_symbolToParseList.clear();
-    m_errorText.clear();
-    m_symbolToParseList << SyntacticSymbol ("S",SyntacticSymbol::startSymbol);
+    prepareToAnalysis(tokenList);
 
     qDebug() << "New analysis:";
     while (!m_tokenToParseList.isEmpty()) {
@@ -33,7 +30,7 @@ void SyntacticAnalyzer::analyze(QList<Token> tokenList)
             m_symbolToParseList.takeFirst();
         } else {
             Production production = findCongruentRule(firstSymbolToParse, firstTokenToParse);
-            if (production.syntacticSymbolList().isEmpty()&&(!isFinalRuleExist(firstSymbolToParse))) {
+            if (production.syntacticSymbolList().isEmpty()&&(!isLambdaRuleExists(firstSymbolToParse))) {
                 qDebug() << "Can't find rule";
                 return;
             }
@@ -44,7 +41,7 @@ void SyntacticAnalyzer::analyze(QList<Token> tokenList)
     }
     while (!m_symbolToParseList.isEmpty()) {
         SyntacticSymbol symbol = m_symbolToParseList.takeFirst();
-        if (!isFinalRuleExist(symbol)) {
+        if (!isLambdaRuleExists(symbol)) {
             qDebug() << "Character is missing";
             return;
         }
@@ -63,13 +60,21 @@ Production SyntacticAnalyzer::findCongruentRule(SyntacticSymbol firstSymbol, Tok
     return Production();
 }
 
-bool SyntacticAnalyzer::isFinalRuleExist(SyntacticSymbol firstSymbol)
+bool SyntacticAnalyzer::isLambdaRuleExists(SyntacticSymbol firstSymbol)
 {
     foreach (Production production, m_productRules.values(firstSymbol)) {
         if (production.syntacticSymbolList().isEmpty())
             return true;
     }
     return false;
+}
+
+void SyntacticAnalyzer::prepareToAnalysis(QList<Token> tokenList)
+{
+    m_tokenToParseList = tokenList;
+    m_symbolToParseList.clear();
+    m_errorText.clear();
+    m_symbolToParseList << SyntacticSymbol ("S",SyntacticSymbol::startSymbol);
 }
 
 QString SyntacticAnalyzer::errorText() const

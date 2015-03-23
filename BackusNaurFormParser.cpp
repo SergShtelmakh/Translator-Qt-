@@ -55,13 +55,13 @@ int BackusNaurFormParser::findCommentEndIndex(QString string, int startIndex)
 
 BackusNaurFormRule BackusNaurFormParser::parseRule(QString ruleSourceString)
 {
-    int separatorIndex = ruleSourceString.indexOf("::==");
+    int separatorIndex = ruleSourceString.indexOf("::=");
 
     if (separatorIndex < 0)
         return BackusNaurFormRule();
 
     SyntacticSymbol leftPart = parseLeftPart(ruleSourceString.mid(0,separatorIndex));
-    QList <SyntacticSymbol> rightPart = parseRightPart(ruleSourceString.mid(separatorIndex + 4));
+    QList <SyntacticSymbol> rightPart = parseRightPart(ruleSourceString.mid(separatorIndex + 3));
     BackusNaurFormRule rule = BackusNaurFormRule(leftPart,rightPart);
     return rule;
 }
@@ -113,7 +113,6 @@ SyntacticSymbol BackusNaurFormParser::takeNonterminalSymbol(QString &string)
                 state = 1;
                 break;
             }
-            string.remove(0,currentCharIndex);
             return SyntacticSymbol();
         }
         case 1: {
@@ -198,8 +197,6 @@ SyntacticSymbol BackusNaurFormParser::takeNumberLiteral(QString &string)
 {
     if (string.indexOf("number") == 0)
         return SyntacticSymbol ("number", SyntacticSymbol::terminalSymbol, Token::categoryNumberLiteral);
-
-    string.remove(0,1);
     return SyntacticSymbol();
 }
 
@@ -207,8 +204,6 @@ SyntacticSymbol BackusNaurFormParser::takeId(QString &string)
 {
     if (string.indexOf("id") == 0)
         return SyntacticSymbol ("id", SyntacticSymbol::terminalSymbol, Token::categoryIdentifier);
-
-    string.remove(0,1);
     return SyntacticSymbol();
 }
 
@@ -216,18 +211,13 @@ SyntacticSymbol BackusNaurFormParser::takeLinefeed(QString &string)
 {
     if (string.indexOf("linefeed") == 0)
         return SyntacticSymbol ("linefeed", SyntacticSymbol::terminalSymbol, Token::categoryLineFeed);
-
-    string.remove(0,1);
     return SyntacticSymbol();
 }
 
 void BackusNaurFormParser::deleteWhitespaceAtBegin(QString &string)
 {
-    QString firstChar = string.mid(0,1);
-    while (firstChar.contains(QRegExp("[ \t]"))) {
+    while (string.mid(0,1).contains(QRegExp("[ \t]")))
         string.remove(0,1);
-        firstChar = string.mid(0,1);
-    }
 }
 
 void appendListByCorrectItem(QList<SyntacticSymbol> &list, SyntacticSymbol item)

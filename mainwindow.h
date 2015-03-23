@@ -19,6 +19,9 @@ class MainWindow : public QMainWindow
 
 public:
 
+    static QString lexicalAnalyzerSettingsFileName;
+    static QString syntacticAnalyzerSettingsFileName;
+
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 

@@ -12,6 +12,9 @@ Q_GLOBAL_STATIC(LexicalAnalyzer,globalLexicalAnalyzer)
 
 Q_GLOBAL_STATIC(SyntacticAnalyzer,globalSyntacticAnalyzer)
 
+QString MainWindow::lexicalAnalyzerSettingsFileName = "defaultSettings.json";
+QString MainWindow::syntacticAnalyzerSettingsFileName = "default.rules";
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -75,14 +78,13 @@ HTMLMarkupGenerator* MainWindow::getMarkupGenerator() const
 
 void MainWindow::loadSettings()
 {
-    QString fileName = "defaultSettings.json";
-    if (!FileReader::isFileExist(fileName))
-        fileName = QFileDialog::getOpenFileName(this, tr("Open Settings File"),"defaultSettings.json", tr("JSON (*.json)"));
-    FileReader::loadLexicalAnalyzerSettings(fileName,*globalLexicalAnalyzer);
-    fileName = "default.rules";
-    if (!FileReader::isFileExist(fileName))
-        fileName = QFileDialog::getOpenFileName(this, tr("Open Rules File"),"default.rules", tr("RULES (*.rules)"));
-    FileReader::loadSyntacticAnalyzerRules(fileName,*globalSyntacticAnalyzer);
+    if (!FileReader::isFileExist(lexicalAnalyzerSettingsFileName))
+        lexicalAnalyzerSettingsFileName = QFileDialog::getOpenFileName(this, tr("Open Settings File"),"defaultSettings.json", tr("JSON (*.json)"));
+    FileReader::loadLexicalAnalyzerSettings(lexicalAnalyzerSettingsFileName,*globalLexicalAnalyzer);
+
+    if (!FileReader::isFileExist(syntacticAnalyzerSettingsFileName))
+        syntacticAnalyzerSettingsFileName = QFileDialog::getOpenFileName(this, tr("Open Rules File"),"default.rules", tr("RULES (*.rules)"));
+    FileReader::loadSyntacticAnalyzerRules(syntacticAnalyzerSettingsFileName,*globalSyntacticAnalyzer);
 
 }
 
@@ -95,9 +97,11 @@ void MainWindow::on_actionSave_triggered()
 void MainWindow::on_actionOpen_triggered()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),"", tr(" (*.txt)"));
-    QString text = FileReader::getTextFromFile(fileName);
-    ui->sourceCodeInputTextEdit->clear();
-    ui->sourceCodeInputTextEdit->setText(text);
+    if (!fileName.isEmpty()) {
+        QString text = FileReader::getTextFromFile(fileName);
+        ui->sourceCodeInputTextEdit->clear();
+        ui->sourceCodeInputTextEdit->setText(text);
+    }
 }
 
 void MainWindow::on_actionNew_triggered()

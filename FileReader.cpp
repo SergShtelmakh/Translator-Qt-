@@ -7,6 +7,7 @@
 #include "SyntacticSymbol.h"
 #include "BackusNaurFormParser.h"
 
+
 QString FileReader::getTextFromFile(QString fileName)
 {
     QString text;
@@ -15,12 +16,7 @@ QString FileReader::getTextFromFile(QString fileName)
         return text;
 
     QTextStream inputTextStream(&file);
-    QString line = inputTextStream.readLine();
-    while (!line.isNull()) {
-        text += line + "\n";
-        line = inputTextStream.readLine();
-    }
-    return text;
+    return inputTextStream.readAll();
 }
 
 void FileReader::writeTextToFile(QString fileName, QString text)
@@ -44,9 +40,9 @@ void FileReader::loadLexicalAnalyzerSettings(QString fileName, LexicalAnalyzer& 
 
 void FileReader::loadSyntacticAnalyzerRules(QString fileName, SyntacticAnalyzer &syntacticAnalyzer)
 {
-    QString rulesString = getTextFromFile(fileName);
+    QString sourceText = getTextFromFile(fileName);
     QList <BackusNaurFormRule> rulesList;
-    rulesList = BackusNaurFormParser::parse(rulesString);
+    rulesList = BackusNaurFormParser::parse(sourceText);
     foreach (BackusNaurFormRule rule, rulesList) {
         syntacticAnalyzer.addProductRule(rule.leftPart(),rule.rightPart());
     }

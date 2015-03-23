@@ -105,7 +105,7 @@ QString Token::errorInformation() const
 
 QString Token::getAllErrorInformation() const
 {
-    return m_errorInformation + " " + m_lexeme;
+    return m_lexeme + ": " + m_errorInformation;
 }
 
 

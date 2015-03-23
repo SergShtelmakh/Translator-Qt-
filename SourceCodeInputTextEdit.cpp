@@ -49,17 +49,17 @@ void SourceCodeInputTextEdit::onTextChangedSlot()
 
 void SourceCodeInputTextEdit::onTextUpdateTimerTimeoutSlot()
 {
-    int cursorPos = textCursor().position();
-    int scrollPos = verticalScrollBar()->value();
+    int cursorPosBackup = textCursor().position();
+    int scrollPosBackup = verticalScrollBar()->value();
 
     emit updateTextByTimerSignal();
 
     QTextCursor cursor = textCursor();
-    cursor.setPosition(cursorPos, QTextCursor::MoveAnchor);
+    cursor.setPosition(cursorPosBackup, QTextCursor::MoveAnchor);
     setTextCursor(cursor);
 
     QScrollBar *scrollBar = verticalScrollBar();
-    scrollBar->setValue(scrollPos);
+    scrollBar->setValue(scrollPosBackup);
 
     m_textUpdateTimer->stop();
 }

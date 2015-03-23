@@ -40,10 +40,10 @@ public:
 
     QString errorInformation() const;
 
-    QString getAllErrorInformation() const;
     void setPosition(const QPoint &value);
     QPoint position() const;
 
+    QString getAllErrorInformation() const;
     /*!
      * This method returns token representation (e.g. <+>, <id, "var1">, <number, 5.5> ...)
      *

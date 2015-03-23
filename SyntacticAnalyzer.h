@@ -21,8 +21,9 @@ public:
 private:
 
     Production findCongruentRule(SyntacticSymbol firstSymbol, Token firstProductSymbol);
-    bool isFinalRuleExist(SyntacticSymbol firstSymbol);
+    bool isLambdaRuleExists(SyntacticSymbol firstSymbol);
 
+    void prepareToAnalysis(QList<Token> tokenList);
     QMultiHash < SyntacticSymbol, Production > m_productRules;
     QList <SyntacticSymbol> m_symbolToParseList;
     QList <Token> m_tokenToParseList;
