@@ -16,13 +16,13 @@ QString HTMLMarkupGenerator::getMessageForLog(const LexicalAnalyzer& lexicalAnal
     } else {
         newLineInLog += this->getFailedResultMessage("Lexical analyzer",lexicalAnalyzer.errorText());
     }
-
+/*
     if (syntacticAnalyzer.errorText().isEmpty()) {
         newLineInLog += this->getSuccessfulResultMessage("Syntactic analyzer");
     } else {
         newLineInLog += this->getFailedResultMessage("Syntactic analyzer",syntacticAnalyzer.errorText());
     }
-
+*/
     return newLineInLog;
 }
 

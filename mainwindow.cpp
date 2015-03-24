@@ -12,8 +12,8 @@ Q_GLOBAL_STATIC(LexicalAnalyzer,globalLexicalAnalyzer)
 
 Q_GLOBAL_STATIC(SyntacticAnalyzer,globalSyntacticAnalyzer)
 
-QString MainWindow::lexicalAnalyzerSettingsFileName = "defaultSettings.json";
-QString MainWindow::syntacticAnalyzerSettingsFileName = "default.rules";
+QString MainWindow::lexicalAnalyzerSettingsFileName = "LexicalAnalyzersSettings.json";
+QString MainWindow::syntacticAnalyzerSettingsFileName = "SyntacticAnalyzersSetting.rules";
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -79,11 +79,11 @@ HTMLMarkupGenerator* MainWindow::getMarkupGenerator() const
 void MainWindow::loadSettings()
 {
     if (!FileReader::isFileExist(lexicalAnalyzerSettingsFileName))
-        lexicalAnalyzerSettingsFileName = QFileDialog::getOpenFileName(this, tr("Open Settings File"),"defaultSettings.json", tr("JSON (*.json)"));
+        lexicalAnalyzerSettingsFileName = QFileDialog::getOpenFileName(this, tr("Open Settings File"),"LexicalAnalyzersSettings.json", tr("JSON (*.json)"));
     FileReader::loadLexicalAnalyzerSettings(lexicalAnalyzerSettingsFileName,*globalLexicalAnalyzer);
 
     if (!FileReader::isFileExist(syntacticAnalyzerSettingsFileName))
-        syntacticAnalyzerSettingsFileName = QFileDialog::getOpenFileName(this, tr("Open Rules File"),"default.rules", tr("RULES (*.rules)"));
+        syntacticAnalyzerSettingsFileName = QFileDialog::getOpenFileName(this, tr("Open Rules File"),"SyntacticAnalyzersSetting.rules", tr("RULES (*.rules)"));
     FileReader::loadSyntacticAnalyzerRules(syntacticAnalyzerSettingsFileName,*globalSyntacticAnalyzer);
 
 }
