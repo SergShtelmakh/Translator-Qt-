@@ -159,8 +159,11 @@
          </property>
          <item>
           <widget class="QTabWidget" name="resultTabWidget">
+           <property name="tabShape">
+            <enum>QTabWidget::Rounded</enum>
+           </property>
            <property name="currentIndex">
-            <number>0</number>
+            <number>2</number>
            </property>
            <widget class="QWidget" name="tab">
             <attribute name="title">
@@ -226,6 +229,16 @@
                 </property>
                </column>
               </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="tab_3">
+            <attribute name="title">
+             <string>Rules</string>
+            </attribute>
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <item>
+              <widget class="QListView" name="rulesListView"/>
              </item>
             </layout>
            </widget>

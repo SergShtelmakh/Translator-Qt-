@@ -98,3 +98,32 @@ bool operator==(const SyntacticSymbol &symbol, const Token &token)
 {
     return token == symbol;
 }
+
+QString MakeString(QList<SyntacticSymbol> syntacticSymbolList)
+{
+    QString result;
+    foreach (SyntacticSymbol symbol, syntacticSymbolList) {
+        result += MakeString(symbol) + " ";
+    }
+    return result;
+}
+
+
+QString MakeString(SyntacticSymbol syntacticSymbol)
+{
+    switch (syntacticSymbol.type()) {
+    case SyntacticSymbol::nonterminalSymbol:
+        return QString("<" + syntacticSymbol.name() + ">");
+    case SyntacticSymbol::terminalSymbol: {
+       if ((syntacticSymbol.category() == Token::categoryKeyword)||(syntacticSymbol.category() == Token::categoryCharToken)) {
+           return QString("\"" + syntacticSymbol.name() + "\"");
+       } else {
+           return syntacticSymbol.name();
+       }
+    }
+    case SyntacticSymbol::startSymbol:
+        return "S";
+    default:
+        return QString();
+    }
+}

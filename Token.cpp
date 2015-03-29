@@ -56,27 +56,6 @@ void Token::setPosition(const QPoint &value)
     m_position = value;
 }
 
-QString Token::getTokenRepresentation()
-{
-    if (!this->isCorrect())
-        return "";
-
-    switch (m_tokenCategory) {
-    case Token::categoryIdentifier:
-        return "<id, \"" + m_lexeme + "\">";
-    case Token::categoryNumberLiteral:
-        return "<numb, \"" + m_lexeme + "\">";
-    case Token::categoryStringLiteral:
-        return "<literal, " + m_lexeme + ">";
-    case Token::categorySpace:
-        return "";
-    case Token::categoryLineFeed:
-        return "<linefeed>\n";
-    default:
-        return "<" + m_lexeme + ">";
-    }
-}
-
 bool Token::isCorrect() const
 {
     return m_tokenCategory != Token::categoryNone;
@@ -108,7 +87,23 @@ QString Token::getAllErrorInformation() const
     return m_lexeme + ": " + m_errorInformation;
 }
 
+QString MakeString(Token token)
+{
+    if (!token.isCorrect())
+        return "";
 
-
-
-
+    switch (token.tokenCategory()) {
+    case Token::categoryIdentifier:
+        return "<id, \"" + token.lexeme() + "\">";
+    case Token::categoryNumberLiteral:
+        return "<numb, \"" + token.lexeme() + "\">";
+    case Token::categoryStringLiteral:
+        return "<literal, " + token.lexeme() + ">";
+    case Token::categorySpace:
+        return "";
+    case Token::categoryLineFeed:
+        return "<linefeed>\n";
+    default:
+        return "<" + token.lexeme() + ">";
+    }
+}

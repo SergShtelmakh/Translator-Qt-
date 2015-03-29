@@ -16,13 +16,13 @@ QString HTMLMarkupGenerator::getMessageForLog(const LexicalAnalyzer& lexicalAnal
     } else {
         newLineInLog += this->getFailedResultMessage("Lexical analyzer",lexicalAnalyzer.errorText());
     }
-/*
+
     if (syntacticAnalyzer.errorText().isEmpty()) {
         newLineInLog += this->getSuccessfulResultMessage("Syntactic analyzer");
     } else {
         newLineInLog += this->getFailedResultMessage("Syntactic analyzer",syntacticAnalyzer.errorText());
     }
-*/
+
     return newLineInLog;
 }
 
@@ -37,6 +37,7 @@ QString HTMLMarkupGenerator::getSuccessfulResultMessage(QString analyzerName) co
 
 QString HTMLMarkupGenerator::getFailedResultMessage(QString analyzerName, QString errors) const
 {
+    errors.replace("<","&lt;").replace(">","&gt;");
     int errorCount = errors.split(QRegExp("\n")).count() - 1;
     QString newLine = "<font color=" + HTMLColors::red + ">"
             + analyzerName + ":\n"

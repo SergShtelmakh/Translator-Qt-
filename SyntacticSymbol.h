@@ -50,4 +50,7 @@ bool operator==(const SyntacticSymbol &symbol,const Token &token);
 
 uint qHash(const SyntacticSymbol &symbol);
 
+QString MakeString(QList<SyntacticSymbol> syntacticSymbolList);
+QString MakeString(SyntacticSymbol syntacticSymbol);
+
 #endif // SYNTACTICSYMBOL_H

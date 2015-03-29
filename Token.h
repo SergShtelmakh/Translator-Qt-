@@ -44,11 +44,7 @@ public:
     QPoint position() const;
 
     QString getAllErrorInformation() const;
-    /*!
-     * This method returns token representation (e.g. <+>, <id, "var1">, <number, 5.5> ...)
-     *
-     * @return Token representation.
-     */
+
     QString getTokenRepresentation();
 
     /*!
@@ -70,5 +66,7 @@ private:
     static QHash <QString, TokenCategory> m_convertingStringToTokenCategoryHash;
 
 };
+
+QString MakeString(Token token);
 
 #endif // TOKEN_H

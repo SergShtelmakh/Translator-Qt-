@@ -20,6 +20,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     m_markupGenerator = new HTMLMarkupGenerator();
+    m_rulesStringListModel = new QStringListModel(ui->rulesListView);
+    //m_rulesStringListModel->setStringList(QStringList());
+
 
     ui->setupUi(this);
 
@@ -41,6 +44,8 @@ void MainWindow::on_actionRun_triggered()
 {
     globalLexicalAnalyzer->analyze(ui->sourceCodeInputTextEdit->toPlainText());
 
+    globalSyntacticAnalyzer->analyze(globalLexicalAnalyzer->getTokenListWithoutSpaces());
+
     // Add new message to log
     ui->compileOutputTextEdit->addHTMLString(this->getMarkupGenerator()->getMessageForLog(*globalLexicalAnalyzer, *globalSyntacticAnalyzer));
 
@@ -56,7 +61,9 @@ void MainWindow::on_actionRun_triggered()
         ui->identifierTableWidget->setItem(i,2,new QTableWidgetItem(IdentifierPositionsToString(identifierList.at(i))));
     }
 
-    globalSyntacticAnalyzer->analyze(globalLexicalAnalyzer->getTokenListWithoutSpaces());
+    m_rulesStringListModel->setStringList(globalSyntacticAnalyzer->usedRuleList());
+    ui->rulesListView->setModel(m_rulesStringListModel);
+
 }
 
 void MainWindow::updateStatusBarSlot(int line, int pos)

@@ -389,7 +389,7 @@ QString TokenListToString(QList<Token> tokenList)
 {
     QString tokenSequenceString;
     foreach (Token currentToken, tokenList) {
-        tokenSequenceString += currentToken.getTokenRepresentation();
+        tokenSequenceString += MakeString(currentToken);
     }
     return tokenSequenceString;
 }

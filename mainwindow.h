@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QStringListModel>
 
 class LexicalAnalyzer;
 class HTMLMarkupGenerator;
@@ -60,6 +61,7 @@ private:
 
     Ui::MainWindow *ui;                                     //!< Main window.
     HTMLMarkupGenerator* m_markupGenerator;  //!< Markup generator.
+    QStringListModel* m_rulesStringListModel;
 
 };
 
