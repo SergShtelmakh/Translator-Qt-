@@ -102,7 +102,7 @@ QString MakeString(Token token)
     case Token::categorySpace:
         return "";
     case Token::categoryLineFeed:
-        return "<linefeed>\n";
+        return "<linefeed>";
     default:
         return "<" + token.lexeme() + ">";
     }

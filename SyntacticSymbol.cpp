@@ -101,6 +101,9 @@ bool operator==(const SyntacticSymbol &symbol, const Token &token)
 
 QString MakeString(QList<SyntacticSymbol> syntacticSymbolList)
 {
+    if (syntacticSymbolList.isEmpty()) {
+        return "Λ";
+    }
     QString result;
     foreach (SyntacticSymbol symbol, syntacticSymbolList) {
         result += MakeString(symbol) + " ";

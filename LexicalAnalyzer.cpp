@@ -1,4 +1,5 @@
 #include "LexicalAnalyzer.h"
+#include "ErrorGenerator.h"
 #include <QStringList>
 
 void LexicalAnalyzer::analyzeLine(QString line, int lineNumber)
@@ -18,7 +19,7 @@ void LexicalAnalyzer::analyzeLine(QString line, int lineNumber)
             addIdentifier(Identifier(nextToken.lexeme(),nextToken.position()));
 
         if (!nextToken.isCorrect())
-            addError(QString("(%1:%2)\t ").arg(lineNumber).arg(tokenBeginIndexInLine) + nextToken.getAllErrorInformation());
+            addError(ErrorGenerator::lexicalError(nextToken));
 
         tokenBeginIndexInLine += nextToken.lexeme().length();
     }
@@ -36,7 +37,7 @@ void LexicalAnalyzer::addIdentifier(Identifier identifier)
 
 void LexicalAnalyzer::addError(QString error)
 {
-    m_errorText += error + "\n";
+    m_errorText += QString("%1:\t").arg(m_errorText.split("\n").count()) + error + "\n";
 }
 
 void LexicalAnalyzer::clearAllAnalyzingData()
@@ -390,6 +391,8 @@ QString TokenListToString(QList<Token> tokenList)
     QString tokenSequenceString;
     foreach (Token currentToken, tokenList) {
         tokenSequenceString += MakeString(currentToken);
+        if (currentToken.tokenCategory() == Token::categoryLineFeed)
+            tokenSequenceString += "\n";
     }
     return tokenSequenceString;
 }

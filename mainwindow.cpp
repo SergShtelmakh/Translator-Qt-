@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     m_markupGenerator = new HTMLMarkupGenerator();
-    m_rulesStringListModel = new QStringListModel(ui->rulesListView);
+    m_rulesStringListModel = new QStringListModel();
     //m_rulesStringListModel->setStringList(QStringList());
 
 
@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->sourceCodeInputTextEdit, SIGNAL(updateTextByTimerSignal()), SLOT(updateSourceCodeInputTextEditSlot()));
 
     ui->tokenSequenceTextEdit->setFont(QFont("Courier New", 12));
+    ui->rulesListView->setFont(QFont("Courier New", 12));
 
     loadSettings();
 }

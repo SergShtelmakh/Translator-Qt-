@@ -1,5 +1,6 @@
 #include "SyntacticAnalyzer.h"
-#include <QDebug>
+#include "ErrorGenerator.h"
+
 
 SyntacticAnalyzer::SyntacticAnalyzer()
 {
@@ -30,8 +31,9 @@ void SyntacticAnalyzer::analyze(QList<Token> tokenList)
         } else {
             Production production = findCongruentRule(firstSymbolToParse, firstTokenToParse);
             if (production.syntacticSymbolList().isEmpty()&&(!isLambdaRuleExists(firstSymbolToParse))) {
-                addError("Can't find rule for " + MakeString(firstTokenToParse));
-                return;
+                addError(ErrorGenerator::syntacticError(m_tokenToParseList,m_symbolToParseList));
+                m_tokenToParseList.takeFirst();
+                continue;
             }
             m_symbolToParseList.takeFirst();
             m_symbolToParseList = production.syntacticSymbolList() + m_symbolToParseList;
@@ -39,11 +41,12 @@ void SyntacticAnalyzer::analyze(QList<Token> tokenList)
         }
     }
     while (!m_symbolToParseList.isEmpty()) {
-        SyntacticSymbol symbol = m_symbolToParseList.takeFirst();
+        SyntacticSymbol symbol = m_symbolToParseList.first();
         if (!isLambdaRuleExists(symbol)) {
-            addError("Character " + MakeString(symbol) + " is missing ");
+            addError(ErrorGenerator::syntacticError(m_tokenToParseList,m_symbolToParseList));
             return;
         }
+        m_symbolToParseList.takeFirst();
     }
 }
 
@@ -79,16 +82,15 @@ void SyntacticAnalyzer::prepareToAnalysis(QList<Token> tokenList)
 
 void SyntacticAnalyzer::addError(QString errorText)
 {
-    m_errorText += errorText + "\n";
+   m_errorText += QString("%1:\t").arg(m_errorText.split("\n").count()) + errorText + "\n";
 }
 
 void SyntacticAnalyzer::useRule(int number, SyntacticSymbol leftPart, QList<SyntacticSymbol> rightPart)
 {
     m_usedRuleList << QString("№%1\t"
                               + MakeString(leftPart)
-                              + "::="
-                              + MakeString(rightPart)
-                              + "\n").arg(number);
+                              + " ::= "
+                              + MakeString(rightPart)).arg(number);
 }
 
 QStringList SyntacticAnalyzer::usedRuleList() const
