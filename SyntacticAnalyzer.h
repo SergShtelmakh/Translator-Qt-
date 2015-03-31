@@ -24,6 +24,7 @@ public:
 private:
 
     Production findCongruentRule(SyntacticSymbol firstSymbol, Token firstProductSymbol);
+    Production findLambdaRule(SyntacticSymbol firstSymbol);
     bool isLambdaRuleExists(SyntacticSymbol firstSymbol);
 
     void prepareToAnalysis(QList<Token> tokenList);

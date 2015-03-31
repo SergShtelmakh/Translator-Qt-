@@ -98,7 +98,7 @@ void MainWindow::loadSettings()
 
 void MainWindow::on_actionSave_triggered()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File")," ",tr(" (*.*)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),"sourceCode.txt",tr(" (*.txt)"));
     FileReader::writeTextToFile(fileName,ui->sourceCodeInputTextEdit->toPlainText());
 }
 

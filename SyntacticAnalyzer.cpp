@@ -22,7 +22,7 @@ void SyntacticAnalyzer::analyze(QList<Token> tokenList)
 {
     prepareToAnalysis(tokenList);
 
-    while (!m_tokenToParseList.isEmpty()) {
+    while (!m_tokenToParseList.isEmpty()&&!m_symbolToParseList.isEmpty()) {
         Token firstTokenToParse = m_tokenToParseList.first();
         SyntacticSymbol firstSymbolToParse = m_symbolToParseList.first();
         if (firstSymbolToParse == firstTokenToParse) {
@@ -33,7 +33,7 @@ void SyntacticAnalyzer::analyze(QList<Token> tokenList)
             if (production.syntacticSymbolList().isEmpty()&&(!isLambdaRuleExists(firstSymbolToParse))) {
                 addError(ErrorGenerator::syntacticError(m_tokenToParseList,m_symbolToParseList));
                 m_tokenToParseList.takeFirst();
-                continue;
+                return;
             }
             m_symbolToParseList.takeFirst();
             m_symbolToParseList = production.syntacticSymbolList() + m_symbolToParseList;
@@ -58,6 +58,15 @@ Production SyntacticAnalyzer::findCongruentRule(SyntacticSymbol firstSymbol, Tok
                 return production;
             }
         }
+    }
+    return findLambdaRule(firstSymbol);
+}
+
+Production SyntacticAnalyzer::findLambdaRule(SyntacticSymbol firstSymbol)
+{
+    foreach (Production production, m_productRules.values(firstSymbol)) {
+        if (production.syntacticSymbolList().isEmpty())
+            return production;
     }
     return Production();
 }
@@ -87,10 +96,7 @@ void SyntacticAnalyzer::addError(QString errorText)
 
 void SyntacticAnalyzer::useRule(int number, SyntacticSymbol leftPart, QList<SyntacticSymbol> rightPart)
 {
-    m_usedRuleList << QString("№%1\t"
-                              + MakeString(leftPart)
-                              + " ::= "
-                              + MakeString(rightPart)).arg(number);
+    m_usedRuleList << QString("№%1\t" + MakeString(leftPart) + " ::= " + MakeString(rightPart)).arg(number);
 }
 
 QStringList SyntacticAnalyzer::usedRuleList() const

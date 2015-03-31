@@ -16,9 +16,7 @@ void CompileOutputTextEdit::scrollToBottom()
 
 void CompileOutputTextEdit::addHTMLString(const QString &newString)
 {
-    QString editorValue = "<font color=" + HTMLColors::gray + ">" + toPlainText() + "</font>"
-            + newString;
-
+    QString editorValue = "<font color=" + HTMLColors::gray + ">" + toPlainText() + "</font>" + newString;
     setHtml(PlainTextToHTML(editorValue));
     scrollToBottom();
 }
