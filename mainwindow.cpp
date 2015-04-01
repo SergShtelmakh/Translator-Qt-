@@ -17,13 +17,10 @@ QString MainWindow::syntacticAnalyzerSettingsFileName = "SyntacticAnalyzersSetti
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_markupGenerator(new HTMLMarkupGenerator),
+    m_rulesStringListModel(new QStringListModel)
 {
-    m_markupGenerator = new HTMLMarkupGenerator();
-    m_rulesStringListModel = new QStringListModel();
-    //m_rulesStringListModel->setStringList(QStringList());
-
-
     ui->setupUi(this);
 
     connect(ui->sourceCodeInputTextEdit, SIGNAL(updateStatusBarSignal(int,int)), SLOT(updateStatusBarSlot(int,int)));
@@ -38,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete m_markupGenerator;
+    delete m_rulesStringListModel;
     delete ui;
 }
 

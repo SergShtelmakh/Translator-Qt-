@@ -2,6 +2,11 @@
 #include "ErrorGenerator.h"
 #include <QStringList>
 
+LexicalAnalyzer::LexicalAnalyzer() :
+    m_possibleTokenEndRegExp(QRegExp("( |\t)")),
+    m_maxCharacterTokensLenght(0)
+{}
+
 void LexicalAnalyzer::analyzeLine(QString line, int lineNumber)
 {
     int tokenBeginIndexInLine = 0;
@@ -46,6 +51,7 @@ void LexicalAnalyzer::clearAllAnalyzingData()
     m_identifierList.clear();
     m_tokenList.clear();
 }
+
 QRegExp LexicalAnalyzer::identifierRegExp() const
 {
     return m_identifierRegExp;
@@ -201,13 +207,6 @@ QList<Token> LexicalAnalyzer::tokenList() const
 QString LexicalAnalyzer::errorText() const
 {
     return m_errorText;
-}
-
-LexicalAnalyzer::LexicalAnalyzer()
-{
-    // Set default values
-    m_possibleTokenEndRegExp = QRegExp("( |\t)");
-    m_maxCharacterTokensLenght = 0;
 }
 
 void LexicalAnalyzer::analyze(QString sourceCode)

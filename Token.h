@@ -29,8 +29,7 @@ public:
 
     Token(){}
     Token(const Token &other);
-    Token (QString, TokenCategory, QPoint, QString);
-    Token (QString, TokenCategory, QString = "");
+    Token (QString lexeme, TokenCategory tokenCategory, QString errorInformation = "", QPoint position = QPoint());
 
     Token& operator=(const Token& newToken);
 
@@ -60,8 +59,8 @@ private:
 
     QString m_lexeme;               //!< Tokens lexeme.
     TokenCategory m_tokenCategory;  //!< Tokens category.
-    QPoint m_position;              //!< Tokens position.
     QString m_errorInformation;     //!< Tokens error information.
+    QPoint m_position;              //!< Tokens position.
 
     static QHash <QString, TokenCategory> m_convertingStringToTokenCategoryHash;
 

@@ -1,14 +1,14 @@
 #include "Identifier.h"
 
-Identifier::Identifier(const Identifier &newIdentifier)
-{
-    m_name = newIdentifier.name();
-    m_positionsList = newIdentifier.positionsList();
-}
+Identifier::Identifier(const Identifier &newIdentifier) :
+    m_name(newIdentifier.name()),
+    m_positionsList(newIdentifier.positionsList())
+{}
 
-Identifier::Identifier(QString name, QPoint position)
+Identifier::Identifier(QString name, QPoint position) :
+    m_name(name),
+    m_positionsList()
 {
-    m_name = name;
     m_positionsList.append(position);
 }
 

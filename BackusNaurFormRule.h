@@ -9,9 +9,8 @@ class BackusNaurFormRule
 
 public:
 
-    BackusNaurFormRule();
+    BackusNaurFormRule(){}
     BackusNaurFormRule(SyntacticSymbol leftPart, QList <SyntacticSymbol> rightPart);
-    ~BackusNaurFormRule();
 
     SyntacticSymbol leftPart() const;
     void setLeftPart(const SyntacticSymbol &leftPart);

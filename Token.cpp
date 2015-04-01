@@ -2,37 +2,28 @@
 
 QHash<QString,Token::TokenCategory> Token::m_convertingStringToTokenCategoryHash;
 
-Token::Token(const Token &newToken)
-{
-    m_lexeme = newToken.lexeme();
-    m_tokenCategory = newToken.tokenCategory();
-    m_position = newToken.position();
-    m_errorInformation = newToken.errorInformation();
-}
+Token::Token(const Token &otherToken) :
+    m_lexeme(otherToken.lexeme()),
+    m_tokenCategory(otherToken.tokenCategory()),
+    m_errorInformation(otherToken.errorInformation()),
+    m_position(otherToken.position())
+{}
 
-Token::Token(QString newLexeme, Token::TokenCategory newTokenCategory, QPoint newPosition, QString newErrorInformation)
-{
-    m_lexeme = newLexeme;
-    m_tokenCategory = newTokenCategory;
-    m_position = newPosition;
-    m_errorInformation = newErrorInformation;
-}
+Token::Token(QString lexeme, Token::TokenCategory tokenCategory, QString errorInformation, QPoint position) :
+    m_lexeme(lexeme),
+    m_tokenCategory(tokenCategory),
+    m_errorInformation(errorInformation),
+    m_position(position)
+{}
 
-Token::Token(QString newLexeme, Token::TokenCategory newTokenCategory, QString newErrorInformation)
+Token &Token::operator=(const Token &otherToken)
 {
-    m_lexeme = newLexeme;
-    m_tokenCategory = newTokenCategory;
-    m_errorInformation = newErrorInformation;
-}
-
-Token &Token::operator=(const Token &newToken)
-{
-    if (this == &newToken)
+    if (this == &otherToken)
         return *this;
 
-    m_lexeme = newToken.lexeme();
-    m_tokenCategory = newToken.tokenCategory();
-    m_position = newToken.position();
+    m_lexeme = otherToken.lexeme();
+    m_tokenCategory = otherToken.tokenCategory();
+    m_position = otherToken.position();
     return *this;
 }
 

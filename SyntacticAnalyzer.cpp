@@ -1,17 +1,6 @@
 #include "SyntacticAnalyzer.h"
 #include "ErrorGenerator.h"
 
-
-SyntacticAnalyzer::SyntacticAnalyzer()
-{
-
-}
-
-SyntacticAnalyzer::~SyntacticAnalyzer()
-{
-
-}
-
 void SyntacticAnalyzer::addProductRule(SyntacticSymbol firstSymbol, QList<SyntacticSymbol> productionList)
 {
     int ruleNumber = m_productRules.size();

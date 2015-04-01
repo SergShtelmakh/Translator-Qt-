@@ -4,19 +4,17 @@
 
 QHash <QString, SyntacticSymbol::SyntacticSymbolType> SyntacticSymbol::m_convertingStringToSyntacticSymbolTypeHash;
 
-SyntacticSymbol::SyntacticSymbol(QString name, SyntacticSymbol::SyntacticSymbolType type, Token::TokenCategory category)
-{
-    m_name = name;
-    m_type = type;
-    m_category = category;
-}
+SyntacticSymbol::SyntacticSymbol(QString name, SyntacticSymbol::SyntacticSymbolType type, Token::TokenCategory category) :
+    m_name(name),
+    m_type(type),
+    m_category(category)
+{}
 
-SyntacticSymbol::SyntacticSymbol(QString name, QString type, QString category)
-{
-    m_name = name;
-    m_type = SyntacticSymbol::stringToSyntacticSymbolType(type);
-    m_category = Token::stringToTokenCategory(category);
-}
+SyntacticSymbol::SyntacticSymbol(QString name, QString type, QString category) :
+    m_name(name),
+    m_type(SyntacticSymbol::stringToSyntacticSymbolType(type)),
+    m_category(Token::stringToTokenCategory(category))
+{}
 
 QString SyntacticSymbol::name() const
 {

@@ -1,20 +1,9 @@
 #include "BackusNaurFormRule.h"
 
-BackusNaurFormRule::BackusNaurFormRule()
-{
-
-}
-
-BackusNaurFormRule::BackusNaurFormRule(SyntacticSymbol leftPart, QList<SyntacticSymbol> rightPart)
-{
-    m_leftPart = leftPart;
-    m_rightPart = rightPart;
-}
-
-BackusNaurFormRule::~BackusNaurFormRule()
-{
-
-}
+BackusNaurFormRule::BackusNaurFormRule(SyntacticSymbol leftPart, QList<SyntacticSymbol> rightPart) :
+    m_leftPart(leftPart),
+    m_rightPart(rightPart)
+{}
 
 SyntacticSymbol BackusNaurFormRule::leftPart() const
 {

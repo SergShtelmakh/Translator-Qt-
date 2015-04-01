@@ -12,9 +12,6 @@ class SyntacticAnalyzer
 
 public:
 
-    SyntacticAnalyzer();
-    ~SyntacticAnalyzer();
-
     void addProductRule(SyntacticSymbol firstSymbol, QList <SyntacticSymbol> productionList);
     void analyze(QList<Token> tokenList);
     QString errorText() const;

@@ -3,10 +3,10 @@
 #include <QScrollBar>
 #include <QTimer>
 
-SourceCodeInputTextEdit::SourceCodeInputTextEdit(QWidget *parent) : QTextEdit(parent)
+SourceCodeInputTextEdit::SourceCodeInputTextEdit(QWidget *parent) :
+    QTextEdit(parent),
+    m_textUpdateTimer(new QTimer)
 {
-    m_textUpdateTimer = new QTimer(this);
-
     connect(this,SIGNAL(textChanged()),SLOT(onTextChangedSlot()));
     connect(this,SIGNAL(cursorPositionChanged()),SLOT(onCursorPositionChangedSlot()));
     connect(m_textUpdateTimer,SIGNAL(timeout()),SLOT(onTextUpdateTimerTimeoutSlot()));

@@ -12,7 +12,7 @@ class Production
 
 public:
 
-    Production();
+    Production(){}
     Production(int number, QList <SyntacticSymbol> syntacticSymbolList);
 
     int number() const;

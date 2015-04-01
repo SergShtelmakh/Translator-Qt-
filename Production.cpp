@@ -1,15 +1,9 @@
 #include "Production.h"
 
-Production::Production()
-{
-
-}
-
-Production::Production(int number, QList<SyntacticSymbol> syntacticSymbolList)
-{
-    m_number = number;
-    m_syntacticSymbolList = syntacticSymbolList;
-}
+Production::Production(int number, QList<SyntacticSymbol> syntacticSymbolList) :
+    m_number(number),
+    m_syntacticSymbolList(syntacticSymbolList)
+{}
 
 int Production::number() const
 {
