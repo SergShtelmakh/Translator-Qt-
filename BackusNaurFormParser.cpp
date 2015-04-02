@@ -1,7 +1,7 @@
 #include "BackusNaurFormParser.h"
 #include <QStringList>
 
-QList<BackusNaurFormRule> BackusNaurFormParser::parse(QString sourceString)
+QList<BackusNaurFormRule> BackusNaurFormParser::parse(QString &sourceString)
 {
     deleteComments(sourceString);
 
@@ -27,7 +27,7 @@ void BackusNaurFormParser::deleteComments(QString &oldString)
     }
 }
 
-int BackusNaurFormParser::findCommentBeginIndex(QString string, int startIndex)
+int BackusNaurFormParser::findCommentBeginIndex(const QString &string, int startIndex)
 {
     int beginCommentIndex = string.indexOf("/*",startIndex);
     if (beginCommentIndex > 0) {
@@ -40,7 +40,7 @@ int BackusNaurFormParser::findCommentBeginIndex(QString string, int startIndex)
     }
 }
 
-int BackusNaurFormParser::findCommentEndIndex(QString string, int startIndex)
+int BackusNaurFormParser::findCommentEndIndex(const QString &string, int startIndex)
 {
     int endCommentIndex = string.indexOf("*/",startIndex);
     if (endCommentIndex > 0) {
@@ -53,7 +53,7 @@ int BackusNaurFormParser::findCommentEndIndex(QString string, int startIndex)
     }
 }
 
-BackusNaurFormRule BackusNaurFormParser::parseRule(QString ruleSourceString)
+BackusNaurFormRule BackusNaurFormParser::parseRule(const QString &ruleSourceString)
 {
     int separatorIndex = ruleSourceString.indexOf("::=");
 

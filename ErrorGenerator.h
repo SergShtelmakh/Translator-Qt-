@@ -10,8 +10,8 @@ class ErrorGenerator
 
 public:
 
-    static QString lexicalError(Token incorrectToken);
-    static QString syntacticError(QList<Token> tokenToParseList, QList<SyntacticSymbol> syntacticSymbolList);
+    static QString lexicalError(const Token &incorrectToken);
+    static QString syntacticError(const QList<Token> &tokenToParseList,const QList<SyntacticSymbol> &syntacticSymbolList);
 
 };
 

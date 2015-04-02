@@ -26,7 +26,7 @@ QString HTMLMarkupGenerator::getMessageForLog(const LexicalAnalyzer& lexicalAnal
     return newLineInLog;
 }
 
-QString HTMLMarkupGenerator::getSuccessfulResultMessage(QString analyzerName) const
+QString HTMLMarkupGenerator::getSuccessfulResultMessage(const QString &analyzerName) const
 {
     QString newLine = "<font color=" + HTMLColors::darkBlue + ">"
             + analyzerName + ":\n"
@@ -35,7 +35,7 @@ QString HTMLMarkupGenerator::getSuccessfulResultMessage(QString analyzerName) co
     return newLine;
 }
 
-QString HTMLMarkupGenerator::getFailedResultMessage(QString analyzerName, QString errors) const
+QString HTMLMarkupGenerator::getFailedResultMessage(const QString &analyzerName, QString errors) const
 {
     errors.replace("<","&lt;").replace(">","&gt;");
     int errorCount = errors.split(QRegExp("\n")).count() - 1;
@@ -97,7 +97,7 @@ QString HTMLMarkupGenerator::getSourceCodeHTMLMarkup(const LexicalAnalyzer& anal
 }
 
 
-QString PlainTextToHTML(QString plainText)
+QString PlainTextToHTML(const QString &plainText)
 {
     QString html = "<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body>"
             + plainText

@@ -11,15 +11,15 @@ class SyntacticSymbol
 
 public:
 
-    enum SyntacticSymbolType{
+    enum SyntacticSymbolType {
         nonterminalSymbol   = 0,
         startSymbol         = 1,
         terminalSymbol      = 2
     };
 
     SyntacticSymbol(){}
-    SyntacticSymbol(QString name, SyntacticSymbolType type, Token::TokenCategory category = Token::categoryNone);
-    SyntacticSymbol(QString name, QString type, QString category);
+    SyntacticSymbol(const QString &name, SyntacticSymbolType type, Token::TokenCategory category = Token::categoryNone);
+    SyntacticSymbol(const QString &name, const QString &type, const QString &category);
 
     QString name() const;
     void setName(const QString &name);
@@ -30,9 +30,9 @@ public:
     Token::TokenCategory category() const;
     void setCategory(const Token::TokenCategory &category);
 
-    static SyntacticSymbolType stringToSyntacticSymbolType(QString string);
+    static SyntacticSymbolType stringToSyntacticSymbolType(const QString &string);
 
-    bool isCorrect();
+    bool isCorrect() const;
 
 private:
 
@@ -50,7 +50,7 @@ bool operator==(const SyntacticSymbol &symbol,const Token &token);
 
 uint qHash(const SyntacticSymbol &symbol);
 
-QString MakeString(QList<SyntacticSymbol> syntacticSymbolList);
-QString MakeString(SyntacticSymbol syntacticSymbol);
+QString MakeString(const QList<SyntacticSymbol> &syntacticSymbolList);
+QString MakeString(const SyntacticSymbol &syntacticSymbol);
 
 #endif // SYNTACTICSYMBOL_H

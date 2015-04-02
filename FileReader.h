@@ -11,21 +11,21 @@ class FileReader
 
 public:
 
-    static QString getTextFromFile(QString fileName);
+    static QString getTextFromFile(const QString &fileName);
 
-    static void writeTextToFile(QString fileName, QString text);
+    static void writeTextToFile(const QString &fileName, const QString &text);
 
-    static void loadLexicalAnalyzerSettings(QString fileName, LexicalAnalyzer &lexicalAnalyzer);
+    static void loadLexicalAnalyzerSettings(const QString &fileName, LexicalAnalyzer &lexicalAnalyzer);
 
-    static void loadSyntacticAnalyzerRules(QString fileName, SyntacticAnalyzer &syntacticAnalyzer);
+    static void loadSyntacticAnalyzerRules(const QString &fileName, SyntacticAnalyzer &syntacticAnalyzer);
 
-    static bool isFileExist(QString fileName);
+    static bool isFileExist(const QString &fileName);
 
 private:
 
-    static QJsonDocument loadJson(QString fileName);
+    static QJsonDocument loadJson(const QString &fileName);
 
-    static void loadLexicalAnalyzerSettings(QJsonObject lexicalAnalyzerJsonObject, LexicalAnalyzer &lexicalAnalyzer);
+    static void loadLexicalAnalyzerSettings(const QJsonObject &lexicalAnalyzerJsonObject, LexicalAnalyzer &lexicalAnalyzer);
 
 };
 

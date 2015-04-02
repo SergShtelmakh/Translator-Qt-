@@ -20,7 +20,7 @@ public:
      *
      * @return Current position of cursor.
      */
-    QPoint getCursorCoordinate();
+    QPoint getCursorCoordinate() const;
 
 signals:
 

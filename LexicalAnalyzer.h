@@ -48,7 +48,7 @@ public:
      *
      * @param[in] sourceCode Source code for lexical analysis.
      */
-    void analyze(QString sourceCode);
+    void analyze(const QString &sourceCode);
 
     /*!
      * This method searches identifier in table by name.
@@ -56,7 +56,7 @@ public:
      * @param[in] identifierName Identifier name.
      * @return Index of identifier in table or -1 when identifier not exists.
      */
-    int getIdentifierIndex(QString identifierName);
+    int getIdentifierIndex(const QString &identifierName) const;
 
     /*!
      * This method returns tokens list without space tokens.
@@ -70,14 +70,14 @@ public:
      *
      * @param[in] identifierName Keyword.
      */
-    void addKeyword(QString keyword);
+    void addKeyword(const QString &keyword);
 
     /*!
      * This method used to add character tokens of program language. (e.g. *, <, >, = ...)
      *
      * @param[in] characterToken Character token.
      */
-    void addCharacterToken(QString characterToken);
+    void addCharacterToken(const QString &characterToken);
 
 
 
@@ -89,7 +89,7 @@ protected:
      * @param[in] sourceString Source string.
      * @return Next token.
      */
-    Token getNextToken(QString sourceString);
+    Token getNextToken(const QString &sourceString);
 
     /*!
      * This method used to get space token from source code.
@@ -97,7 +97,7 @@ protected:
      * @param[in] sourceString Source string.
      * @return Space token.
      */
-    Token getSpaceToken(QString sourceString);
+    Token getSpaceToken(const QString &sourceString);
 
     /*!
      * This method used to get number literal token from source code.
@@ -105,7 +105,7 @@ protected:
      * @param[in] sourceString Source string.
      * @return Number literal token.
      */
-    Token getNumberLiteralToken(QString sourceString);
+    Token getNumberLiteralToken(const QString &sourceString);
 
     /*!
      * This method used to get keyword token from source code.
@@ -113,7 +113,7 @@ protected:
      * @param[in] sourceString Source string.
      * @return Keyword token.
      */
-    Token getKeywordToken(QString sourceString);
+    Token getKeywordToken(const QString &sourceString);
 
     /*!
      * This method used to get identifier token from source code.
@@ -121,7 +121,7 @@ protected:
      * @param[in] sourceString Source string.
      * @return Identifier token.
      */
-    Token getIdentifierToken(QString sourceString);
+    Token getIdentifierToken(const QString &sourceString);
 
     /*!
      * This method used to get string literal token from source code.
@@ -129,7 +129,7 @@ protected:
      * @param[in] sourceString Source string.
      * @return string literal token.
      */
-    Token getStringLiteralToken(QString sourceString);
+    Token getStringLiteralToken(const QString &sourceString);
 
     /*!
      * This method used to get character token from source code.
@@ -137,7 +137,7 @@ protected:
      * @param[in] sourceString Source string.
      * @return Character token.
      */
-    Token getCharacterToken(QString sourceString);
+    Token getCharacterToken(const QString &sourceString);
 
 private:
 
@@ -147,21 +147,21 @@ private:
      * @param[in] sourceCodeLine Source code line.
      * @param[in] lineNumber Line number.
      */
-    void analyzeLine(QString sourceCodeLine, int lineNumber);
+    void analyzeLine(const QString &sourceCodeLine, int lineNumber);
 
     /*!
      * This method used to add identifier to identifiers list.
      *
      * @param[in] identifier Identifier.
      */
-    void addIdentifier(Identifier identifier);
+    void addIdentifier(Identifier &identifier);
 
     /*!
      * This method used to add analysis errors.
      *
      * @param[in] errorString Errors string.
      */
-    void addError(QString errorString);
+    void addError(const QString &errorString);
 
     /*!
      * This method used to clear token list, identifiers list and errors of last analysis.
@@ -193,15 +193,14 @@ private:
  * @param[in] tokenList List of tokens.
  * @return List of tokens as string.
  */
-QString TokenListToString(QList<Token> tokenList);
+QString MakeString(const QList<Token> &tokenList);
 
 /*!
  * This function used to add possible variant to regular expression.
  *
- * @param[in] oldRegExp Regular expression.
+ * @param[in,out] oldRegExp Regular expression.
  * @param[in] string Possible variant.
- * @return New regular expression.
  */
-QRegExp AddPossibleVariantToRegExpPattern(QRegExp oldRegExp, QString string);
+void AddPossibleVariantToRegExpPattern(QRegExp &oldRegExp, const QString &string);
 
 #endif // LEXICALANALYZER_H

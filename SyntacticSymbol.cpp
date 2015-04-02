@@ -4,13 +4,13 @@
 
 QHash <QString, SyntacticSymbol::SyntacticSymbolType> SyntacticSymbol::m_convertingStringToSyntacticSymbolTypeHash;
 
-SyntacticSymbol::SyntacticSymbol(QString name, SyntacticSymbol::SyntacticSymbolType type, Token::TokenCategory category) :
+SyntacticSymbol::SyntacticSymbol(const QString &name, SyntacticSymbol::SyntacticSymbolType type, Token::TokenCategory category) :
     m_name(name),
     m_type(type),
     m_category(category)
 {}
 
-SyntacticSymbol::SyntacticSymbol(QString name, QString type, QString category) :
+SyntacticSymbol::SyntacticSymbol(const QString &name, const QString &type, const QString &category) :
     m_name(name),
     m_type(SyntacticSymbol::stringToSyntacticSymbolType(type)),
     m_category(Token::stringToTokenCategory(category))
@@ -46,7 +46,7 @@ void SyntacticSymbol::setCategory(const Token::TokenCategory &category)
     m_category = category;
 }
 
-SyntacticSymbol::SyntacticSymbolType SyntacticSymbol::stringToSyntacticSymbolType(QString string)
+SyntacticSymbol::SyntacticSymbolType SyntacticSymbol::stringToSyntacticSymbolType(const QString &string)
 {
     if (m_convertingStringToSyntacticSymbolTypeHash.isEmpty()) {
         m_convertingStringToSyntacticSymbolTypeHash.insert("nonterminalSymbol",SyntacticSymbol::nonterminalSymbol);
@@ -57,7 +57,7 @@ SyntacticSymbol::SyntacticSymbolType SyntacticSymbol::stringToSyntacticSymbolTyp
     return m_convertingStringToSyntacticSymbolTypeHash.value(string);
 }
 
-bool SyntacticSymbol::isCorrect()
+bool SyntacticSymbol::isCorrect() const
 {
     if(m_name.isNull())
         return false;
@@ -97,7 +97,7 @@ bool operator==(const SyntacticSymbol &symbol, const Token &token)
     return token == symbol;
 }
 
-QString MakeString(QList<SyntacticSymbol> syntacticSymbolList)
+QString MakeString(const QList<SyntacticSymbol> &syntacticSymbolList)
 {
     if (syntacticSymbolList.isEmpty()) {
         return "Λ";
@@ -110,7 +110,7 @@ QString MakeString(QList<SyntacticSymbol> syntacticSymbolList)
 }
 
 
-QString MakeString(SyntacticSymbol syntacticSymbol)
+QString MakeString(const SyntacticSymbol &syntacticSymbol)
 {
     switch (syntacticSymbol.type()) {
     case SyntacticSymbol::nonterminalSymbol:

@@ -1,13 +1,13 @@
 #include "SyntacticAnalyzer.h"
 #include "ErrorGenerator.h"
 
-void SyntacticAnalyzer::addProductRule(SyntacticSymbol firstSymbol, QList<SyntacticSymbol> productionList)
+void SyntacticAnalyzer::addProductRule(const SyntacticSymbol &firstSymbol, const QList<SyntacticSymbol> &productionList)
 {
     int ruleNumber = m_productRules.size();
     m_productRules.insert(firstSymbol, Production(ruleNumber,productionList));
 }
 
-void SyntacticAnalyzer::analyze(QList<Token> tokenList)
+void SyntacticAnalyzer::analyze(const QList<Token> &tokenList)
 {
     prepareToAnalysis(tokenList);
 
@@ -20,7 +20,8 @@ void SyntacticAnalyzer::analyze(QList<Token> tokenList)
         } else {
             Production production = findCongruentRule(firstSymbolToParse, firstTokenToParse);
             if (production.syntacticSymbolList().isEmpty()&&(!isLambdaRuleExists(firstSymbolToParse))) {
-                addError(ErrorGenerator::syntacticError(m_tokenToParseList,m_symbolToParseList));
+                QString error = ErrorGenerator::syntacticError(m_tokenToParseList,m_symbolToParseList);
+                addError(error);
                 m_tokenToParseList.takeFirst();
                 return;
             }
@@ -32,14 +33,15 @@ void SyntacticAnalyzer::analyze(QList<Token> tokenList)
     while (!m_symbolToParseList.isEmpty()) {
         SyntacticSymbol symbol = m_symbolToParseList.first();
         if (!isLambdaRuleExists(symbol)) {
-            addError(ErrorGenerator::syntacticError(m_tokenToParseList,m_symbolToParseList));
+            QString error = ErrorGenerator::syntacticError(m_tokenToParseList,m_symbolToParseList);
+            addError(error);
             return;
         }
         m_symbolToParseList.takeFirst();
     }
 }
 
-Production SyntacticAnalyzer::findCongruentRule(SyntacticSymbol firstSymbol, Token firstProductSymbol)
+Production SyntacticAnalyzer::findCongruentRule(const SyntacticSymbol &firstSymbol, const Token &firstProductSymbol) const
 {
     foreach (Production production, m_productRules.values(firstSymbol)) {
         if (!production.syntacticSymbolList().isEmpty()) {
@@ -51,7 +53,7 @@ Production SyntacticAnalyzer::findCongruentRule(SyntacticSymbol firstSymbol, Tok
     return findLambdaRule(firstSymbol);
 }
 
-Production SyntacticAnalyzer::findLambdaRule(SyntacticSymbol firstSymbol)
+Production SyntacticAnalyzer::findLambdaRule(const SyntacticSymbol &firstSymbol) const
 {
     foreach (Production production, m_productRules.values(firstSymbol)) {
         if (production.syntacticSymbolList().isEmpty())
@@ -60,7 +62,7 @@ Production SyntacticAnalyzer::findLambdaRule(SyntacticSymbol firstSymbol)
     return Production();
 }
 
-bool SyntacticAnalyzer::isLambdaRuleExists(SyntacticSymbol firstSymbol)
+bool SyntacticAnalyzer::isLambdaRuleExists(const SyntacticSymbol &firstSymbol)
 {
     foreach (Production production, m_productRules.values(firstSymbol)) {
         if (production.syntacticSymbolList().isEmpty())
@@ -69,7 +71,7 @@ bool SyntacticAnalyzer::isLambdaRuleExists(SyntacticSymbol firstSymbol)
     return false;
 }
 
-void SyntacticAnalyzer::prepareToAnalysis(QList<Token> tokenList)
+void SyntacticAnalyzer::prepareToAnalysis(const QList<Token> &tokenList)
 {
     m_tokenToParseList = tokenList;
     m_symbolToParseList.clear();
@@ -78,12 +80,12 @@ void SyntacticAnalyzer::prepareToAnalysis(QList<Token> tokenList)
     m_usedRuleList.clear();
 }
 
-void SyntacticAnalyzer::addError(QString errorText)
+void SyntacticAnalyzer::addError(const QString &errorText)
 {
    m_errorText += QString("%1:\t").arg(m_errorText.split("\n").count()) + errorText + "\n";
 }
 
-void SyntacticAnalyzer::useRule(int number, SyntacticSymbol leftPart, QList<SyntacticSymbol> rightPart)
+void SyntacticAnalyzer::useRule(int number, const SyntacticSymbol &leftPart, const QList<SyntacticSymbol> &rightPart)
 {
     m_usedRuleList << QString("№%1\t" + MakeString(leftPart) + " ::= " + MakeString(rightPart)).arg(number);
 }

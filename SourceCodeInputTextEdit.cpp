@@ -20,7 +20,7 @@ SourceCodeInputTextEdit::~SourceCodeInputTextEdit()
     delete m_textUpdateTimer;
 }
 
-QPoint SourceCodeInputTextEdit::getCursorCoordinate()
+QPoint SourceCodeInputTextEdit::getCursorCoordinate() const
 {
     QPoint cursorCoordinate;
     QString plainText = toPlainText();

@@ -39,7 +39,7 @@ private:
      * @param[in] analyzerName Ananyzer name.
      * @return String with successful result.
      */
-    QString getSuccessfulResultMessage(QString analyzerName) const;
+    QString getSuccessfulResultMessage(const QString &analyzerName) const;
 
     /*!
      * This method returns string with failed result and errors list.
@@ -48,7 +48,7 @@ private:
      * @param[in] errors Errors string.
      * @return String with failed result and errors list.
      */
-    QString getFailedResultMessage(QString analyzerName, QString errors) const;
+    QString getFailedResultMessage(const QString &analyzerName, QString errors) const;
 
 
     /*!
@@ -75,6 +75,6 @@ private:
  * @param[in] plainText Plain text.
  * @return HTML representation of plain text.
  */
-QString PlainTextToHTML(QString plainText);
+QString PlainTextToHTML(const QString &plainText);
 
 #endif // LEXICALANALYSISHTMLMARKUPGENERATOR_H

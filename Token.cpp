@@ -9,7 +9,7 @@ Token::Token(const Token &otherToken) :
     m_position(otherToken.position())
 {}
 
-Token::Token(QString lexeme, Token::TokenCategory tokenCategory, QString errorInformation, QPoint position) :
+Token::Token(const QString &lexeme, Token::TokenCategory tokenCategory, const QString &errorInformation, const QPoint &position) :
     m_lexeme(lexeme),
     m_tokenCategory(tokenCategory),
     m_errorInformation(errorInformation),
@@ -52,7 +52,7 @@ bool Token::isCorrect() const
     return m_tokenCategory != Token::categoryNone;
 }
 
-Token::TokenCategory Token::stringToTokenCategory(QString string)
+Token::TokenCategory Token::stringToTokenCategory(const QString &string)
 {
     if (m_convertingStringToTokenCategoryHash.isEmpty()) {
         m_convertingStringToTokenCategoryHash.insert("categoryCharToken",Token::categoryCharToken);
@@ -78,7 +78,7 @@ QString Token::getAllErrorInformation() const
     return m_lexeme + ": " + m_errorInformation;
 }
 
-QString MakeString(Token token)
+QString MakeString(const Token &token)
 {
     if (!token.isCorrect())
         return "";

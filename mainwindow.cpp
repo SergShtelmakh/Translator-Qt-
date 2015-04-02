@@ -12,14 +12,13 @@ Q_GLOBAL_STATIC(LexicalAnalyzer,globalLexicalAnalyzer)
 
 Q_GLOBAL_STATIC(SyntacticAnalyzer,globalSyntacticAnalyzer)
 
-QString MainWindow::lexicalAnalyzerSettingsFileName = "LexicalAnalyzersSettings.json";
-QString MainWindow::syntacticAnalyzerSettingsFileName = "SyntacticAnalyzersSetting.rules";
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_markupGenerator(new HTMLMarkupGenerator),
-    m_rulesStringListModel(new QStringListModel)
+    m_rulesStringListModel(new QStringListModel),
+    m_lexicalAnalyzerSettingsFileName("LexicalAnalyzersSettings.json"),
+    m_syntacticAnalyzerSettingsFileName("SyntacticAnalyzersSetting.rules")
 {
     ui->setupUi(this);
 
@@ -49,7 +48,7 @@ void MainWindow::on_actionRun_triggered()
     ui->compileOutputTextEdit->addHTMLString(this->getMarkupGenerator()->getMessageForLog(*globalLexicalAnalyzer, *globalSyntacticAnalyzer));
 
     // Write information about tokens
-    ui->tokenSequenceTextEdit->setText(TokenListToString(globalLexicalAnalyzer->tokenList()));
+    ui->tokenSequenceTextEdit->setText(MakeString(globalLexicalAnalyzer->tokenList()));
 
     // Write information about identifiers
     QList <Identifier> identifierList = globalLexicalAnalyzer->identifierList();
@@ -84,13 +83,13 @@ HTMLMarkupGenerator* MainWindow::getMarkupGenerator() const
 
 void MainWindow::loadSettings()
 {
-    if (!FileReader::isFileExist(lexicalAnalyzerSettingsFileName))
-        lexicalAnalyzerSettingsFileName = QFileDialog::getOpenFileName(this, tr("Open Settings File"),"LexicalAnalyzersSettings.json", tr("JSON (*.json)"));
-    FileReader::loadLexicalAnalyzerSettings(lexicalAnalyzerSettingsFileName,*globalLexicalAnalyzer);
+    if (!FileReader::isFileExist(m_lexicalAnalyzerSettingsFileName))
+        m_lexicalAnalyzerSettingsFileName = QFileDialog::getOpenFileName(this, tr("Open Settings File"),"LexicalAnalyzersSettings.json", tr("JSON (*.json)"));
+    FileReader::loadLexicalAnalyzerSettings(m_lexicalAnalyzerSettingsFileName,*globalLexicalAnalyzer);
 
-    if (!FileReader::isFileExist(syntacticAnalyzerSettingsFileName))
-        syntacticAnalyzerSettingsFileName = QFileDialog::getOpenFileName(this, tr("Open Rules File"),"SyntacticAnalyzersSetting.rules", tr("RULES (*.rules)"));
-    FileReader::loadSyntacticAnalyzerRules(syntacticAnalyzerSettingsFileName,*globalSyntacticAnalyzer);
+    if (!FileReader::isFileExist(m_syntacticAnalyzerSettingsFileName))
+        m_syntacticAnalyzerSettingsFileName = QFileDialog::getOpenFileName(this, tr("Open Rules File"),"SyntacticAnalyzersSetting.rules", tr("RULES (*.rules)"));
+    FileReader::loadSyntacticAnalyzerRules(m_syntacticAnalyzerSettingsFileName,*globalSyntacticAnalyzer);
 
 }
 

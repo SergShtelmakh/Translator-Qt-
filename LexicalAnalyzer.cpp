@@ -7,7 +7,7 @@ LexicalAnalyzer::LexicalAnalyzer() :
     m_maxCharacterTokensLenght(0)
 {}
 
-void LexicalAnalyzer::analyzeLine(QString line, int lineNumber)
+void LexicalAnalyzer::analyzeLine(const QString &line, int lineNumber)
 {
     int tokenBeginIndexInLine = 0;
 
@@ -20,9 +20,10 @@ void LexicalAnalyzer::analyzeLine(QString line, int lineNumber)
         nextToken.setPosition(QPoint(lineNumber,tokenBeginIndexInLine));
         m_tokenList.append(nextToken);
 
-        if (nextToken.tokenCategory() == Token::categoryIdentifier)
-            addIdentifier(Identifier(nextToken.lexeme(),nextToken.position()));
-
+        if (nextToken.tokenCategory() == Token::categoryIdentifier) {
+            Identifier identifier = Identifier(nextToken.lexeme(),nextToken.position());
+            addIdentifier(identifier);
+        }
         if (!nextToken.isCorrect())
             addError(ErrorGenerator::lexicalError(nextToken));
 
@@ -30,7 +31,7 @@ void LexicalAnalyzer::analyzeLine(QString line, int lineNumber)
     }
 }
 
-void LexicalAnalyzer::addIdentifier(Identifier identifier)
+void LexicalAnalyzer::addIdentifier(Identifier &identifier)
 {
     int newIdentifierIndex = m_identifierList.indexOf(identifier);
     if (m_identifierList.contains(identifier)) {
@@ -40,7 +41,7 @@ void LexicalAnalyzer::addIdentifier(Identifier identifier)
     }
 }
 
-void LexicalAnalyzer::addError(QString error)
+void LexicalAnalyzer::addError(const QString &error)
 {
     m_errorText += QString("%1:\t").arg(m_errorText.split("\n").count()) + error + "\n";
 }
@@ -82,7 +83,7 @@ void LexicalAnalyzer::setBeginStringLiteral(const QString &beginStringLiteral)
     m_beginStringLiteral = beginStringLiteral;
 }
 
-Token LexicalAnalyzer::getNextToken(QString sourceString)
+Token LexicalAnalyzer::getNextToken(const QString &sourceString)
 {
     QString firstChar = sourceString.mid(0,1);
     Token nextToken;
@@ -130,16 +131,16 @@ void LexicalAnalyzer::setMaxIdentifierNameLenght(int maxIdentifierNameLenght)
     m_maxIdentifierNameLenght = maxIdentifierNameLenght;
 }
 
-void LexicalAnalyzer::addKeyword(QString keyword)
+void LexicalAnalyzer::addKeyword(const QString &keyword)
 {
     int number = m_keyWordsHash.size();
     m_keyWordsHash.insert(keyword,number);
 }
 
-void LexicalAnalyzer::addCharacterToken(QString characterToken)
+void LexicalAnalyzer::addCharacterToken(const QString &characterToken)
 {
     int number = m_keyWordsHash.size();
-    m_possibleTokenEndRegExp = AddPossibleVariantToRegExpPattern(m_possibleTokenEndRegExp, characterToken.mid(0,1));
+    AddPossibleVariantToRegExpPattern(m_possibleTokenEndRegExp, characterToken.mid(0,1));
 
     if (characterToken.length() > m_maxCharacterTokensLenght)
         m_maxCharacterTokensLenght = characterToken.length();
@@ -166,8 +167,7 @@ void LexicalAnalyzer::setMaxNumberLiteralLenght(int maxNumberLiteralLenght)
     m_maxNumberLiteralLenght = maxNumberLiteralLenght;
 }
 
-
-Token LexicalAnalyzer::getSpaceToken(QString sourceString)
+Token LexicalAnalyzer::getSpaceToken(const QString &sourceString)
 {
 
     QString lexema = sourceString.mid(0,sourceString.indexOf(QRegExp("[^ \t]")));
@@ -179,7 +179,7 @@ QList<Identifier> LexicalAnalyzer::identifierList() const
     return m_identifierList;
 }
 
-int LexicalAnalyzer::getIdentifierIndex(QString identifierName)
+int LexicalAnalyzer::getIdentifierIndex(const QString &identifierName) const
 {
     for (int identifierIndex = 0; identifierIndex < m_identifierList.count(); identifierIndex ++) {
         if (m_identifierList[identifierIndex].name() == identifierName) {
@@ -209,7 +209,7 @@ QString LexicalAnalyzer::errorText() const
     return m_errorText;
 }
 
-void LexicalAnalyzer::analyze(QString sourceCode)
+void LexicalAnalyzer::analyze(const QString &sourceCode)
 {
     clearAllAnalyzingData();
     QStringList plainTextList = sourceCode.split("\n");
@@ -217,7 +217,7 @@ void LexicalAnalyzer::analyze(QString sourceCode)
         analyzeLine(plainTextList[lineIndex], lineIndex);
 }
 
-Token LexicalAnalyzer::getNumberLiteralToken(QString sourceString)
+Token LexicalAnalyzer::getNumberLiteralToken(const QString &sourceString)
 {
     int state = 0;
     int tokenEnd = 0;
@@ -335,7 +335,7 @@ Token LexicalAnalyzer::getNumberLiteralToken(QString sourceString)
 }
 
 
-Token LexicalAnalyzer::getKeywordToken(QString sourceString)
+Token LexicalAnalyzer::getKeywordToken(const QString &sourceString)
 {
     QString lexema = sourceString.mid(0,sourceString.indexOf(QRegExp("\\W")));
     if (m_keyWordsHash.contains(lexema)) {
@@ -345,7 +345,7 @@ Token LexicalAnalyzer::getKeywordToken(QString sourceString)
     }
 }
 
-Token LexicalAnalyzer::getIdentifierToken(QString sourceString)
+Token LexicalAnalyzer::getIdentifierToken(const QString &sourceString)
 {
     QString lexema = sourceString.mid(0,sourceString.indexOf(QRegExp("\\W")));
     if (m_identifierRegExp.exactMatch(lexema)) {
@@ -359,7 +359,7 @@ Token LexicalAnalyzer::getIdentifierToken(QString sourceString)
     }
 }
 
-Token LexicalAnalyzer::getStringLiteralToken(QString sourceString)
+Token LexicalAnalyzer::getStringLiteralToken(const QString &sourceString)
 {
     int lexemaEndIndex = sourceString.indexOf(m_beginStringLiteral,1);
     if (lexemaEndIndex == -1) {
@@ -374,7 +374,7 @@ Token LexicalAnalyzer::getStringLiteralToken(QString sourceString)
     }
 }
 
-Token LexicalAnalyzer::getCharacterToken(QString sourceString)
+Token LexicalAnalyzer::getCharacterToken(const QString &sourceString)
 {
     QString lexema;
     for (int i = maxIdentifierNameLenght(); i > 0; i--) {
@@ -385,7 +385,7 @@ Token LexicalAnalyzer::getCharacterToken(QString sourceString)
     return Token(lexema,Token::categoryNone);
 }
 
-QString TokenListToString(QList<Token> tokenList)
+QString MakeString(const QList<Token> &tokenList)
 {
     QString tokenSequenceString;
     foreach (Token currentToken, tokenList) {
@@ -396,13 +396,13 @@ QString TokenListToString(QList<Token> tokenList)
     return tokenSequenceString;
 }
 
-QRegExp AddPossibleVariantToRegExpPattern(QRegExp oldRegExp, QString variant)
+void AddPossibleVariantToRegExpPattern(QRegExp &oldRegExp, const QString &variant)
 {
     if (oldRegExp.exactMatch(variant))
-        return oldRegExp;
+        return;
     QString oldPattern = oldRegExp.pattern();
     QString pattern = "(" + oldPattern + "|" + "(" + QRegExp::escape(variant) + "))";
     oldRegExp.setPattern(pattern);
-    return oldRegExp;
+    return;
 }
 

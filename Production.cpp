@@ -1,6 +1,6 @@
 #include "Production.h"
 
-Production::Production(int number, QList<SyntacticSymbol> syntacticSymbolList) :
+Production::Production(int number, const QList<SyntacticSymbol> &syntacticSymbolList) :
     m_number(number),
     m_syntacticSymbolList(syntacticSymbolList)
 {}
@@ -25,7 +25,7 @@ void Production::setSyntacticSymbolList(const QList<SyntacticSymbol> &syntacticS
     m_syntacticSymbolList = syntacticSymbolList;
 }
 
-SyntacticSymbol Production::getFirstSymbol()
+SyntacticSymbol Production::getFirstSymbol() const
 {
     return m_syntacticSymbolList.first();
 }

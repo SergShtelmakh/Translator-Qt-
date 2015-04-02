@@ -12,21 +12,21 @@ class SyntacticAnalyzer
 
 public:
 
-    void addProductRule(SyntacticSymbol firstSymbol, QList <SyntacticSymbol> productionList);
-    void analyze(QList<Token> tokenList);
+    void addProductRule(const SyntacticSymbol &firstSymbol, const QList <SyntacticSymbol> &productionList);
+    void analyze(const QList<Token> &tokenList);
     QString errorText() const;
 
     QStringList usedRuleList() const;
 
 private:
 
-    Production findCongruentRule(SyntacticSymbol firstSymbol, Token firstProductSymbol);
-    Production findLambdaRule(SyntacticSymbol firstSymbol);
-    bool isLambdaRuleExists(SyntacticSymbol firstSymbol);
+    Production findCongruentRule(const SyntacticSymbol &firstSymbol, const Token &firstProductSymbol) const;
+    Production findLambdaRule(const SyntacticSymbol &firstSymbol) const;
+    bool isLambdaRuleExists(const SyntacticSymbol &firstSymbol);
 
-    void prepareToAnalysis(QList<Token> tokenList);
-    void addError(QString errorText);
-    void useRule(int number, SyntacticSymbol leftPart, QList<SyntacticSymbol> rightPart);
+    void prepareToAnalysis(const QList<Token> &tokenList);
+    void addError(const QString &errorText);
+    void useRule(int number, const SyntacticSymbol &leftPart, const QList<SyntacticSymbol> &rightPart);
     QMultiHash < SyntacticSymbol, Production > m_productRules;
     QList <SyntacticSymbol> m_symbolToParseList;
     QList <Token> m_tokenToParseList;

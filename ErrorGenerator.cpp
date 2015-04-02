@@ -1,11 +1,11 @@
 #include "ErrorGenerator.h"
 
-QString ErrorGenerator::lexicalError(Token incorrectToken)
+QString ErrorGenerator::lexicalError(const Token &incorrectToken)
 {
     return QString("(%1:%2)\t ").arg(incorrectToken.position().x()).arg(incorrectToken.position().y()) + incorrectToken.getAllErrorInformation();
 }
 
-QString ErrorGenerator::syntacticError(QList<Token> tokenToParseList, QList<SyntacticSymbol> syntacticSymbolList)
+QString ErrorGenerator::syntacticError(const QList<Token> &tokenToParseList,const QList<SyntacticSymbol> &syntacticSymbolList)
 {
     if (tokenToParseList.isEmpty()) {
         if (syntacticSymbolList.isEmpty()) {

@@ -8,7 +8,7 @@
 #include "BackusNaurFormParser.h"
 
 
-QString FileReader::getTextFromFile(QString fileName)
+QString FileReader::getTextFromFile(const QString &fileName)
 {
     QString text;
     QFile file (fileName);
@@ -19,7 +19,7 @@ QString FileReader::getTextFromFile(QString fileName)
     return inputTextStream.readAll();
 }
 
-void FileReader::writeTextToFile(QString fileName, QString text)
+void FileReader::writeTextToFile(const QString &fileName, const QString &text)
 {
     QFile file (fileName);
     if (!file.open(QIODevice::ReadWrite| QIODevice::Text))
@@ -29,7 +29,7 @@ void FileReader::writeTextToFile(QString fileName, QString text)
     out << text;
 }
 
-void FileReader::loadLexicalAnalyzerSettings(QString fileName, LexicalAnalyzer& lexicalAnalyzer)
+void FileReader::loadLexicalAnalyzerSettings(const QString &fileName, LexicalAnalyzer& lexicalAnalyzer)
 {
     QJsonDocument jsonDocument = loadJson(fileName);
     QJsonObject mainObject = jsonDocument.object();
@@ -38,7 +38,7 @@ void FileReader::loadLexicalAnalyzerSettings(QString fileName, LexicalAnalyzer& 
     loadLexicalAnalyzerSettings(lexicalAnalyzerJsonObject,lexicalAnalyzer);
 }
 
-void FileReader::loadSyntacticAnalyzerRules(QString fileName, SyntacticAnalyzer &syntacticAnalyzer)
+void FileReader::loadSyntacticAnalyzerRules(const QString &fileName, SyntacticAnalyzer &syntacticAnalyzer)
 {
     QString sourceText = getTextFromFile(fileName);
     QList <BackusNaurFormRule> rulesList;
@@ -48,7 +48,7 @@ void FileReader::loadSyntacticAnalyzerRules(QString fileName, SyntacticAnalyzer 
     }
 }
 
-bool FileReader::isFileExist(QString fileName)
+bool FileReader::isFileExist(const QString &fileName)
 {
     QFile file (fileName);
     if (!file.open(QIODevice::ReadOnly))
@@ -56,7 +56,7 @@ bool FileReader::isFileExist(QString fileName)
     return true;
 }
 
-void FileReader::loadLexicalAnalyzerSettings(QJsonObject jsonObject, LexicalAnalyzer& lexicalAnalyzer)
+void FileReader::loadLexicalAnalyzerSettings(const QJsonObject &jsonObject, LexicalAnalyzer& lexicalAnalyzer)
 {
     lexicalAnalyzer.setMaxNumberLiteralLenght(jsonObject["maxNumberLiteralLenght"].toInt());
     lexicalAnalyzer.setMaxIdentifierNameLenght(jsonObject["maxIdentifierNameLenght"].toInt());
@@ -76,7 +76,7 @@ void FileReader::loadLexicalAnalyzerSettings(QJsonObject jsonObject, LexicalAnal
     }
 }
 
-QJsonDocument FileReader::loadJson(QString fileName)
+QJsonDocument FileReader::loadJson(const QString &fileName)
 {
     QFile jsonFile(fileName);
     jsonFile.open(QFile::ReadOnly);

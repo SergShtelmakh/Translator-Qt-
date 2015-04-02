@@ -14,7 +14,7 @@ class Identifier
 public:
 
     Identifier(const Identifier &other);
-    Identifier(QString name, QPoint position);
+    Identifier(const QString &name,const QPoint &position);
 
     QList <QPoint> positionsList() const;
     QString name() const;
@@ -31,7 +31,7 @@ public:
      *
      * @param[in] posistion New position.
      */
-    void addPosition(QPoint position);
+    void addPosition(const QPoint &position);
 
     bool operator==(const Identifier &otherIdentifier)const;
 

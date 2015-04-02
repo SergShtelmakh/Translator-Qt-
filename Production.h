@@ -13,7 +13,7 @@ class Production
 public:
 
     Production(){}
-    Production(int number, QList <SyntacticSymbol> syntacticSymbolList);
+    Production(int number, const QList <SyntacticSymbol> &syntacticSymbolList);
 
     int number() const;
     void setNumber(int number);
@@ -26,7 +26,7 @@ public:
      *
      * @return Syntactic symbol.
      */
-    SyntacticSymbol getFirstSymbol();
+    SyntacticSymbol getFirstSymbol() const;
 
 private:
 

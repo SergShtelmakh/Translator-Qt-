@@ -10,11 +10,11 @@ class BackusNaurFormParser
 
 public:
 
-    static QList <BackusNaurFormRule> parse(QString sourceString);
+    static QList <BackusNaurFormRule> parse(QString &sourceString);
 
 private:
 
-    static BackusNaurFormRule parseRule(QString ruleString);
+    static BackusNaurFormRule parseRule(const QString &ruleString);
 
     static SyntacticSymbol parseLeftPart(QString leftPartString);
     static QList <SyntacticSymbol> parseRightPart(QString rightPartString);
@@ -28,10 +28,10 @@ private:
     static void deleteComments(QString &oldString);
     static void deleteWhitespaceAtBegin(QString &string);
 
-    static int findCommentBeginIndex(QString string, int startIndex);
-    static int findCommentEndIndex(QString string, int startIndex);
+    static int findCommentBeginIndex(const QString &string, int startIndex);
+    static int findCommentEndIndex(const QString &string, int startIndex);
 };
 
-void appendListByCorrectItem(QList<SyntacticSymbol> &list,SyntacticSymbol item);
+void appendListByCorrectItem(QList<SyntacticSymbol> &list, SyntacticSymbol item);
 
 #endif // BACKUSNAURFORMPARSER_H

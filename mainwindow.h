@@ -20,9 +20,6 @@ class MainWindow : public QMainWindow
 
 public:
 
-    static QString lexicalAnalyzerSettingsFileName;
-    static QString syntacticAnalyzerSettingsFileName;
-
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
@@ -59,9 +56,11 @@ private:
     HTMLMarkupGenerator* getMarkupGenerator() const;
     void loadSettings();
 
-    Ui::MainWindow *ui;                                     //!< Main window.
-    HTMLMarkupGenerator* m_markupGenerator;  //!< Markup generator.
+    Ui::MainWindow *ui;                             //!< Main window.
+    HTMLMarkupGenerator* m_markupGenerator;         //!< Markup generator.
     QStringListModel* m_rulesStringListModel;
+    QString m_lexicalAnalyzerSettingsFileName;
+    QString m_syntacticAnalyzerSettingsFileName;
 
 };
 

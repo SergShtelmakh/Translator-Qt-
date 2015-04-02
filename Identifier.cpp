@@ -5,7 +5,7 @@ Identifier::Identifier(const Identifier &newIdentifier) :
     m_positionsList(newIdentifier.positionsList())
 {}
 
-Identifier::Identifier(QString name, QPoint position) :
+Identifier::Identifier(const QString &name, const QPoint &position) :
     m_name(name),
     m_positionsList()
 {
@@ -17,7 +17,7 @@ QPoint Identifier::getFirstPosition()
     return m_positionsList.first();
 }
 
-void Identifier::addPosition(QPoint position)
+void Identifier::addPosition(const QPoint &position)
 {
     m_positionsList.append(position);
 }

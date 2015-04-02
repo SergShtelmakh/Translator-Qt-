@@ -16,7 +16,7 @@ public:
     /*!
      * @brief This enumerate include tokens category.
      */
-    enum TokenCategory{
+    enum TokenCategory {
         categoryNone            = 0,    //!< Incorrect token.
         categoryCharToken       = 1,    //!< Character token (e.g. +, -, *, / ...).
         categoryIdentifier      = 2,    //!< Identifier (e.g. var1, var2 ...).
@@ -29,7 +29,7 @@ public:
 
     Token(){}
     Token(const Token &other);
-    Token (QString lexeme, TokenCategory tokenCategory, QString errorInformation = "", QPoint position = QPoint());
+    Token(const QString &lexeme, TokenCategory tokenCategory, const QString &errorInformation = "", const QPoint &position = QPoint());
 
     Token& operator=(const Token& newToken);
 
@@ -44,8 +44,6 @@ public:
 
     QString getAllErrorInformation() const;
 
-    QString getTokenRepresentation();
-
     /*!
      * This method used to check is token correct.
      *
@@ -53,7 +51,7 @@ public:
      */
     bool isCorrect() const;
 
-    static TokenCategory stringToTokenCategory(QString string);
+    static TokenCategory stringToTokenCategory(const QString &string);
 
 private:
 
@@ -66,6 +64,6 @@ private:
 
 };
 
-QString MakeString(Token token);
+QString MakeString(const Token &token);
 
 #endif // TOKEN_H
