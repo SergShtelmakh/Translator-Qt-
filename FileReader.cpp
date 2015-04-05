@@ -11,6 +11,8 @@
 QString FileReader::getTextFromFile(const QString &fileName)
 {
     QString text;
+    if (fileName.isEmpty())
+        return text;
     QFile file (fileName);
     if (!file.open(QIODevice::ReadWrite | QIODevice::Text))
         return text;
@@ -21,6 +23,8 @@ QString FileReader::getTextFromFile(const QString &fileName)
 
 void FileReader::writeTextToFile(const QString &fileName, const QString &text)
 {
+    if (fileName.isEmpty())
+        return;
     QFile file (fileName);
     if (!file.open(QIODevice::ReadWrite| QIODevice::Text))
         return;

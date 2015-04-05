@@ -116,7 +116,7 @@ Token LexicalAnalyzer::getNextToken(const QString &sourceString)
         return nextToken;
 
     // return incorrect token
-    QString wrongLexema = sourceString.mid(0,sourceString.indexOf(m_possibleTokenEndRegExp));
+    QString wrongLexema = sourceString.mid(0,sourceString.indexOf(m_possibleTokenEndRegExp,1));
     return Token(wrongLexema,Token::categoryNone,"Unknown string");
 
 }

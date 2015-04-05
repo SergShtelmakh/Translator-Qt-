@@ -89,8 +89,10 @@ QList<SyntacticSymbol> BackusNaurFormParser::parseRightPart(QString rightPartSou
             appendListByCorrectItem(rightPart,takeNumberLiteral(rightPartSourceString));
         if (rightPartSourceString.indexOf("i") == 0)
             appendListByCorrectItem(rightPart,takeId(rightPartSourceString));
-        if (rightPartSourceString.indexOf("l") == 0)
+        if (rightPartSourceString.indexOf("lin") == 0)
             appendListByCorrectItem(rightPart,takeLinefeed(rightPartSourceString));
+        if (rightPartSourceString.indexOf("lit") == 0)
+            appendListByCorrectItem(rightPart,takeLiteral(rightPartSourceString));
 
         if (rightPartSourceString.indexOf("lambda") == 0) {
             return rightPart;
@@ -211,6 +213,13 @@ SyntacticSymbol BackusNaurFormParser::takeLinefeed(QString &string)
 {
     if (string.indexOf("linefeed") == 0)
         return SyntacticSymbol ("linefeed", SyntacticSymbol::terminalSymbol, Token::categoryLineFeed);
+    return SyntacticSymbol();
+}
+
+SyntacticSymbol BackusNaurFormParser::takeLiteral(QString &string)
+{
+    if (string.indexOf("literal") == 0)
+        return SyntacticSymbol ("literal", SyntacticSymbol::terminalSymbol, Token::categoryStringLiteral);
     return SyntacticSymbol();
 }
 

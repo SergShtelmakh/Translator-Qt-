@@ -24,12 +24,14 @@ private:
     static SyntacticSymbol takeNumberLiteral(QString &string);
     static SyntacticSymbol takeId(QString &string);
     static SyntacticSymbol takeLinefeed(QString &string);
+    static SyntacticSymbol takeLiteral(QString &string);
 
     static void deleteComments(QString &oldString);
     static void deleteWhitespaceAtBegin(QString &string);
 
     static int findCommentBeginIndex(const QString &string, int startIndex);
     static int findCommentEndIndex(const QString &string, int startIndex);
+
 };
 
 void appendListByCorrectItem(QList<SyntacticSymbol> &list, SyntacticSymbol item);
