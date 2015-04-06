@@ -30,14 +30,17 @@ void SyntacticAnalyzer::analyze(const QList<Token> &tokenList)
             useRule(production.number() + 1, firstSymbolToParse, production.syntacticSymbolList());
         }
     }
+
     while (!m_symbolToParseList.isEmpty()) {
-        SyntacticSymbol symbol = m_symbolToParseList.first();
+        SyntacticSymbol symbol = m_symbolToParseList.takeFirst();
+        while (symbol.category() == Token::categoryLineFeed) {
+            symbol = m_symbolToParseList.takeFirst();
+        }
         if (!isLambdaRuleExists(symbol)) {
             QString error = ErrorGenerator::syntacticError(m_tokenToParseList,m_symbolToParseList);
             addError(error);
             return;
         }
-        m_symbolToParseList.takeFirst();
     }
 }
 

@@ -10,12 +10,11 @@
 
 QString FileReader::getTextFromFile(const QString &fileName)
 {
-    QString text;
     if (fileName.isEmpty())
-        return text;
+        return QString();
     QFile file (fileName);
     if (!file.open(QIODevice::ReadWrite | QIODevice::Text))
-        return text;
+        return QString();
 
     QTextStream inputTextStream(&file);
     return inputTextStream.readAll();

@@ -28,24 +28,21 @@ QString HTMLMarkupGenerator::getMessageForLog(const LexicalAnalyzer& lexicalAnal
 
 QString HTMLMarkupGenerator::getSuccessfulResultMessage(const QString &analyzerName) const
 {
-    QString newLine = "<font color=" + HTMLColors::darkBlue + ">"
-            + analyzerName + ":\n"
-            + "Analysis completed successfully "
-            + QTime::currentTime().toString() + "\n</font>";
-    return newLine;
+    return QString("<font color=" + HTMLColors::darkBlue + ">"
+                   + analyzerName + ":\n"
+                   + "Analysis completed successfully "
+                   + QTime::currentTime().toString() + "\n</font>");
 }
 
 QString HTMLMarkupGenerator::getFailedResultMessage(const QString &analyzerName, QString errors) const
 {
     errors.replace("<","&lt;").replace(">","&gt;");
     int errorCount = errors.split(QRegExp("\n")).count() - 1;
-    QString newLine = "<font color=" + HTMLColors::red + ">"
-            + analyzerName + ":\n"
-            + errors
-            + QString("Detected %1 errors    ").arg(errorCount)
-            + QTime::currentTime().toString() + "\n</font>";
-
-    return newLine;
+    return QString("<font color=" + HTMLColors::red + ">"
+                   + analyzerName + ":\n"
+                   + errors
+                   + QString("Detected %1 errors    ").arg(errorCount)
+                   + QTime::currentTime().toString() + "\n</font>");
 }
 
 QString HTMLMarkupGenerator::getTokenColorName(const Token& token) const
