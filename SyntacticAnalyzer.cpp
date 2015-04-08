@@ -9,7 +9,7 @@ void SyntacticAnalyzer::addProductRule(const SyntacticSymbol &firstSymbol, const
 
 void SyntacticAnalyzer::analyze(const QList<Token> &tokenList)
 {
-    prepareToAnalysis(tokenList);
+    this->prepareToAnalysis(tokenList);
 
     while (!m_tokenToParseList.isEmpty()&&!m_symbolToParseList.isEmpty()) {
         Token firstTokenToParse = m_tokenToParseList.first();

@@ -21,19 +21,16 @@ private:
 
     static SyntacticSymbol takeNonterminalSymbol(QString &string);
     static SyntacticSymbol takeTerminalSymbol(QString &string);
-    static SyntacticSymbol takeNumberLiteral(QString &string);
-    static SyntacticSymbol takeId(QString &string);
-    static SyntacticSymbol takeLinefeed(QString &string);
-    static SyntacticSymbol takeLiteral(QString &string);
 
     static void deleteComments(QString &oldString);
-    static void deleteWhitespaceAtBegin(QString &string);
 
     static int findCommentBeginIndex(const QString &string, int startIndex);
     static int findCommentEndIndex(const QString &string, int startIndex);
 
 };
 
-void appendListByCorrectItem(QList<SyntacticSymbol> &list, SyntacticSymbol item);
+void DeleteWhitespaceAtBegin(QString &string);
+void AppendListByCorrectItem(QList<SyntacticSymbol> &list, const SyntacticSymbol &item);
+int GetSyntacticSymbolNameLengthWithBrackets(const SyntacticSymbol &symbol);
 
 #endif // BACKUSNAURFORMPARSER_H
