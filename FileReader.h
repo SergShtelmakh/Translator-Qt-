@@ -3,8 +3,9 @@
 
 #include <QString>
 #include <QJsonDocument>
-#include "LexicalAnalyzer.h"
-#include "SyntacticAnalyzer.h"
+
+class LexicalAnalyzer;
+class SyntacticAnalyzer;
 
 class FileReader
 {

@@ -71,7 +71,7 @@ SyntacticSymbol BackusNaurFormParser::parseLeftPart(QString leftPartString)
     if (leftPartString.indexOf("S") == 0)
         return SyntacticSymbol("S",SyntacticSymbol::startSymbol,Token::categoryNone);
 
-    return takeNonterminalSymbol(leftPartString);
+    return getNonterminalSymbol(leftPartString);
 }
 
 QList<SyntacticSymbol> BackusNaurFormParser::parseRightPart(QString rightPartSourceString)
@@ -87,9 +87,9 @@ QList<SyntacticSymbol> BackusNaurFormParser::parseRightPart(QString rightPartSou
         // Parse next symbol
         SyntacticSymbol nextSymbol;
         if (rightPartSourceString.indexOf("<") == 0)
-            nextSymbol = takeNonterminalSymbol(rightPartSourceString);
+            nextSymbol = getNonterminalSymbol(rightPartSourceString);
         if (rightPartSourceString.indexOf("\"") == 0)
-            nextSymbol = takeTerminalSymbol(rightPartSourceString);
+            nextSymbol = getTerminalSymbol(rightPartSourceString);
         if (rightPartSourceString.indexOf("number") == 0)
             nextSymbol = SyntacticSymbol ("number", SyntacticSymbol::terminalSymbol, Token::categoryNumberLiteral);
         if (rightPartSourceString.indexOf("id") == 0)
@@ -108,7 +108,7 @@ QList<SyntacticSymbol> BackusNaurFormParser::parseRightPart(QString rightPartSou
     return rightPart;
 }
 
-SyntacticSymbol BackusNaurFormParser::takeNonterminalSymbol(QString &string)
+SyntacticSymbol BackusNaurFormParser::getNonterminalSymbol(QString &string)
 {
     int currentCharIndex = 0;
     int state = 0;
@@ -137,7 +137,6 @@ SyntacticSymbol BackusNaurFormParser::takeNonterminalSymbol(QString &string)
                 SyntacticSymbol nonterminal = SyntacticSymbol (string.mid(1,currentCharIndex - 1),
                                                                SyntacticSymbol::nonterminalSymbol,
                                                                Token::categoryNone);
-                string.remove(0,currentCharIndex + 1);
                 return nonterminal;
             }
             if (!currentChar.contains("<")) {
@@ -154,7 +153,7 @@ SyntacticSymbol BackusNaurFormParser::takeNonterminalSymbol(QString &string)
     return SyntacticSymbol();
 }
 
-SyntacticSymbol BackusNaurFormParser::takeTerminalSymbol(QString &string)
+SyntacticSymbol BackusNaurFormParser::getTerminalSymbol(QString &string)
 {
     int currentCharIndex = 0;
     int state = 0;
@@ -187,7 +186,6 @@ SyntacticSymbol BackusNaurFormParser::takeTerminalSymbol(QString &string)
                 if (!string.mid(1,1).contains(QRegExp("[a-zA-Z]"))) {
                     terminal.setCategory(Token::categoryCharToken);
                 }
-                string.remove(0,currentCharIndex + 1);
                 return terminal;
             }
             currentCharIndex ++;

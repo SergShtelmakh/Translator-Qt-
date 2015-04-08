@@ -1,9 +1,11 @@
 #ifndef ERRORGENERATOR_H
 #define ERRORGENERATOR_H
+
 #include <QString>
 #include <QList>
-#include "Token.h"
-#include "SyntacticSymbol.h"
+
+class Token;
+class SyntacticSymbol;
 
 class ErrorGenerator
 {

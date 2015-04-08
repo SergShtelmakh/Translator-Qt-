@@ -1,5 +1,4 @@
 #include "SyntacticSymbol.h"
-#include "Token.h"
 #include <QHash>
 
 QHash <QString, SyntacticSymbol::SyntacticSymbolType> SyntacticSymbol::m_convertingStringToSyntacticSymbolTypeHash;
@@ -97,20 +96,20 @@ bool operator==(const SyntacticSymbol &symbol, const Token &token)
     return token == symbol;
 }
 
-QString MakeString(const QList<SyntacticSymbol> &syntacticSymbolList)
+QString MakeStringRepresentation(const QList<SyntacticSymbol> &syntacticSymbolList)
 {
     if (syntacticSymbolList.isEmpty()) {
         return "Λ";
     }
     QString result;
     foreach (SyntacticSymbol symbol, syntacticSymbolList) {
-        result += MakeString(symbol) + " ";
+        result += MakeStringRepresentation(symbol) + " ";
     }
     return result;
 }
 
 
-QString MakeString(const SyntacticSymbol &syntacticSymbol)
+QString MakeStringRepresentation(const SyntacticSymbol &syntacticSymbol)
 {
     switch (syntacticSymbol.type()) {
     case SyntacticSymbol::nonterminalSymbol:

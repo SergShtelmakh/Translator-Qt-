@@ -90,7 +90,7 @@ void SyntacticAnalyzer::addError(const QString &errorText)
 
 void SyntacticAnalyzer::useRule(int number, const SyntacticSymbol &leftPart, const QList<SyntacticSymbol> &rightPart)
 {
-    m_usedRuleList << QString("№%1\t" + MakeString(leftPart) + " ::= " + MakeString(rightPart)).arg(number);
+    m_usedRuleList << QString("№%1\t" + MakeStringRepresentation(leftPart) + " ::= " + MakeStringRepresentation(rightPart)).arg(number);
 }
 
 QStringList SyntacticAnalyzer::usedRuleList() const

@@ -6,7 +6,8 @@
 #include <QJsonValue>
 #include "SyntacticSymbol.h"
 #include "BackusNaurFormParser.h"
-
+#include "LexicalAnalyzer.h"
+#include "SyntacticAnalyzer.h"
 
 QString FileReader::getTextFromFile(const QString &fileName)
 {

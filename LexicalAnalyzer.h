@@ -3,8 +3,9 @@
 
 #include <QHash>
 #include <QRegExp>
-#include "Token.h"
-#include "Identifier.h"
+
+class Token;
+class Identifier;
 
 /*!
  * @brief This class provides lexical analysis.
@@ -193,7 +194,7 @@ private:
  * @param[in] tokenList List of tokens.
  * @return List of tokens as string.
  */
-QString MakeString(const QList<Token> &tokenList);
+QString MakeStringRepresentation(const QList<Token> &tokenList);
 
 /*!
  * This function used to add possible variant to regular expression.

@@ -4,8 +4,6 @@
 #include <QString>
 #include "Token.h"
 
-class Token;
-
 class SyntacticSymbol
 {
 
@@ -50,7 +48,7 @@ bool operator==(const SyntacticSymbol &symbol,const Token &token);
 
 uint qHash(const SyntacticSymbol &symbol);
 
-QString MakeString(const QList<SyntacticSymbol> &syntacticSymbolList);
-QString MakeString(const SyntacticSymbol &syntacticSymbol);
+QString MakeStringRepresentation(const QList<SyntacticSymbol> &syntacticSymbolList);
+QString MakeStringRepresentation(const SyntacticSymbol &syntacticSymbol);
 
 #endif // SYNTACTICSYMBOL_H

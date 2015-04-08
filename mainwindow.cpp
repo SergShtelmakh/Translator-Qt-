@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include "HTMLMarkupGenerator.h"
 #include "SyntacticAnalyzer.h"
+#include "LexicalAnalyzer.h"
+#include "Identifier.h"
 #include "FileReader.h"
 #include <QTextStream>
 #include <QFile>
@@ -48,7 +50,7 @@ void MainWindow::on_actionRun_triggered()
     ui->compileOutputTextEdit->addHTMLString(this->getMarkupGenerator()->getMessageForLog(*globalLexicalAnalyzer, *globalSyntacticAnalyzer));
 
     // Write information about tokens
-    ui->tokenSequenceTextEdit->setText(MakeString(globalLexicalAnalyzer->tokenList()));
+    ui->tokenSequenceTextEdit->setText(MakeStringRepresentation(globalLexicalAnalyzer->tokenList()));
 
     // Write information about identifiers
     QList <Identifier> identifierList = globalLexicalAnalyzer->identifierList();

@@ -64,6 +64,6 @@ private:
 
 };
 
-QString MakeString(const Token &token);
+QString MakeStringRepresentation(const Token &token);
 
 #endif // TOKEN_H

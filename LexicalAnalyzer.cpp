@@ -1,6 +1,8 @@
 #include "LexicalAnalyzer.h"
 #include "ErrorGenerator.h"
 #include <QStringList>
+#include "Token.h"
+#include "Identifier.h"
 
 LexicalAnalyzer::LexicalAnalyzer() :
     m_possibleTokenEndRegExp(QRegExp("( |\t|\n)")),
@@ -383,11 +385,11 @@ Token LexicalAnalyzer::getCharacterToken(const QString &sourceString)
     return Token(lexema,Token::categoryNone);
 }
 
-QString MakeString(const QList<Token> &tokenList)
+QString MakeStringRepresentation(const QList<Token> &tokenList)
 {
     QString tokenSequenceString;
     foreach (Token currentToken, tokenList) {
-        tokenSequenceString += MakeString(currentToken);
+        tokenSequenceString += MakeStringRepresentation(currentToken);
         if (currentToken.tokenCategory() == Token::categoryLineFeed)
             tokenSequenceString += "\n";
     }

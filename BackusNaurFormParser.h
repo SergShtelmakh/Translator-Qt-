@@ -19,8 +19,8 @@ private:
     static SyntacticSymbol parseLeftPart(QString leftPartString);
     static QList <SyntacticSymbol> parseRightPart(QString rightPartString);
 
-    static SyntacticSymbol takeNonterminalSymbol(QString &string);
-    static SyntacticSymbol takeTerminalSymbol(QString &string);
+    static SyntacticSymbol getNonterminalSymbol(QString &string);
+    static SyntacticSymbol getTerminalSymbol(QString &string);
 
     static void deleteComments(QString &oldString);
 

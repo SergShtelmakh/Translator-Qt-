@@ -78,7 +78,7 @@ QString Token::getAllErrorInformation() const
     return m_lexeme + ": " + m_errorInformation;
 }
 
-QString MakeString(const Token &token)
+QString MakeStringRepresentation(const Token &token)
 {
     if (!token.isCorrect())
         return "";
