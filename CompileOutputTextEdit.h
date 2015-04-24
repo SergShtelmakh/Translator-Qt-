@@ -1,3 +1,12 @@
+/*!
+ * \file CompileOutputTextEdit.h
+ * \date 2015/04/24
+ *
+ * \author SergShtelmakh
+ * Contact: sh.serg1993@gmail.com
+ *
+ */
+
 #ifndef COMPILEOUTPUT_H
 #define COMPILEOUTPUT_H
 

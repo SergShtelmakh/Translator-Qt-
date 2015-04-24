@@ -1,3 +1,12 @@
+/*!
+ * \file Production.h
+ * \date 2015/04/24
+ *
+ * \author SergShtelmakh
+ * Contact: sh.serg1993@gmail.com
+ *
+ */
+
 #ifndef PRODUCTION_H
 #define PRODUCTION_H
 

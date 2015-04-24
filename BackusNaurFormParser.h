@@ -1,3 +1,12 @@
+/*!
+ * \file BackusNaurFormParser.h
+ * \date 2015/04/24
+ *
+ * \author SergShtelmakh
+ * Contact: sh.serg1993@gmail.com
+ *
+ */
+
 #ifndef BACKUSNAURFORMPARSER_H
 #define BACKUSNAURFORMPARSER_H
 

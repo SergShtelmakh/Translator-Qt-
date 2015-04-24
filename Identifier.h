@@ -1,3 +1,12 @@
+/*!
+ * \file Identifier.h
+ * \date 2015/04/24
+ *
+ * \author SergShtelmakh
+ * Contact: sh.serg1993@gmail.com
+ *
+ */
+
 #ifndef IDENTIFIER_H
 #define IDENTIFIER_H
 

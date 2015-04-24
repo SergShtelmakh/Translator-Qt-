@@ -1,3 +1,12 @@
+/*!
+ * \file SyntacticAnalyzer.h
+ * \date 2015/04/24
+ *
+ * \author SergShtelmakh
+ * Contact: sh.serg1993@gmail.com
+ *
+ */
+
 #ifndef SYNTACTICANALYZER_H
 #define SYNTACTICANALYZER_H
 
@@ -25,7 +34,7 @@ private:
     bool isLambdaRuleExists(const SyntacticSymbol &firstSymbol);
 
     void prepareToAnalysis(const QList<Token> &tokenList);
-    void addError(const QString &errorText);
+    void addError(QString errorText);
     void useRule(int number, const SyntacticSymbol &leftPart, const QList<SyntacticSymbol> &rightPart);
     QMultiHash < SyntacticSymbol, Production > m_productRules;
     QList <SyntacticSymbol> m_symbolToParseList;

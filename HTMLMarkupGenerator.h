@@ -1,3 +1,12 @@
+/*!
+ * \file HTMLMarkupGenerator.h
+ * \date 2015/04/24
+ *
+ * \author SergShtelmakh
+ * Contact: sh.serg1993@gmail.com
+ *
+ */
+
 #ifndef LEXICALANALYSISHTMLMARKUPGENERATOR_H
 #define LEXICALANALYSISHTMLMARKUPGENERATOR_H
 

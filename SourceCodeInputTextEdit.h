@@ -1,3 +1,12 @@
+/*!
+ * \file SourceCodeInputTextEdit.h
+ * \date 2015/04/24
+ *
+ * \author SergShtelmakh
+ * Contact: sh.serg1993@gmail.com
+ *
+ */
+
 #ifndef SMARTTEXTEDIT_H
 #define SMARTTEXTEDIT_H
 
