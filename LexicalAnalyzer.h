@@ -1,6 +1,6 @@
 /*!
  * \file LexicalAnalyzer.h
- * \date 2015/04/24
+ * \date 2015/04/28
  *
  * \author SergShtelmakh
  * Contact: sh.serg1993@gmail.com
@@ -177,6 +177,8 @@ private:
      * This method used to clear token list, identifiers list and errors of last analysis.
      */
     void clearAllAnalyzingData();
+
+    Token getNumberLiteralTokenWithCorrectLength(const QString &sourceString);
 
     QList <Identifier> m_identifierList;        //!< List of identifiers.
     QList <Token> m_tokenList;                  //!< List of tokens.
