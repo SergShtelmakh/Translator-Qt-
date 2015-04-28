@@ -312,7 +312,6 @@ Token LexicalAnalyzer::getNumberLiteralToken(const QString &sourceString)
     }
 }
 
-
 Token LexicalAnalyzer::getKeywordToken(const QString &sourceString)
 {
     QString lexema = sourceString.mid(0,sourceString.indexOf(QRegExp("\\W")));

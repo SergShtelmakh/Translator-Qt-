@@ -86,19 +86,19 @@ QList<SyntacticSymbol> BackusNaurFormParser::parseRightPart(QString rightPartSou
 
         // Parse next symbol
         SyntacticSymbol nextSymbol;
-        if (rightPartSourceString.indexOf("<") == 0)
+        if (rightPartSourceString.indexOf("<") == 0) {
             nextSymbol = getNonterminalSymbol(rightPartSourceString);
-        if (rightPartSourceString.indexOf("\"") == 0)
+        } else if (rightPartSourceString.indexOf("\"") == 0) {
             nextSymbol = getTerminalSymbol(rightPartSourceString);
-        if (rightPartSourceString.indexOf("number") == 0)
+        } else if (rightPartSourceString.indexOf("number") == 0) {
             nextSymbol = SyntacticSymbol ("number", SyntacticSymbol::terminalSymbol, Token::categoryNumberLiteral);
-        if (rightPartSourceString.indexOf("id") == 0)
+        } else if (rightPartSourceString.indexOf("id") == 0) {
             nextSymbol = SyntacticSymbol ("id", SyntacticSymbol::terminalSymbol, Token::categoryIdentifier);
-        if (rightPartSourceString.indexOf("linefeed") == 0)
+        } else if (rightPartSourceString.indexOf("linefeed") == 0) {
             nextSymbol = SyntacticSymbol ("linefeed", SyntacticSymbol::terminalSymbol, Token::categoryLineFeed);
-        if (rightPartSourceString.indexOf("literal") == 0)
+        } else if (rightPartSourceString.indexOf("literal") == 0) {
             nextSymbol = SyntacticSymbol ("literal", SyntacticSymbol::terminalSymbol, Token::categoryStringLiteral);
-
+        }
         // Append found symbol to list
         AppendListByCorrectItem(rightPart,nextSymbol);
 
@@ -110,27 +110,28 @@ QList<SyntacticSymbol> BackusNaurFormParser::parseRightPart(QString rightPartSou
 
 SyntacticSymbol BackusNaurFormParser::getNonterminalSymbol(QString &string)
 {
-    int currentCharIndex = 0;
+    int currentCharIndex = -1;
     int state = 0;
     while (currentCharIndex < string.length()) {
+        currentCharIndex ++;
         QString currentChar = string.mid(currentCharIndex,1);
         switch (state) {
         case 0: {
             if (currentChar.contains("<")) {
-                currentCharIndex ++;
                 state = 1;
-                break;
+            } else {
+                return SyntacticSymbol();
             }
-            return SyntacticSymbol();
+            break;
         }
         case 1: {
             if (!currentChar.contains(QRegExp("[<>]"))) {
-                currentCharIndex ++;
                 state = 2;
-                break;
+            } else {
+                string.remove(0,currentCharIndex);
+                return SyntacticSymbol();
             }
-            string.remove(0,currentCharIndex);
-            return SyntacticSymbol();
+            break;
         }
         case 2: {
             if (currentChar.contains(">")) {
@@ -138,13 +139,11 @@ SyntacticSymbol BackusNaurFormParser::getNonterminalSymbol(QString &string)
                                                                SyntacticSymbol::nonterminalSymbol,
                                                                Token::categoryNone);
                 return nonterminal;
+            } else if (currentChar.contains("<")) {
+                string.remove(0,currentCharIndex);
+                return SyntacticSymbol();
             }
-            if (!currentChar.contains("<")) {
-                currentCharIndex ++;
-                break;
-            }
-            string.remove(0,currentCharIndex);
-            return SyntacticSymbol();
+            break;
         }
         default:
             break;
@@ -155,28 +154,29 @@ SyntacticSymbol BackusNaurFormParser::getNonterminalSymbol(QString &string)
 
 SyntacticSymbol BackusNaurFormParser::getTerminalSymbol(QString &string)
 {
-    int currentCharIndex = 0;
+    int currentCharIndex = -1;
     int state = 0;
     while (currentCharIndex < string.length()) {
+        currentCharIndex ++;
         QString currentChar = string.mid(currentCharIndex,1);
         switch (state) {
         case 0: {
             if (currentChar.contains("\"")) {
-                currentCharIndex ++;
                 state = 1;
-                break;
+            } else {
+                string.remove(0,currentCharIndex);
+                return SyntacticSymbol();
             }
-            string.remove(0,currentCharIndex);
-            return SyntacticSymbol();
+            break;
         }
         case 1: {
             if (!currentChar.contains("\"")) {
-                currentCharIndex ++;
                 state = 2;
-                break;
+            } else {
+                string.remove(0,currentCharIndex);
+                return SyntacticSymbol();
             }
-            string.remove(0,currentCharIndex);
-            return SyntacticSymbol();
+            break;
         }
         case 2: {
             if (currentChar.contains("\"")) {
@@ -188,7 +188,6 @@ SyntacticSymbol BackusNaurFormParser::getTerminalSymbol(QString &string)
                 }
                 return terminal;
             }
-            currentCharIndex ++;
             break;
         }
         default:
@@ -214,11 +213,12 @@ void AppendListByCorrectItem(QList<SyntacticSymbol> &list, const SyntacticSymbol
 int GetSyntacticSymbolNameLengthWithBrackets(const SyntacticSymbol &symbol)
 {
     int symbolNameLength = symbol.name().length();
-    if (symbol.category() == Token::categoryKeyword)
+    if (symbol.category() == Token::categoryKeyword) {
         symbolNameLength += 2;
-    if (symbol.category() == Token::categoryCharToken)
+    } else if (symbol.category() == Token::categoryCharToken) {
         symbolNameLength += 2;
-    if (symbol.type() == SyntacticSymbol::nonterminalSymbol)
+    } else if (symbol.type() == SyntacticSymbol::nonterminalSymbol) {
         symbolNameLength += 2;
+    }
     return symbolNameLength;
 }
