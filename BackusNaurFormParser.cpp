@@ -110,11 +110,11 @@ QList<SyntacticSymbol> BackusNaurFormParser::parseRightPart(QString rightPartSou
 
 SyntacticSymbol BackusNaurFormParser::getNonterminalSymbol(QString &string)
 {
-    int currentCharIndex = -1;
+    int charIndex = -1;
     int state = 0;
-    while (currentCharIndex < string.length()) {
-        currentCharIndex ++;
-        QString currentChar = string.mid(currentCharIndex,1);
+    while (charIndex < string.length()) {
+        charIndex ++;
+        QString currentChar = string.mid(charIndex,1);
         switch (state) {
         case 0: {
             if (currentChar.contains("<")) {
@@ -128,19 +128,19 @@ SyntacticSymbol BackusNaurFormParser::getNonterminalSymbol(QString &string)
             if (!currentChar.contains(QRegExp("[<>]"))) {
                 state = 2;
             } else {
-                string.remove(0,currentCharIndex);
+                string.remove(0,charIndex);
                 return SyntacticSymbol();
             }
             break;
         }
         case 2: {
             if (currentChar.contains(">")) {
-                SyntacticSymbol nonterminal = SyntacticSymbol (string.mid(1,currentCharIndex - 1),
+                SyntacticSymbol nonterminal = SyntacticSymbol (string.mid(1,charIndex - 1),
                                                                SyntacticSymbol::nonterminalSymbol,
                                                                Token::categoryNone);
                 return nonterminal;
             } else if (currentChar.contains("<")) {
-                string.remove(0,currentCharIndex);
+                string.remove(0,charIndex);
                 return SyntacticSymbol();
             }
             break;

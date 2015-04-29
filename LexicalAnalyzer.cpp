@@ -14,8 +14,8 @@ void LexicalAnalyzer::analyzeLine(const QString &line, int lineNumber)
     int tokenBeginIndexInLine = 0;
     while (tokenBeginIndexInLine < line.length()) {
 
-        Token nextToken = getNextToken(line.mid(tokenBeginIndexInLine));
-        nextToken.setPosition(QPoint(lineNumber,tokenBeginIndexInLine));
+        Token nextToken = getNextToken(QPoint(lineNumber,tokenBeginIndexInLine), line.mid(tokenBeginIndexInLine));
+//        nextToken.setPosition(QPoint(lineNumber,tokenBeginIndexInLine));
         m_tokenList.append(nextToken);
 
         if (nextToken.tokenCategory() == Token::categoryIdentifier) {
@@ -90,44 +90,36 @@ void LexicalAnalyzer::setBeginStringLiteral(const QString &beginStringLiteral)
     m_beginStringLiteral = beginStringLiteral;
 }
 
-Token LexicalAnalyzer::getNextToken(const QString &sourceString)
+Token LexicalAnalyzer::getNextToken(const QPoint currentPosition, const QString &sourceString)
 {
+    if (sourceString == "\n")
+        return Token("linefeed",Token::categoryLineFeed,"",currentPosition);
+
     QString firstChar = sourceString.mid(0,1);
-
-    // get space token
-    if (firstChar.contains(m_spaceRegExp))
-        return getSpaceToken(sourceString);
-
-    // try to get number
-    if (firstChar.contains(QRegExp("[0-9\\.]")))
-        return getNumberLiteralToken(sourceString);
-
-    // try to get keyWord or identifier
-    if (firstChar.contains(QRegExp("[A-Za-z_]"))) {
-        Token nextToken = getKeywordToken(sourceString);
-        if (nextToken.isCorrect()) {
-            return nextToken;
-        } else {
-            return getIdentifierToken(sourceString);
+    Token nextToken;
+    if (firstChar.contains(m_spaceRegExp)) {
+        nextToken = getSpaceToken(sourceString);
+    } else if (firstChar.contains(QRegExp("[0-9\\.]"))) {
+        nextToken = getNumberLiteralToken(sourceString);
+    } else if (firstChar.contains(QRegExp("[A-Za-z_]"))) {
+        nextToken = getKeywordToken(sourceString);
+        if (!nextToken.isCorrect()) {
+            nextToken = getIdentifierToken(sourceString);
         }
+    } else if (sourceString.indexOf(m_beginStringLiteral) == 0) {
+        nextToken =  getStringLiteralToken(sourceString);
+    } else {
+        nextToken = getCharacterToken(sourceString);
     }
 
-    // try to get string literal
-    if (sourceString.indexOf(m_beginStringLiteral) == 0)
-        return getStringLiteralToken(sourceString);
+    nextToken.setPosition(currentPosition);
 
-    // try to get character token
-    Token nextToken = getCharacterToken(sourceString);
-    if (nextToken.isCorrect())
-        return nextToken;
-
-    if (sourceString == "\n")
-        return Token("linefeed",Token::categoryLineFeed);
-
-    // return incorrect token
-    QString wrongLexema = sourceString.mid(0,sourceString.indexOf(m_possibleTokenEndRegExp,1));
-    return Token(wrongLexema,Token::categoryNone,"Unknown string");
-
+    if (nextToken.isCorrect()) {
+        return nextToken; 
+    } else {
+        QString wrongLexema = sourceString.mid(0,sourceString.indexOf(m_possibleTokenEndRegExp,1));
+        return Token(wrongLexema,Token::categoryNone,"Unknown string",currentPosition);
+    }
 }
 
 int LexicalAnalyzer::maxIdentifierNameLenght() const

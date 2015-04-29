@@ -12,6 +12,7 @@
 
 #include <QHash>
 #include <QRegExp>
+#include <QPoint>
 
 class Token;
 class Identifier;
@@ -99,7 +100,7 @@ protected:
      * @param[in] sourceString Source string.
      * @return Next token.
      */
-    Token getNextToken(const QString &sourceString);
+    Token getNextToken(const QPoint currentPosition, const QString &sourceString);
 
     /*!
      * This method used to get space token from source code.
