@@ -9,21 +9,21 @@
 
 QString HTMLMarkupGenerator::getMessageForLog(const LexicalAnalyzer& lexicalAnalyzer, const SyntacticAnalyzer &syntacticAnalyzer) const
 {
-    QString newLineInLog;
+    QString messageForLog;
 
     if (lexicalAnalyzer.errorText().isEmpty()) {
-        newLineInLog += this->getSuccessfulResultMessage("Lexical analyzer");
+        messageForLog += this->getSuccessfulResultMessage("Lexical analyzer");
     } else {
-        newLineInLog += this->getFailedResultMessage("Lexical analyzer",lexicalAnalyzer.errorText());
+        messageForLog += this->getFailedResultMessage("Lexical analyzer",lexicalAnalyzer.errorText());
     }
 
     if (syntacticAnalyzer.errorText().isEmpty()) {
-        newLineInLog += this->getSuccessfulResultMessage("Syntactic analyzer");
+        messageForLog += this->getSuccessfulResultMessage("Syntactic analyzer");
     } else {
-        newLineInLog += this->getFailedResultMessage("Syntactic analyzer",syntacticAnalyzer.errorText());
+        messageForLog += this->getFailedResultMessage("Syntactic analyzer",syntacticAnalyzer.errorText());
     }
 
-    return newLineInLog;
+    return messageForLog;
 }
 
 QString HTMLMarkupGenerator::getSuccessfulResultMessage(const QString &analyzerName) const
@@ -85,12 +85,12 @@ QString HTMLMarkupGenerator::getTokenHTMLRepresentation(const Token &token) cons
 
 QString HTMLMarkupGenerator::getSourceCodeHTMLMarkup(const LexicalAnalyzer& analyzer) const
 {
-    QString html;
+    QString plainTextWithMarkedUpTokens;
 
     foreach (Token currentToken, analyzer.tokenList()) {
-        html += getTokenHTMLRepresentation(currentToken);
+        plainTextWithMarkedUpTokens += getTokenHTMLRepresentation(currentToken);
     }
-    return PlainTextToHTML(html);
+    return PlainTextToHTML(plainTextWithMarkedUpTokens);
 }
 
 

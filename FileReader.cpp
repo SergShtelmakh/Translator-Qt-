@@ -37,7 +37,6 @@ void FileReader::loadLexicalAnalyzerSettings(const QString &fileName, LexicalAna
 {
     QJsonDocument jsonDocument = loadJson(fileName);
     QJsonObject mainObject = jsonDocument.object();
-
     QJsonObject lexicalAnalyzerJsonObject = mainObject["LexicalAnalyser"].toObject();
     loadLexicalAnalyzerSettings(lexicalAnalyzerJsonObject,lexicalAnalyzer);
 }
