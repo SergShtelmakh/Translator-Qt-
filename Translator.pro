@@ -27,7 +27,9 @@ SOURCES += main.cpp\
         HTMLMarkupGenerator.cpp \
         BackusNaurFormParser.cpp \
         BackusNaurFormRule.cpp \
-        ErrorGenerator.cpp
+        ErrorGenerator.cpp \
+    Block.cpp \
+    SemanticAnalyzer.cpp
 
 HEADERS += mainwindow.h\
         LexicalAnalyzer.h \
@@ -43,7 +45,9 @@ HEADERS += mainwindow.h\
         HTMLMarkupGenerator.h \
         BackusNaurFormParser.h \
         BackusNaurFormRule.h \
-        ErrorGenerator.h
+        ErrorGenerator.h \
+    Block.h \
+    SemanticAnalyzer.h
 
 FORMS  += mainwindow.ui
 

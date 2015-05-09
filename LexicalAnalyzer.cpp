@@ -2,7 +2,6 @@
 #include "ErrorGenerator.h"
 #include <QStringList>
 #include "Token.h"
-#include "Identifier.h"
 
 LexicalAnalyzer::LexicalAnalyzer() :
     m_possibleTokenEndRegExp(QRegExp("( |\t|\n)")),
@@ -13,23 +12,9 @@ void LexicalAnalyzer::analyzeLine(const QString &line, int lineNumber)
 {
     int tokenBeginIndexInLine = 0;
     while (tokenBeginIndexInLine < line.length()) {
-        Token nextToken = getNextToken(QPoint(lineNumber,tokenBeginIndexInLine), line.mid(tokenBeginIndexInLine));
+        Token nextToken = getNextToken(QPoint(tokenBeginIndexInLine, lineNumber), line.mid(tokenBeginIndexInLine));
         m_tokenList.append(nextToken);
-        if (nextToken.tokenCategory() == Token::categoryIdentifier) {
-            Identifier identifier = Identifier(nextToken.lexeme(),nextToken.position());
-            addIdentifier(identifier);
-        }
         tokenBeginIndexInLine += nextToken.lexeme().length();
-    }
-}
-
-void LexicalAnalyzer::addIdentifier(Identifier &identifier)
-{
-    if (m_identifierList.contains(identifier)) {
-        int identifierIndex = m_identifierList.indexOf(identifier);
-        m_identifierList[identifierIndex].addPosition(identifier.getFirstPosition());
-    } else {
-        m_identifierList.append(identifier);
     }
 }
 
@@ -41,7 +26,6 @@ void LexicalAnalyzer::addError(const QString &error)
 void LexicalAnalyzer::clearAllAnalyzingData()
 {
     m_errorText.clear();
-    m_identifierList.clear();
     m_tokenList.clear();
 }
 
@@ -164,21 +148,6 @@ Token LexicalAnalyzer::getSpaceToken(const QString &sourceString)
 {
     QString lexema = sourceString.mid(0,sourceString.indexOf(QRegExp("[^ \t]")));
     return Token(lexema,Token::categorySpace);
-}
-
-QList<Identifier> LexicalAnalyzer::identifierList() const
-{
-    return m_identifierList;
-}
-
-int LexicalAnalyzer::getIdentifierIndex(const QString &identifierName) const
-{
-    for (int identifierIndex = 0; identifierIndex < m_identifierList.count(); identifierIndex ++) {
-        if (m_identifierList[identifierIndex].name() == identifierName) {
-            return identifierIndex;
-        }
-    }
-    return -1;
 }
 
 QList<Token> LexicalAnalyzer::getTokenListWithoutSpaces() const

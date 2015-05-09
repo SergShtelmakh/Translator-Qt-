@@ -11,7 +11,6 @@
 #define IDENTIFIER_H
 
 #include <QList>
-#include <QPoint>
 #include <QString>
 
 /*!
@@ -22,41 +21,33 @@ class Identifier
 
 public:
 
+    enum IdentifierType {
+        BOOLEAN,
+        DOUBLE,
+        INTEGER,
+        STRING,
+        NONE
+    };
+
     Identifier(const Identifier &other);
-    Identifier(const QString &name,const QPoint &position);
+    Identifier(const QString &name, IdentifierType type, int scopeBeginLineNumber, int scopeEndLineNumber);
 
-    QList <QPoint> positionsList() const;
     QString name() const;
-
-    /*!
-     * This method returns first position of identifier in source code.
-     *
-     * @return First positions in source code.
-     */
-    QPoint getFirstPosition();
-
-    /*!
-     * This method add new position of identifier in source code.
-     *
-     * @param[in] posistion New position.
-     */
-    void addPosition(const QPoint &position);
-
     bool operator==(const Identifier &otherIdentifier)const;
+
+    IdentifierType type() const;
+    int scopeBeginLineNumber() const;
+    int scopeEndLineNumber() const;
 
 private:
 
     QString m_name;                     //!< Identifiers name.
-    QList <QPoint> m_positionsList;     //!< List of identifiers positions.
+    IdentifierType m_type;
+    int m_scopeBeginLineNumber;
+    int m_scopeEndLineNumber;
 
 };
 
-/*!
- * This function gets all identifiers positions and returns that as string.
- *
- * @param[in] identifier Identifier.
- * @return Identifiers position list as string.
- */
-QString IdentifierPositionsToString(const Identifier &identifier);
+Identifier::IdentifierType MakeIdentifierType(QString lexeme);
 
 #endif // IDENTIFIER_H

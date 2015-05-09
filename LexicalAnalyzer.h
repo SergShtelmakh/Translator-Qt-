@@ -15,7 +15,6 @@
 #include <QPoint>
 
 class Token;
-class Identifier;
 
 /*!
  * @brief This class provides lexical analysis.
@@ -33,8 +32,6 @@ public:
     QString errorText() const;
 
     QList <Token> tokenList() const;
-
-    QList <Identifier> identifierList() const;
 
     int maxNumberLiteralLenght() const;
     void setMaxNumberLiteralLenght(int maxNumberLiteralLenght);
@@ -161,13 +158,6 @@ private:
     void analyzeLine(const QString &sourceCodeLine, int lineNumber);
 
     /*!
-     * This method used to add identifier to identifiers list.
-     *
-     * @param[in] identifier Identifier.
-     */
-    void addIdentifier(Identifier &identifier);
-
-    /*!
      * This method used to add analysis errors.
      *
      * @param[in] errorString Errors string.
@@ -181,7 +171,6 @@ private:
 
     Token getNumberLiteralTokenWithCorrectLength(const QString &sourceString);
 
-    QList <Identifier> m_identifierList;        //!< List of identifiers.
     QList <Token> m_tokenList;                  //!< List of tokens.
     QString m_errorText;                        //!< Errors string.
 

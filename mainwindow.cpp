@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "HTMLMarkupGenerator.h"
 #include "SyntacticAnalyzer.h"
+#include "SemanticAnalyzer.h"
 #include "LexicalAnalyzer.h"
 #include "Identifier.h"
 #include "FileReader.h"
@@ -13,6 +14,8 @@
 Q_GLOBAL_STATIC(LexicalAnalyzer,globalLexicalAnalyzer)
 
 Q_GLOBAL_STATIC(SyntacticAnalyzer,globalSyntacticAnalyzer)
+
+Q_GLOBAL_STATIC(SemanticAnalyzer,globalSemanticAnalyzer)
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -46,6 +49,8 @@ void MainWindow::on_actionRun_triggered()
 
     globalSyntacticAnalyzer->analyze(globalLexicalAnalyzer->getTokenListWithoutSpaces());
 
+    globalSemanticAnalyzer->analyze(globalLexicalAnalyzer->tokenList());
+
     // Add new message to log
     ui->compileOutputTextEdit->addHTMLString(this->getMarkupGenerator()->getMessageForLog(*globalLexicalAnalyzer, *globalSyntacticAnalyzer));
 
@@ -53,14 +58,16 @@ void MainWindow::on_actionRun_triggered()
     ui->tokenSequenceTextEdit->setText(MakeStringRepresentation(globalLexicalAnalyzer->tokenList()));
 
     // Write information about identifiers
-    QList <Identifier> identifierList = globalLexicalAnalyzer->identifierList();
-    ui->identifierTableWidget->setRowCount(identifierList.count());
+
+
+    //QList <Identifier> identifierList = globalLexicalAnalyzer->identifierList();
+  /*  ui->identifierTableWidget->setRowCount(identifierList.count());
     for (int i = 0; i < identifierList.count(); i++) {
         ui->identifierTableWidget->setItem(i,0,new QTableWidgetItem(identifierList.at(i).name()));
         ui->identifierTableWidget->setItem(i,1,new QTableWidgetItem(QString("%1").arg(identifierList.at(i).positionsList().count())));
         ui->identifierTableWidget->setItem(i,2,new QTableWidgetItem(IdentifierPositionsToString(identifierList.at(i))));
     }
-
+*/
     m_rulesStringListModel->setStringList(globalSyntacticAnalyzer->usedRuleList());
     ui->rulesListView->setModel(m_rulesStringListModel);
 
