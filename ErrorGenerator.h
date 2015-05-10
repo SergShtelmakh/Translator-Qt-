@@ -23,6 +23,7 @@ public:
 
     static QString lexicalError(const Token &incorrectToken);
     static QString syntacticError(const QList<Token> &tokenToParseList,const QList<SyntacticSymbol> &syntacticSymbolList);
+    static QString undeclaratedIdentifierError(const Token &incorrectToken);
 
 };
 

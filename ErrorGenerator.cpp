@@ -29,3 +29,8 @@ QString ErrorGenerator::syntacticError(const QList<Token> &tokenToParseList,cons
     }
     return QString();
 }
+
+QString ErrorGenerator::undeclaratedIdentifierError(const Token &identifierToken)
+{
+    return QString("Undeclarated identifier " + identifierToken.lexeme() + " at (%1:%2)").arg(identifierToken.position().y()).arg(identifierToken.position().x());
+}

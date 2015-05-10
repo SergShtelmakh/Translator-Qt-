@@ -30,9 +30,9 @@ public:
     };
 
     Identifier(const Identifier &other);
-    Identifier(const QString &name, IdentifierType type, int scopeBeginLineNumber, int scopeEndLineNumber);
+    Identifier(const QString &lexeme, IdentifierType type, int scopeBeginLineNumber, int scopeEndLineNumber);
 
-    QString name() const;
+    QString lexeme() const;
     bool operator==(const Identifier &otherIdentifier)const;
 
     IdentifierType type() const;
@@ -41,7 +41,7 @@ public:
 
 private:
 
-    QString m_name;                     //!< Identifiers name.
+    QString m_lexeme;                     //!< Identifiers name.
     IdentifierType m_type;
     int m_scopeBeginLineNumber;
     int m_scopeEndLineNumber;

@@ -1,5 +1,7 @@
 #include "SemanticAnalyzer.h"
 #include <iterator>
+#include <QStringList>
+#include "ErrorGenerator.h"
 
 SemanticAnalyzer::SemanticAnalyzer() : m_mainBlock(NULL)
 {}
@@ -11,8 +13,10 @@ SemanticAnalyzer::~SemanticAnalyzer()
 
 void SemanticAnalyzer::analyze(const QList<Token> &tokenList)
 {
+    prepareToAnalysis();
     makeBlocks(tokenList);
     findIdentifiersDeclaration(tokenList);
+    checkIdentifiersScope(tokenList);
 }
 
 void SemanticAnalyzer::makeBlocks(const QList<Token> &tokenList)
@@ -45,7 +49,6 @@ void SemanticAnalyzer::makeBlocks(const QList<Token> &tokenList)
 
 void SemanticAnalyzer::findIdentifiersDeclaration(const QList<Token> &tokenList)
 {
-    m_identifiersList.clear();
     QList<Token>::const_iterator tokenIterator = tokenList.begin();
     while(tokenIterator != tokenList.end()) {
         Token currentToken = *tokenIterator;
@@ -57,6 +60,20 @@ void SemanticAnalyzer::findIdentifiersDeclaration(const QList<Token> &tokenList)
                                           tokenLineNumber,
                                           currentBlock->endLineNumber());
             m_identifiersList.push_back(newId);
+        }
+        tokenIterator++;
+    }
+}
+
+void SemanticAnalyzer::checkIdentifiersScope(const QList<Token> &tokenList)
+{
+    QList<Token>::const_iterator tokenIterator = tokenList.begin();
+    while(tokenIterator != tokenList.end()) {
+        Token currentToken = *tokenIterator;
+        if (currentToken.tokenCategory() == Token::categoryIdentifier) {
+            if (!isIdentifierDeclarate(currentToken)) {
+                addError(ErrorGenerator::undeclaratedIdentifierError(currentToken));
+            }
         }
         tokenIterator++;
     }
@@ -78,4 +95,33 @@ Block *SemanticAnalyzer::getBlockByLineNumber(const int lineNumber)
         }
     }
 }
+
+bool SemanticAnalyzer::isIdentifierDeclarate(Token identifier)
+{
+    foreach (Identifier currentIdentifier, m_identifiersList) {
+        if (currentIdentifier.lexeme() == identifier.lexeme()) {
+            if((currentIdentifier.scopeBeginLineNumber() <= identifier.position().y())&&(currentIdentifier.scopeEndLineNumber() >= identifier.position().y())) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void SemanticAnalyzer::addError(QString errorText)
+{
+    m_errorText += QString("%1:\t").arg(m_errorText.split("\n").count()) + errorText + "\n";
+}
+
+void SemanticAnalyzer::prepareToAnalysis()
+{
+    m_errorText.clear();
+    m_identifiersList.clear();
+}
+QString SemanticAnalyzer::errorText() const
+{
+    return m_errorText;
+}
+
+
 

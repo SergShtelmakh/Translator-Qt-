@@ -4,23 +4,32 @@
 #include "Token.h"
 #include "LexicalAnalyzer.h"
 #include "SyntacticAnalyzer.h"
+#include "SemanticAnalyzer.h"
 #include "HTMLMarkupGenerator.h"
 #include "HTMLColors.h"
 
-QString HTMLMarkupGenerator::getMessageForLog(const LexicalAnalyzer& lexicalAnalyzer, const SyntacticAnalyzer &syntacticAnalyzer) const
+QString HTMLMarkupGenerator::getMessageForLog(const LexicalAnalyzer& lexicalAnalyzer, const SyntacticAnalyzer &syntacticAnalyzer, const SemanticAnalyzer &semanticAnalyzer) const
 {
     QString messageForLog;
 
     if (lexicalAnalyzer.errorText().isEmpty()) {
         messageForLog += this->getSuccessfulResultMessage("Lexical analyzer");
     } else {
-        messageForLog += this->getFailedResultMessage("Lexical analyzer",lexicalAnalyzer.errorText());
+        messageForLog += this->getFailedResultMessage("Lexical analyzer", lexicalAnalyzer.errorText());
     }
 
     if (syntacticAnalyzer.errorText().isEmpty()) {
         messageForLog += this->getSuccessfulResultMessage("Syntactic analyzer");
     } else {
-        messageForLog += this->getFailedResultMessage("Syntactic analyzer",syntacticAnalyzer.errorText());
+        messageForLog += this->getFailedResultMessage("Syntactic analyzer", syntacticAnalyzer.errorText());
+    }
+
+    if (lexicalAnalyzer.errorText().isEmpty()&&syntacticAnalyzer.errorText().isEmpty()) {
+        if (semanticAnalyzer.errorText().isEmpty()) {
+            messageForLog += this->getSuccessfulResultMessage("Semantic analyzer");
+        } else {
+            messageForLog += this->getFailedResultMessage("Semantic analyzer", semanticAnalyzer.errorText());
+        }
     }
 
     return messageForLog;

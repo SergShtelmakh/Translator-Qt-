@@ -15,14 +15,21 @@ public:
     ~SemanticAnalyzer();
     void analyze (const QList<Token> &tokenList);
 
+    QString errorText() const;
+
 private:
 
     void makeBlocks (const QList<Token> &tokenList);
     void findIdentifiersDeclaration (const QList<Token> &tokenList);
+    void checkIdentifiersScope(const QList<Token> &tokenList);
     Block* getBlockByLineNumber(const int lineNumber);
+    bool isIdentifierDeclarate(Token identifier);
+    void addError(QString errorText);
+    void prepareToAnalysis();
 
     Block* m_mainBlock;
     QList<Identifier> m_identifiersList;
+    QString m_errorText;
 
 };
 
