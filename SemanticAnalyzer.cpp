@@ -17,14 +17,13 @@ void SemanticAnalyzer::analyze(const QList<Token> &tokenList)
     makeBlocks(tokenList);
     findIdentifiersDeclaration(tokenList);
     checkIdentifiersScope(tokenList);
+    if (!m_errorText.isEmpty()) {
+        return;
+    }
 }
 
 void SemanticAnalyzer::makeBlocks(const QList<Token> &tokenList)
 {
-    if (m_mainBlock)
-        delete m_mainBlock;
-
-    m_mainBlock = new Block();
     Block *currentBlock = m_mainBlock;
     QList<Token>::const_iterator tokenIterator = tokenList.begin();
     while(tokenIterator != tokenList.end()) {
@@ -54,12 +53,19 @@ void SemanticAnalyzer::findIdentifiersDeclaration(const QList<Token> &tokenList)
         Token currentToken = *tokenIterator;
         if (currentToken.lexeme() == "DIM") {
             int tokenLineNumber = currentToken.position().y();
-            Block* currentBlock = getBlockByLineNumber(tokenLineNumber);
-            Identifier newId = Identifier((*(tokenIterator + 2)).lexeme(),
-                                          MakeIdentifierType((*(tokenIterator + 6)).lexeme()),
+            Block *currentBlock = getBlockByLineNumber(tokenLineNumber);
+            const Token identifierToken = *(tokenIterator + 2);
+            const Token identifierTypeToken = *(tokenIterator + 6);
+            Identifier *newId = new Identifier(identifierToken.lexeme(),
+                                          MakeIdentifierType(identifierTypeToken.lexeme()),
                                           tokenLineNumber,
                                           currentBlock->endLineNumber());
-            m_identifiersList.push_back(newId);
+            if (currentBlock->isIdentifierDeclared(*newId)) {
+                addError(ErrorGenerator::redeclarationOfIdentifier(identifierToken));
+            } else {
+                currentBlock->addIdentifier(*newId);
+                m_identifiersList.append(newId);
+            }
         }
         tokenIterator++;
     }
@@ -98,9 +104,9 @@ Block *SemanticAnalyzer::getBlockByLineNumber(const int lineNumber)
 
 bool SemanticAnalyzer::isIdentifierDeclarate(Token identifier)
 {
-    foreach (Identifier currentIdentifier, m_identifiersList) {
-        if (currentIdentifier.lexeme() == identifier.lexeme()) {
-            if((currentIdentifier.scopeBeginLineNumber() <= identifier.position().y())&&(currentIdentifier.scopeEndLineNumber() >= identifier.position().y())) {
+    foreach (Identifier *currentIdentifier, m_identifiersList) {
+        if (currentIdentifier->lexeme() == identifier.lexeme()) {
+            if((currentIdentifier->scopeBeginLineNumber() <= identifier.position().y())&&(currentIdentifier->scopeEndLineNumber() >= identifier.position().y())) {
                 return true;
             }
         }
@@ -115,9 +121,18 @@ void SemanticAnalyzer::addError(QString errorText)
 
 void SemanticAnalyzer::prepareToAnalysis()
 {
+    if (m_mainBlock)
+        delete m_mainBlock;
+
+    m_mainBlock = new Block();
     m_errorText.clear();
-    m_identifiersList.clear();
 }
+
+Block *SemanticAnalyzer::mainBlock() const
+{
+    return m_mainBlock;
+}
+
 QString SemanticAnalyzer::errorText() const
 {
     return m_errorText;

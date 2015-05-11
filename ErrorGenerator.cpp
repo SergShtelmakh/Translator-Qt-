@@ -34,3 +34,8 @@ QString ErrorGenerator::undeclaratedIdentifierError(const Token &identifierToken
 {
     return QString("Undeclarated identifier " + identifierToken.lexeme() + " at (%1:%2)").arg(identifierToken.position().y()).arg(identifierToken.position().x());
 }
+
+QString ErrorGenerator::redeclarationOfIdentifier(const Token &identifierToken)
+{
+    return QString("Redeclaration of identifier " + identifierToken.lexeme() + " at (%1:%2)").arg(identifierToken.position().y()).arg(identifierToken.position().x());
+}

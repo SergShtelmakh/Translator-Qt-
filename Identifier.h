@@ -30,6 +30,7 @@ public:
     };
 
     Identifier(const Identifier &other);
+    Identifier(){}
     Identifier(const QString &lexeme, IdentifierType type, int scopeBeginLineNumber, int scopeEndLineNumber);
 
     QString lexeme() const;

@@ -62,6 +62,7 @@ private:
      *
      * @return Markup generator.
      */
+
     HTMLMarkupGenerator* getMarkupGenerator() const;
     void loadSettings();
 

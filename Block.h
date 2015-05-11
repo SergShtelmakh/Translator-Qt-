@@ -20,8 +20,10 @@ public:
     ~Block();
     void addChildBlock(Block *child);
     void setEndLine(int endLine);
-    Block *parent() const;
+    bool isIdentifierDeclared(const Identifier &identifier);
+    void addIdentifier(const Identifier &identifier);
 
+    Block *parent() const;
     int startLineNumber() const;
     int endLineNumber() const;
     QVector<Block *> children() const;

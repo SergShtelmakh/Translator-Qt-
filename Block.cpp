@@ -32,6 +32,18 @@ void Block::setEndLine(int endLine)
     m_endLineNumber = endLine;
 }
 
+bool Block::isIdentifierDeclared(const Identifier &identifier)
+{
+    if (m_identifiers.contains(identifier))
+        return true;
+    return false;
+}
+
+void Block::addIdentifier(const Identifier &identifier)
+{
+    m_identifiers.push_back(identifier);
+}
+
 Block *Block::parent() const
 {
     return m_parent;
