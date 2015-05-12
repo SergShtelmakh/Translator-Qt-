@@ -37,13 +37,14 @@ void SemanticAnalyzer::makeBlocks(const QList<Token> &tokenList)
             currentBlock->addChildBlock(newBlock);
             currentBlock = newBlock;
         } else if ((currentToken.lexeme() == "END")||(currentToken.lexeme() == "NEXT")){
-            currentBlock->setEndLine(currentToken.position().y());
+            currentBlock->setScopeEndLineNumber(currentToken.position().y());
             currentBlock = currentBlock->parent();
             // jump through <END><space><IF> or <NEXT><space><ID>
             tokenIterator += 2;
         }
         tokenIterator++;
     }
+    m_mainBlock->setScopeEndLineNumber(tokenList.last().position().y());
 }
 
 void SemanticAnalyzer::findIdentifiersDeclaration(const QList<Token> &tokenList)
@@ -59,7 +60,7 @@ void SemanticAnalyzer::findIdentifiersDeclaration(const QList<Token> &tokenList)
             Identifier *newId = new Identifier(identifierToken.lexeme(),
                                           MakeIdentifierType(identifierTypeToken.lexeme()),
                                           tokenLineNumber,
-                                          currentBlock->endLineNumber());
+                                          currentBlock->scopeEndLineNumber());
             if (currentBlock->isIdentifierDeclared(*newId)) {
                 addError(ErrorGenerator::redeclarationOfIdentifier(identifierToken));
             } else {
@@ -91,8 +92,9 @@ Block *SemanticAnalyzer::getBlockByLineNumber(const int lineNumber)
     for (;;) {
         Block *foundChildBlock = NULL;
         foreach (Block *currentChildBlock, currentBlock->children()) {
-            if ((currentBlock->startLineNumber() <= lineNumber)&&(currentBlock->endLineNumber() >= lineNumber))
+            if ((currentChildBlock->scopeBeginLineNumber() <= lineNumber)&&(currentChildBlock->scopeEndLineNumber() >= lineNumber)) {
                 foundChildBlock = currentChildBlock;
+            }
         }
         if (!foundChildBlock) {
             return currentBlock;
@@ -106,7 +108,8 @@ bool SemanticAnalyzer::isIdentifierDeclarate(Token identifier)
 {
     foreach (Identifier *currentIdentifier, m_identifiersList) {
         if (currentIdentifier->lexeme() == identifier.lexeme()) {
-            if((currentIdentifier->scopeBeginLineNumber() <= identifier.position().y())&&(currentIdentifier->scopeEndLineNumber() >= identifier.position().y())) {
+            if((currentIdentifier->scopeBeginLineNumber() <= identifier.position().y())
+                    &&(currentIdentifier->scopeEndLineNumber() >= identifier.position().y())) {
                 return true;
             }
         }

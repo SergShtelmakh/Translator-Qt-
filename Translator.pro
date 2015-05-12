@@ -29,7 +29,8 @@ SOURCES += main.cpp\
         BackusNaurFormRule.cpp \
         ErrorGenerator.cpp \
     Block.cpp \
-    SemanticAnalyzer.cpp
+    SemanticAnalyzer.cpp \
+    ProgramBlockTreeWidget.cpp
 
 HEADERS += mainwindow.h\
         LexicalAnalyzer.h \
@@ -47,7 +48,8 @@ HEADERS += mainwindow.h\
         BackusNaurFormRule.h \
         ErrorGenerator.h \
     Block.h \
-    SemanticAnalyzer.h
+    SemanticAnalyzer.h \
+    ProgramBlockTreeWidget.h
 
 FORMS  += mainwindow.ui
 

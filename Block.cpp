@@ -2,15 +2,15 @@
 
 Block::Block() :
     m_type(MAIN),
-    m_startLineNumber(0),
-    m_endLineNumber(INT_MAX)
+    m_scopeBeginLineNumber(0),
+    m_scopeEndLineNumber(INT_MAX)
 {
     m_parent = NULL;
 }
 
 Block::Block(Block::BlockType type, int startLineNumber, Block *parent) :
     m_type(type),
-    m_startLineNumber(startLineNumber),
+    m_scopeBeginLineNumber(startLineNumber),
     m_parent(parent)
 {}
 
@@ -27,9 +27,9 @@ void Block::addChildBlock(Block *child)
     m_children.push_back(child);
 }
 
-void Block::setEndLine(int endLine)
+void Block::setScopeEndLineNumber(int endLine)
 {
-    m_endLineNumber = endLine;
+    m_scopeEndLineNumber = endLine;
 }
 
 bool Block::isIdentifierDeclared(const Identifier &identifier)
@@ -49,14 +49,14 @@ Block *Block::parent() const
     return m_parent;
 }
 
-int Block::startLineNumber() const
+int Block::scopeBeginLineNumber() const
 {
-    return m_startLineNumber;
+    return m_scopeBeginLineNumber;
 }
 
-int Block::endLineNumber() const
+int Block::scopeEndLineNumber() const
 {
-    return m_endLineNumber;
+    return m_scopeEndLineNumber;
 }
 
 QVector<Block *> Block::children() const
@@ -64,5 +64,24 @@ QVector<Block *> Block::children() const
     return m_children;
 }
 
+QVector<Identifier> Block::identifiers() const
+{
+    return m_identifiers;
+}
 
+Block::BlockType Block::type() const
+{
+    return m_type;
+}
 
+QString BlockTypeToString(Block::BlockType type)
+{
+    switch (type) {
+    case Block::IF:
+        return "IF";
+    case Block::FOR:
+        return "FOR";
+    default:
+        return QString();
+    }
+}

@@ -50,5 +50,7 @@ private:
 };
 
 Identifier::IdentifierType MakeIdentifierType(QString lexeme);
+QString IdentifierTypeToString(Identifier::IdentifierType type);
+
 
 #endif // IDENTIFIER_H

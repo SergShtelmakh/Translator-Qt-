@@ -16,27 +16,31 @@ public:
     };
 
     Block();
-    Block(BlockType type, int startLineNumber, Block *parent);
+    Block(BlockType type, int scopeBeginLineNumber, Block *parent);
     ~Block();
     void addChildBlock(Block *child);
-    void setEndLine(int endLine);
+    void setScopeEndLineNumber(int endLine);
     bool isIdentifierDeclared(const Identifier &identifier);
     void addIdentifier(const Identifier &identifier);
 
     Block *parent() const;
-    int startLineNumber() const;
-    int endLineNumber() const;
+    int scopeBeginLineNumber() const;
+    int scopeEndLineNumber() const;
     QVector<Block *> children() const;
+    QVector<Identifier> identifiers() const;
+    BlockType type() const;
 
 private:
 
     BlockType m_type;
-    int m_startLineNumber;
-    int m_endLineNumber;
+    int m_scopeBeginLineNumber;
+    int m_scopeEndLineNumber;
     QVector<Block *> m_children;
     Block *m_parent;
     QVector<Identifier> m_identifiers;
 
 };
+
+QString BlockTypeToString(Block::BlockType type);
 
 #endif // BLOCK_H

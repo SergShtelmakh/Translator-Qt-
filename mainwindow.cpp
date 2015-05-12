@@ -58,6 +58,7 @@ void MainWindow::on_actionRun_triggered()
     ui->tokenSequenceTextEdit->setText(MakeStringRepresentation(globalLexicalAnalyzer->tokenList()));
     m_rulesStringListModel->setStringList(globalSyntacticAnalyzer->usedRuleList());
     ui->rulesListView->setModel(m_rulesStringListModel);
+    ui->programBlockTreeWidget->setData(globalSemanticAnalyzer->mainBlock());
 
 }
 

@@ -39,7 +39,6 @@ QString Identifier::lexeme() const
     return m_lexeme;
 }
 
-
 Identifier::IdentifierType MakeIdentifierType(QString lexeme)
 {
     if (lexeme == "INTEGER")
@@ -51,4 +50,21 @@ Identifier::IdentifierType MakeIdentifierType(QString lexeme)
     if (lexeme == "STRING")
         return Identifier::STRING;
     return Identifier::NONE;
+}
+
+
+QString IdentifierTypeToString(Identifier::IdentifierType type)
+{
+    switch (type) {
+    case Identifier::BOOLEAN:
+        return "BOOLEAN";
+    case Identifier::INTEGER:
+        return "INTEGER";
+    case Identifier::DOUBLE:
+        return "DOUBLE";
+    case Identifier::STRING:
+        return "STRING";
+    default:
+        return QString();
+    }
 }
