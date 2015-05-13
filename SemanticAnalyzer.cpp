@@ -13,13 +13,10 @@ SemanticAnalyzer::~SemanticAnalyzer()
 
 void SemanticAnalyzer::analyze(const QList<Token> &tokenList)
 {
-    prepareToAnalysis();
-    makeBlocks(tokenList);
-    findIdentifiersDeclaration(tokenList);
-    checkIdentifiersScope(tokenList);
-    if (!m_errorText.isEmpty()) {
-        return;
-    }
+    this->prepareToAnalysis(tokenList);
+    this->makeBlocks(tokenList);
+    this->findIdentifiersDeclaration(tokenList);
+    this->checkIdentifiersScope(tokenList);
 }
 
 void SemanticAnalyzer::makeBlocks(const QList<Token> &tokenList)
@@ -29,22 +26,21 @@ void SemanticAnalyzer::makeBlocks(const QList<Token> &tokenList)
     while(tokenIterator != tokenList.end()) {
         Token currentToken = *tokenIterator;
         if (currentToken.lexeme() == "FOR") {
-            Block *newBlock = new Block(Block::FOR, currentToken.position().y(), currentBlock);
-            currentBlock->addChildBlock(newBlock);
-            currentBlock = newBlock;
+            Block *newChildBlock = new Block(Block::FOR, GetTokenLineNumber(currentToken), currentBlock);
+            currentBlock->addChildBlock(newChildBlock);
+            currentBlock = newChildBlock;
         } else if (currentToken.lexeme() == "IF"){
-            Block *newBlock = new Block(Block::IF, currentToken.position().y(), currentBlock);
-            currentBlock->addChildBlock(newBlock);
-            currentBlock = newBlock;
+            Block *newChildBlock = new Block(Block::IF, GetTokenLineNumber(currentToken), currentBlock);
+            currentBlock->addChildBlock(newChildBlock);
+            currentBlock = newChildBlock;
         } else if ((currentToken.lexeme() == "END")||(currentToken.lexeme() == "NEXT")){
-            currentBlock->setScopeEndLineNumber(currentToken.position().y());
+            currentBlock->setScopeEndLineNumber(GetTokenLineNumber(currentToken));
             currentBlock = currentBlock->parent();
             // jump through <END><space><IF> or <NEXT><space><ID>
             tokenIterator += 2;
         }
         tokenIterator++;
     }
-    m_mainBlock->setScopeEndLineNumber(tokenList.last().position().y());
 }
 
 void SemanticAnalyzer::findIdentifiersDeclaration(const QList<Token> &tokenList)
@@ -53,19 +49,17 @@ void SemanticAnalyzer::findIdentifiersDeclaration(const QList<Token> &tokenList)
     while(tokenIterator != tokenList.end()) {
         Token currentToken = *tokenIterator;
         if (currentToken.lexeme() == "DIM") {
-            int tokenLineNumber = currentToken.position().y();
-            Block *currentBlock = getBlockByLineNumber(tokenLineNumber);
+            Block *currentBlock = getBlockByLineNumber(GetTokenLineNumber(currentToken));
             const Token identifierToken = *(tokenIterator + 2);
             const Token identifierTypeToken = *(tokenIterator + 6);
             Identifier *newId = new Identifier(identifierToken.lexeme(),
                                           MakeIdentifierType(identifierTypeToken.lexeme()),
-                                          tokenLineNumber,
+                                          GetTokenLineNumber(currentToken),
                                           currentBlock->scopeEndLineNumber());
             if (currentBlock->isIdentifierDeclared(*newId)) {
                 addError(ErrorGenerator::redeclarationOfIdentifier(identifierToken));
             } else {
                 currentBlock->addIdentifier(*newId);
-                m_identifiersList.append(newId);
             }
         }
         tokenIterator++;
@@ -92,7 +86,9 @@ Block *SemanticAnalyzer::getBlockByLineNumber(const int lineNumber)
     for (;;) {
         Block *foundChildBlock = NULL;
         foreach (Block *currentChildBlock, currentBlock->children()) {
-            if ((currentChildBlock->scopeBeginLineNumber() <= lineNumber)&&(currentChildBlock->scopeEndLineNumber() >= lineNumber)) {
+            if (AtRange(currentChildBlock->scopeBeginLineNumber(),
+                        currentChildBlock->scopeEndLineNumber(),
+                        lineNumber)) {
                 foundChildBlock = currentChildBlock;
             }
         }
@@ -104,15 +100,20 @@ Block *SemanticAnalyzer::getBlockByLineNumber(const int lineNumber)
     }
 }
 
-bool SemanticAnalyzer::isIdentifierDeclarate(Token identifier)
+bool SemanticAnalyzer::isIdentifierDeclarate(const Token &identifierToken)
 {
-    foreach (Identifier *currentIdentifier, m_identifiersList) {
-        if (currentIdentifier->lexeme() == identifier.lexeme()) {
-            if((currentIdentifier->scopeBeginLineNumber() <= identifier.position().y())
-                    &&(currentIdentifier->scopeEndLineNumber() >= identifier.position().y())) {
-                return true;
+    Block* currentBlock = getBlockByLineNumber(GetTokenLineNumber(identifierToken));
+    while (currentBlock) {
+        foreach (Identifier currentIdentifier, currentBlock->identifiers()) {
+            if (currentIdentifier.lexeme() == identifierToken.lexeme()) {
+                if (AtRange(currentIdentifier.scopeBeginLineNumber(),
+                            currentIdentifier.scopeEndLineNumber(),
+                            GetTokenLineNumber(identifierToken))) {
+                    return true;
+                }
             }
         }
+        currentBlock = currentBlock->parent();
     }
     return false;
 }
@@ -122,12 +123,13 @@ void SemanticAnalyzer::addError(QString errorText)
     m_errorText += QString("%1:\t").arg(m_errorText.split("\n").count()) + errorText + "\n";
 }
 
-void SemanticAnalyzer::prepareToAnalysis()
+void SemanticAnalyzer::prepareToAnalysis(const QList<Token> &tokenList)
 {
     if (m_mainBlock)
         delete m_mainBlock;
 
     m_mainBlock = new Block();
+    m_mainBlock->setScopeEndLineNumber(tokenList.last().position().y());
     m_errorText.clear();
 }
 
@@ -141,5 +143,8 @@ QString SemanticAnalyzer::errorText() const
     return m_errorText;
 }
 
-
+bool AtRange(int beginRange, int endRange, int value)
+{
+    return (beginRange <= value)&&(endRange >= value);
+}
 

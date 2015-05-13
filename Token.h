@@ -74,5 +74,6 @@ private:
 };
 
 QString MakeStringRepresentation(const Token &token);
+int GetTokenLineNumber(const Token &token);
 
 #endif // TOKEN_H

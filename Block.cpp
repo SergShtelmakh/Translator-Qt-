@@ -27,7 +27,7 @@ void Block::addChildBlock(Block *child)
     m_children.push_back(child);
 }
 
-void Block::setScopeEndLineNumber(int endLine)
+void Block::setScopeEndLineNumber(const int endLine)
 {
     m_scopeEndLineNumber = endLine;
 }

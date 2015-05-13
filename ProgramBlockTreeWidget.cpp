@@ -27,6 +27,7 @@ void ProgramBlockTreeWidget::setData(Block *mainBlock)
         addNode(rootItem, identifierVector, childrenVector);
     }
     addTopLevelItem(rootItem);
+    this->expandAll();
 }
 
 void ProgramBlockTreeWidget::addNode(QTreeWidgetItem *currentNode, QVector<Identifier> &identifiers, QVector<Block *> &childBlocks)

@@ -19,7 +19,7 @@ public:
     Block(BlockType type, int scopeBeginLineNumber, Block *parent);
     ~Block();
     void addChildBlock(Block *child);
-    void setScopeEndLineNumber(int endLine);
+    void setScopeEndLineNumber(const int endLine);
     bool isIdentifierDeclared(const Identifier &identifier);
     void addIdentifier(const Identifier &identifier);
 

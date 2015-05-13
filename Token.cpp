@@ -98,3 +98,9 @@ QString MakeStringRepresentation(const Token &token)
         return "<" + token.lexeme() + ">";
     }
 }
+
+
+int GetTokenLineNumber(const Token &token)
+{
+    return token.position().y();
+}
