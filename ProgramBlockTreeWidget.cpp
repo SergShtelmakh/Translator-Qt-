@@ -6,7 +6,7 @@ ProgramBlockTreeWidget::ProgramBlockTreeWidget(QWidget *parent) : QTreeWidget(pa
 {
     setColumnCount(5);
     QStringList headerLabels;
-    headerLabels << "Type" << "Name" << "Data type" << "Scope begin" << "Scope end";
+    headerLabels << "Type" << "Name" << "Code" << "Data type" << "Scope begin" << "Scope end";
     setHeaderLabels(headerLabels);
 }
 
@@ -17,11 +17,14 @@ ProgramBlockTreeWidget::~ProgramBlockTreeWidget()
 
 void ProgramBlockTreeWidget::setData(Block *mainBlock)
 {
+    if (!mainBlock) {
+        return;
+    }
     this->clear();
     QStringList rootItemStringList;
     rootItemStringList << "Block";
     QTreeWidgetItem *rootItem = new QTreeWidgetItem(rootItemStringList);
-    QVector<Identifier> identifierVector = mainBlock->identifiers();
+    QVector<Identifier *> identifierVector = mainBlock->identifiers();
     QVector<Block *> childrenVector = mainBlock->children();
     while ((!childrenVector.isEmpty())||(!identifierVector.isEmpty())) {
         addNode(rootItem, identifierVector, childrenVector);
@@ -30,7 +33,7 @@ void ProgramBlockTreeWidget::setData(Block *mainBlock)
     this->expandAll();
 }
 
-void ProgramBlockTreeWidget::addNode(QTreeWidgetItem *currentNode, QVector<Identifier> &identifiers, QVector<Block *> &childBlocks)
+void ProgramBlockTreeWidget::addNode(QTreeWidgetItem *currentNode, QVector<Identifier *> &identifiers, QVector<Block *> &childBlocks)
 {
     NodeType nextNodeType = getNextNodeType(identifiers, childBlocks);
     QStringList nodeStringList;
@@ -41,11 +44,12 @@ void ProgramBlockTreeWidget::addNode(QTreeWidgetItem *currentNode, QVector<Ident
         nodeStringList << "Block"
                        << BlockTypeToString(currentChild->type())
                        << ""
+                       << ""
                        << QString("%1").arg(currentChild->scopeBeginLineNumber())
                        << QString("%1").arg(currentChild->scopeEndLineNumber());
         QTreeWidgetItem *currentChildItem = new QTreeWidgetItem(nodeStringList);
         currentNode->addChild(currentChildItem);
-        QVector<Identifier> identifierVector = currentChild->identifiers();
+        QVector<Identifier *> identifierVector = currentChild->identifiers();
         QVector<Block *> childrenVector = currentChild->children();
         while ((!childrenVector.isEmpty())||(!identifierVector.isEmpty())) {
             addNode(currentChildItem, identifierVector, childrenVector);
@@ -53,12 +57,13 @@ void ProgramBlockTreeWidget::addNode(QTreeWidgetItem *currentNode, QVector<Ident
         break;
     }
     case IDENTIFIER: {
-        Identifier currentIdentifier = identifiers.takeFirst();
+        Identifier *currentIdentifier = identifiers.takeFirst();
         nodeStringList << "Identifier"
-                       << currentIdentifier.lexeme()
-                       << IdentifierTypeToString(currentIdentifier.type())
-                       << QString("%1").arg(currentIdentifier.scopeBeginLineNumber())
-                       << QString("%1").arg(currentIdentifier.scopeEndLineNumber());
+                       << currentIdentifier->lexeme()
+                       << QString("#%1").arg(currentIdentifier->code())
+                       << TypeToString(currentIdentifier->type())
+                       << QString("%1").arg(currentIdentifier->scopeBeginLineNumber())
+                       << QString("%1").arg(currentIdentifier->scopeEndLineNumber());
         currentNode->addChild(new QTreeWidgetItem(nodeStringList));
         break;
     }
@@ -67,7 +72,7 @@ void ProgramBlockTreeWidget::addNode(QTreeWidgetItem *currentNode, QVector<Ident
     }
 }
 
-ProgramBlockTreeWidget::NodeType ProgramBlockTreeWidget::getNextNodeType(QVector<Identifier> &identifiers, QVector<Block *> &childBlocks)
+ProgramBlockTreeWidget::NodeType ProgramBlockTreeWidget::getNextNodeType(QVector<Identifier *> &identifiers, QVector<Block *> &childBlocks)
 {
     if (identifiers.isEmpty()) {
         return BLOCK;
@@ -75,8 +80,8 @@ ProgramBlockTreeWidget::NodeType ProgramBlockTreeWidget::getNextNodeType(QVector
         return IDENTIFIER;
     } else {
         Block *currentChild = childBlocks.first();
-        Identifier currentIdentifier = identifiers.first();
-        if (currentChild->scopeBeginLineNumber() < currentIdentifier.scopeBeginLineNumber()) {
+        Identifier *currentIdentifier = identifiers.first();
+        if (currentChild->scopeBeginLineNumber() < currentIdentifier->scopeBeginLineNumber()) {
             return BLOCK;
         } else {
             return IDENTIFIER;

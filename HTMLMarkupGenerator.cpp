@@ -5,10 +5,11 @@
 #include "LexicalAnalyzer.h"
 #include "SyntacticAnalyzer.h"
 #include "SemanticAnalyzer.h"
+#include "ThreeAddressCodeGenerator.h"
 #include "HTMLMarkupGenerator.h"
 #include "HTMLColors.h"
 
-QString HTMLMarkupGenerator::getMessageForLog(const LexicalAnalyzer& lexicalAnalyzer, const SyntacticAnalyzer &syntacticAnalyzer, const SemanticAnalyzer &semanticAnalyzer) const
+QString HTMLMarkupGenerator::getMessageForLog(const LexicalAnalyzer& lexicalAnalyzer, const SyntacticAnalyzer &syntacticAnalyzer, const SemanticAnalyzer &semanticAnalyzer, const ThreeAddressCodeGenerator &codeGenerator) const
 {
     QString messageForLog;
 
@@ -32,6 +33,13 @@ QString HTMLMarkupGenerator::getMessageForLog(const LexicalAnalyzer& lexicalAnal
         }
     }
 
+    if (lexicalAnalyzer.errorText().isEmpty()&&syntacticAnalyzer.errorText().isEmpty()&&semanticAnalyzer.errorText().isEmpty()) {
+        if (codeGenerator.error().isEmpty()) {
+            messageForLog += this->getSuccessfulResultMessage("Code generator");
+        } else {
+            messageForLog += this->getFailedResultMessage("Code generator", codeGenerator.error());
+        }
+    }
     return messageForLog;
 }
 
@@ -56,7 +64,7 @@ QString HTMLMarkupGenerator::getFailedResultMessage(const QString &analyzerName,
 
 QString HTMLMarkupGenerator::getTokenColorName(const Token& token) const
 {
-    switch (token.tokenCategory()) {
+    switch (token.category()) {
     case Token::categoryIdentifier:
         return HTMLColors::blue;
     case Token::categoryCharToken:
@@ -82,11 +90,11 @@ QString HTMLMarkupGenerator::getTokenHTMLRepresentation(const Token &token) cons
         return "<u>" + lexeme + "</u>";
 
     // Spaces represent without markup
-    if (token.tokenCategory() == Token::categorySpace)
+    if (token.category() == Token::categorySpace)
         return lexeme;
 
     // In HTML <br> use as line feed
-    if (token.tokenCategory() == Token::categoryLineFeed)
+    if (token.category() == Token::categoryLineFeed)
         return "<br>";
 
     return "<font color=" + getTokenColorName(token) + ">" + lexeme + "</font>";

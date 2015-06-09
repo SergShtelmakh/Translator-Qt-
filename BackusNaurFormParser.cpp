@@ -98,9 +98,9 @@ QList<SyntacticSymbol> BackusNaurFormParser::parseRightPart(QString rightPartSou
         } else if (rightPartSourceString.indexOf("literal") == 0) {
             currentSymbol = SyntacticSymbol ("literal", SyntacticSymbol::terminalSymbol, Token::categoryStringLiteral);
         }
-        AppendListByCorrectItem(rightPart,currentSymbol);
+        AppendListByCorrectItem(rightPart, currentSymbol);
 
-        rightPartSourceString.remove(0,GetSyntacticSymbolNameLengthWithBrackets(currentSymbol));
+        rightPartSourceString.remove(0, GetSyntacticSymbolNameLengthWithBrackets(currentSymbol));
     }
     return rightPart;
 }
@@ -111,7 +111,7 @@ SyntacticSymbol BackusNaurFormParser::getNonterminalSymbol(QString &string)
     int state = 0;
     while (currentCharIndex < string.length()) {
         currentCharIndex ++;
-        QString currentChar = string.mid(currentCharIndex,1);
+        QString currentChar = string.mid(currentCharIndex, 1);
         switch (state) {
         case 0: {
             if (currentChar.contains("<")) {

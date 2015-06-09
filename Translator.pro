@@ -30,7 +30,9 @@ SOURCES += main.cpp\
         ErrorGenerator.cpp \
     Block.cpp \
     SemanticAnalyzer.cpp \
-    ProgramBlockTreeWidget.cpp
+    ProgramBlockTreeWidget.cpp \
+    ThreeAddressCodeGenerator.cpp \
+    Expression.cpp
 
 HEADERS += mainwindow.h\
         LexicalAnalyzer.h \
@@ -49,7 +51,9 @@ HEADERS += mainwindow.h\
         ErrorGenerator.h \
     Block.h \
     SemanticAnalyzer.h \
-    ProgramBlockTreeWidget.h
+    ProgramBlockTreeWidget.h \
+    ThreeAddressCodeGenerator.h \
+    Expression.h
 
 FORMS  += mainwindow.ui
 

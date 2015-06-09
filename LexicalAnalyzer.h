@@ -13,6 +13,7 @@
 #include <QHash>
 #include <QRegExp>
 #include <QPoint>
+#include "Token.h"
 
 class Token;
 
@@ -26,6 +27,8 @@ class LexicalAnalyzer
 {
 
 public:
+
+
 
     LexicalAnalyzer();
 
@@ -169,7 +172,7 @@ private:
      */
     void clearAllAnalyzingData();
 
-    Token getNumberLiteralTokenWithCorrectLength(const QString &sourceString);
+    Token getNumberLiteralTokenWithCorrectLength(const QString &sourceString, Expression::Type type);
 
     QList <Token> m_tokenList;                  //!< List of tokens.
     QString m_errorText;                        //!< Errors string.

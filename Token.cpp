@@ -1,19 +1,25 @@
 #include "Token.h"
 
+#include "Identifier.h"
+
 QHash<QString,Token::TokenCategory> Token::m_convertingStringToTokenCategoryHash;
 
 Token::Token(const Token &otherToken) :
     m_lexeme(otherToken.lexeme()),
-    m_tokenCategory(otherToken.tokenCategory()),
+    m_tokenCategory(otherToken.category()),
     m_errorInformation(otherToken.errorInformation()),
-    m_position(otherToken.position())
+    m_position(otherToken.position()),
+    m_identifier(otherToken.identifier()),
+    m_type(otherToken.type())
 {}
 
-Token::Token(const QString &lexeme, Token::TokenCategory tokenCategory, const QString &errorInformation, const QPoint &position) :
+Token::Token(const QString &lexeme, Token::TokenCategory tokenCategory, const QString &errorInformation, const QPoint &position, Expression::Type type) :
     m_lexeme(lexeme),
     m_tokenCategory(tokenCategory),
     m_errorInformation(errorInformation),
-    m_position(position)
+    m_position(position),
+    m_identifier(NULL),
+    m_type(type)
 {}
 
 Token &Token::operator=(const Token &otherToken)
@@ -22,8 +28,9 @@ Token &Token::operator=(const Token &otherToken)
         return *this;
 
     m_lexeme = otherToken.lexeme();
-    m_tokenCategory = otherToken.tokenCategory();
+    m_tokenCategory = otherToken.category();
     m_position = otherToken.position();
+    m_type = otherToken.type();
     return *this;
 }
 
@@ -32,7 +39,7 @@ QString Token::lexeme() const
     return m_lexeme;
 }
 
-Token::TokenCategory Token::tokenCategory() const
+Token::TokenCategory Token::category() const
 {
     return m_tokenCategory;
 }
@@ -67,6 +74,25 @@ Token::TokenCategory Token::stringToTokenCategory(const QString &string)
 
     return m_convertingStringToTokenCategoryHash.value(string);
 }
+Identifier *Token::identifier() const
+{
+    return m_identifier;
+}
+
+void Token::setIdentifier(Identifier *identifier)
+{
+    m_identifier = identifier;
+    m_type = identifier->type();
+}
+Expression::Type Token::type() const
+{
+    return m_type;
+}
+
+void Token::setType(const Expression::Type &type)
+{
+    m_type = type;
+}
 
 QString Token::errorInformation() const
 {
@@ -83,7 +109,7 @@ QString MakeStringRepresentation(const Token &token)
     if (!token.isCorrect())
         return "";
 
-    switch (token.tokenCategory()) {
+    switch (token.category()) {
     case Token::categoryIdentifier:
         return "<id, \"" + token.lexeme() + "\">";
     case Token::categoryNumberLiteral:
@@ -103,4 +129,81 @@ QString MakeStringRepresentation(const Token &token)
 int GetTokenLineNumber(const Token &token)
 {
     return token.position().y();
+}
+
+int GetOperationPriority(const Token &token)
+{
+    if (token.lexeme() == "(" || token.lexeme() == ")") {
+        return 0;
+    } else if (token.lexeme() == "==" ||
+               token.lexeme() == "<" ||
+               token.lexeme() == ">" ||
+               token.lexeme() == "<=" ||
+               token.lexeme() == ">=") {
+        return 1;
+    } else if (token.lexeme() == "+" || token.lexeme() == "-") {
+        return 2;
+    } else if (token.lexeme() == "*" || token.lexeme() == "/") {
+        return 3;
+    } else {
+        return -1;
+    }
+}
+
+
+bool isOperation(const Token &token)
+{
+    return ((token.lexeme() == "+")||
+            (token.lexeme() == "-")||
+            (token.lexeme() == "*")||
+            (token.lexeme() == "/")||
+            (token.lexeme() == ">")||
+            (token.lexeme() == "<")||
+            (token.lexeme() == "==")||
+            (token.lexeme() == ">=")||
+            (token.lexeme() == "<="));
+}
+
+bool isLogicalOperation(const Token &token)
+{
+    return ((token.lexeme() == ">")||
+            (token.lexeme() == "<")||
+            (token.lexeme() == "==")||
+            (token.lexeme() == ">=")||
+            (token.lexeme() == "<="));
+}
+
+
+Expression::Type resultType(const Token &operation, const Token &first, const Token &second)
+{
+    if ((first.type() == Expression::BOOLEAN) || (second.type() == Expression::BOOLEAN))
+        return Expression::NONE;
+
+    switch (first.type()) {
+    case Expression::DOUBLE: {
+        if (second.type() == Expression::STRING)
+            return Expression::NONE;
+        if (isLogicalOperation(operation))
+            return Expression::BOOLEAN;
+        return Expression::DOUBLE;
+    }
+    case Expression::INTEGER: {
+        if (second.type() == Expression::STRING)
+            return Expression::NONE;
+        if (isLogicalOperation(operation))
+            return Expression::BOOLEAN;
+        if (second.type() == Expression::DOUBLE)
+            return Expression::DOUBLE;
+        return Expression::INTEGER;
+    }
+    case Expression::STRING: {
+        if (second.type() != Expression::STRING)
+            return Expression::NONE;
+        if (isLogicalOperation(operation))
+            return Expression::BOOLEAN;
+        return Expression::STRING;
+    }
+    default:
+        return Expression::NONE;
+    }
 }

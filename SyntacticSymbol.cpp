@@ -77,7 +77,7 @@ uint qHash(const SyntacticSymbol &symbol)
 
 bool operator==(const Token &token, const SyntacticSymbol &symbol)
 {
-    switch (token.tokenCategory()) {
+    switch (token.category()) {
     case Token::categoryNumberLiteral:
         return symbol.category() == Token::categoryNumberLiteral;
     case Token::categoryStringLiteral:

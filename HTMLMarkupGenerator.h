@@ -15,6 +15,7 @@
 class LexicalAnalyzer;
 class SyntacticAnalyzer;
 class SemanticAnalyzer;
+class ThreeAddressCodeGenerator;
 class Token;
 
 /*!
@@ -31,7 +32,7 @@ public:
      * @param[in] analyzer Lexical analyzer.
      * @return Result of lexical analysis.
      */
-    QString getMessageForLog(const LexicalAnalyzer &lexicalAnalyzer, const SyntacticAnalyzer &syntacticAnalyzer, const SemanticAnalyzer &semanticAnalyzer) const;
+    QString getMessageForLog(const LexicalAnalyzer &lexicalAnalyzer, const SyntacticAnalyzer &syntacticAnalyzer, const SemanticAnalyzer &semanticAnalyzer, const ThreeAddressCodeGenerator &codeGenerator) const;
 
     /*!
      * This method returns marked up source code.

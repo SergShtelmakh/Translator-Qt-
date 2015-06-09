@@ -20,7 +20,7 @@ QString ErrorGenerator::syntacticError(const QList<Token> &tokenToParseList,cons
         if (syntacticSymbolList.isEmpty()) {
             return tokenPosition + " Can't find rule to parse from " + MakeStringRepresentation(tokenToParseList.first());
         } else {
-            if (tokenToParseList.first().tokenCategory() == Token::categoryLineFeed) {
+            if (tokenToParseList.first().category() == Token::categoryLineFeed) {
                 return tokenPosition + " Missing " + MakeStringRepresentation(syntacticSymbolList.first());
             } else {
                 return tokenPosition + " Can't find rule to parse " + MakeStringRepresentation(syntacticSymbolList.first()) + " from " + MakeStringRepresentation(tokenToParseList.first());
@@ -32,10 +32,10 @@ QString ErrorGenerator::syntacticError(const QList<Token> &tokenToParseList,cons
 
 QString ErrorGenerator::undeclaratedIdentifierError(const Token &identifierToken)
 {
-    return QString("Undeclarated identifier " + identifierToken.lexeme() + " at (%1:%2)").arg(identifierToken.position().y()).arg(identifierToken.position().x());
+    return QString("Undeclarated identifier " + identifierToken.lexeme() + " at (%1:%2)").arg(identifierToken.position().x()).arg(identifierToken.position().y());
 }
 
 QString ErrorGenerator::redeclarationOfIdentifier(const Token &identifierToken)
 {
-    return QString("Redeclaration of identifier " + identifierToken.lexeme() + " at (%1:%2)").arg(identifierToken.position().y()).arg(identifierToken.position().x());
+    return QString("Redeclaration of identifier " + identifierToken.lexeme() + " at (%1:%2)").arg(identifierToken.position().x()).arg(identifierToken.position().y());
 }

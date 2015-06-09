@@ -16,6 +16,10 @@ Block::Block(Block::BlockType type, int startLineNumber, Block *parent) :
 
 Block::~Block()
 {
+    while (!m_identifiers.isEmpty()) {
+        Identifier *id = m_identifiers.takeFirst();
+        delete id;
+    }
     while (!m_children.isEmpty()) {
         Block* block = m_children.takeFirst();
         delete block;
@@ -32,14 +36,17 @@ void Block::setScopeEndLineNumber(const int endLine)
     m_scopeEndLineNumber = endLine;
 }
 
-bool Block::isIdentifierDeclared(const Identifier &identifier)
+bool Block::isIdentifierDeclared(Identifier *identifier)
 {
-    if (m_identifiers.contains(identifier))
-        return true;
+    foreach (Identifier *currentId, m_identifiers) {
+        if (*identifier == *currentId) {
+            return true;
+        }
+    }
     return false;
 }
 
-void Block::addIdentifier(const Identifier &identifier)
+void Block::addIdentifier(Identifier *identifier)
 {
     m_identifiers.push_back(identifier);
 }
@@ -64,7 +71,7 @@ QVector<Block *> Block::children() const
     return m_children;
 }
 
-QVector<Identifier> Block::identifiers() const
+QVector<Identifier*> Block::identifiers() const
 {
     return m_identifiers;
 }

@@ -13,10 +13,12 @@
 #include <QPoint>
 #include <QString>
 #include <QHash>
+#include "Expression.h"
 
 /*!
  * @brief This class used to store informations about tokens.
  */
+class Identifier;
 class Token
 {
 
@@ -38,13 +40,13 @@ public:
 
     Token(){}
     Token(const Token &other);
-    Token(const QString &lexeme, TokenCategory tokenCategory, const QString &errorInformation = "", const QPoint &position = QPoint());
+    Token(const QString &lexeme, TokenCategory category, const QString &errorInformation = "", const QPoint &position = QPoint(), Expression::Type type = Expression::NONE);
 
     Token& operator=(const Token& newToken);
 
     QString lexeme() const;
 
-    TokenCategory tokenCategory() const;
+    TokenCategory category() const;
 
     QString errorInformation() const;
 
@@ -62,12 +64,21 @@ public:
 
     static TokenCategory stringToTokenCategory(const QString &string);
 
+    Identifier *identifier() const;
+    void setIdentifier(Identifier *identifier);
+
+    Expression::Type type() const;
+    void setType(const Expression::Type &type);
+
 private:
 
     QString m_lexeme;               //!< Tokens lexeme.
     TokenCategory m_tokenCategory;  //!< Tokens category.
     QString m_errorInformation;     //!< Tokens error information.
     QPoint m_position;              //!< Tokens position.
+    Identifier *m_identifier;
+    Expression::Type m_type;
+
 
     static QHash <QString, TokenCategory> m_convertingStringToTokenCategoryHash;
 
@@ -75,5 +86,9 @@ private:
 
 QString MakeStringRepresentation(const Token &token);
 int GetTokenLineNumber(const Token &token);
+int GetOperationPriority(const Token &token);
+bool isOperation(const Token &token);
+bool isLogicalOperation(const Token &token);
+Expression::Type resultType(const Token &operation, const Token &first, const Token &second);
 
 #endif // TOKEN_H

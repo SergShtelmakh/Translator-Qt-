@@ -4,10 +4,11 @@ Identifier::Identifier(const Identifier &newIdentifier) :
     m_lexeme(newIdentifier.lexeme()),
     m_type(newIdentifier.type()),
     m_scopeBeginLineNumber(newIdentifier.scopeBeginLineNumber()),
-    m_scopeEndLineNumber(newIdentifier.scopeEndLineNumber())
+    m_scopeEndLineNumber(newIdentifier.scopeEndLineNumber()),
+    m_code(newIdentifier.code())
 {}
 
-Identifier::Identifier(const QString &lexeme, Identifier::IdentifierType type, int scopeBeginLineNumber, int scopeEndLineNumber) :
+Identifier::Identifier(const QString &lexeme, Expression::Type type, int scopeBeginLineNumber, int scopeEndLineNumber) :
     m_lexeme(lexeme),
     m_type(type),
     m_scopeBeginLineNumber(scopeBeginLineNumber),
@@ -19,7 +20,7 @@ bool Identifier::operator==(const Identifier &otherIdentifier) const
     return m_lexeme == otherIdentifier.lexeme();
 }
 
-Identifier::IdentifierType Identifier::type() const
+Expression::Type Identifier::type() const
 {
     return m_type;
 }
@@ -33,36 +34,46 @@ int Identifier::scopeEndLineNumber() const
 {
     return m_scopeEndLineNumber;
 }
+int Identifier::code() const
+{
+    return m_code;
+}
+
+void Identifier::setCode(int code)
+{
+    m_code = code;
+}
+
 
 QString Identifier::lexeme() const
 {
     return m_lexeme;
 }
 
-Identifier::IdentifierType MakeIdentifierType(QString lexeme)
+Expression::Type StringToType(QString lexeme)
 {
     if (lexeme == "INTEGER")
-        return Identifier::INTEGER;
+        return Expression::INTEGER;
     if (lexeme == "BOOLEAN")
-        return Identifier::BOOLEAN;
+        return Expression::BOOLEAN;
     if (lexeme == "DOUBLE")
-        return Identifier::DOUBLE;
+        return Expression::DOUBLE;
     if (lexeme == "STRING")
-        return Identifier::STRING;
-    return Identifier::NONE;
+        return Expression::STRING;
+    return Expression::NONE;
 }
 
 
-QString IdentifierTypeToString(Identifier::IdentifierType type)
+QString TypeToString(Expression::Type type)
 {
     switch (type) {
-    case Identifier::BOOLEAN:
+    case Expression::BOOLEAN:
         return "BOOLEAN";
-    case Identifier::INTEGER:
+    case Expression::INTEGER:
         return "INTEGER";
-    case Identifier::DOUBLE:
+    case Expression::DOUBLE:
         return "DOUBLE";
-    case Identifier::STRING:
+    case Expression::STRING:
         return "STRING";
     default:
         return QString();

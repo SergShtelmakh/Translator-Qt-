@@ -20,14 +20,14 @@ public:
     ~Block();
     void addChildBlock(Block *child);
     void setScopeEndLineNumber(const int endLine);
-    bool isIdentifierDeclared(const Identifier &identifier);
-    void addIdentifier(const Identifier &identifier);
+    bool isIdentifierDeclared(Identifier *identifier);
+    void addIdentifier(Identifier *identifier);
 
     Block *parent() const;
     int scopeBeginLineNumber() const;
     int scopeEndLineNumber() const;
     QVector<Block *> children() const;
-    QVector<Identifier> identifiers() const;
+    QVector<Identifier *> identifiers() const;
     BlockType type() const;
 
 private:
@@ -37,7 +37,7 @@ private:
     int m_scopeEndLineNumber;
     QVector<Block *> m_children;
     Block *m_parent;
-    QVector<Identifier> m_identifiers;
+    QVector<Identifier *> m_identifiers;
 
 };
 

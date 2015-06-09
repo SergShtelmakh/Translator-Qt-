@@ -12,45 +12,45 @@
 
 #include <QList>
 #include <QString>
+#include "Expression.h"
 
 /*!
  * @brief This class used to store informations about identifiers.
  */
+
+
 class Identifier
 {
 
 public:
 
-    enum IdentifierType {
-        BOOLEAN,
-        DOUBLE,
-        INTEGER,
-        STRING,
-        NONE
-    };
+
 
     Identifier(const Identifier &other);
     Identifier(){}
-    Identifier(const QString &lexeme, IdentifierType type, int scopeBeginLineNumber, int scopeEndLineNumber);
+    Identifier(const QString &lexeme, Expression::Type type, int scopeBeginLineNumber, int scopeEndLineNumber);
 
     QString lexeme() const;
     bool operator==(const Identifier &otherIdentifier)const;
 
-    IdentifierType type() const;
+    Expression::Type type() const;
     int scopeBeginLineNumber() const;
     int scopeEndLineNumber() const;
+
+    int code() const;
+    void setCode(int code);
 
 private:
 
     QString m_lexeme;                     //!< Identifiers name.
-    IdentifierType m_type;
+    Expression::Type m_type;
     int m_scopeBeginLineNumber;
     int m_scopeEndLineNumber;
-
+    int m_code;
 };
 
-Identifier::IdentifierType MakeIdentifierType(QString lexeme);
-QString IdentifierTypeToString(Identifier::IdentifierType type);
+Expression::Type StringToType(QString lexeme);
+QString TypeToString(Expression::Type type);
 
 
 #endif // IDENTIFIER_H

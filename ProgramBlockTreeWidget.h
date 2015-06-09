@@ -19,8 +19,8 @@ private:
         IDENTIFIER
     };
 
-    void addNode(QTreeWidgetItem *currentNode, QVector<Identifier> &identifiers, QVector<Block *> &childBlocks);
-    NodeType getNextNodeType(QVector<Identifier> &identifiers, QVector<Block *> &childBlocks);
+    void addNode(QTreeWidgetItem *currentNode, QVector<Identifier *> &identifiers, QVector<Block *> &childBlocks);
+    NodeType getNextNodeType(QVector<Identifier *> &identifiers, QVector<Block *> &childBlocks);
 };
 
 #endif // PROGRAMBLOCKTREEWIDGET_H

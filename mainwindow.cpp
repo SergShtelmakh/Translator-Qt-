@@ -4,6 +4,7 @@
 #include "SyntacticAnalyzer.h"
 #include "SemanticAnalyzer.h"
 #include "LexicalAnalyzer.h"
+#include "ThreeAddressCodeGenerator.h"
 #include "Identifier.h"
 #include "FileReader.h"
 #include <QTextStream>
@@ -16,6 +17,8 @@ Q_GLOBAL_STATIC(LexicalAnalyzer,globalLexicalAnalyzer)
 Q_GLOBAL_STATIC(SyntacticAnalyzer,globalSyntacticAnalyzer)
 
 Q_GLOBAL_STATIC(SemanticAnalyzer,globalSemanticAnalyzer)
+
+Q_GLOBAL_STATIC(ThreeAddressCodeGenerator,globalThreeAddressCodeGenerator)
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -32,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->tokenSequenceTextEdit->setFont(QFont("Courier New", 12));
     ui->rulesListView->setFont(QFont("Courier New", 12));
+    ui->threeAddressCodeTextEdit->setFont(QFont("Courier New", 12));
 
     loadSettings();
 }
@@ -49,22 +53,27 @@ void MainWindow::on_actionRun_triggered()
 
     globalSyntacticAnalyzer->analyze(globalLexicalAnalyzer->getTokenListWithoutSpaces());
 
-    globalSemanticAnalyzer->analyze(globalLexicalAnalyzer->tokenList());
+    if (globalLexicalAnalyzer->errorText().isEmpty() && globalSyntacticAnalyzer->errorText().isEmpty()) {
+        QList<Token> tokenList = globalLexicalAnalyzer->tokenList();
+        globalSemanticAnalyzer->analyze(tokenList);
+        globalThreeAddressCodeGenerator->generate(tokenList);
+    }
 
     // Add new message to log
-    ui->compileOutputTextEdit->addHTMLString(this->getMarkupGenerator()->getMessageForLog(*globalLexicalAnalyzer, *globalSyntacticAnalyzer, *globalSemanticAnalyzer));
+    ui->compileOutputTextEdit->addHTMLString(this->getMarkupGenerator()->getMessageForLog(*globalLexicalAnalyzer, *globalSyntacticAnalyzer, *globalSemanticAnalyzer, *globalThreeAddressCodeGenerator));
 
     // Write information about tokens
     ui->tokenSequenceTextEdit->setText(MakeStringRepresentation(globalLexicalAnalyzer->tokenList()));
     m_rulesStringListModel->setStringList(globalSyntacticAnalyzer->usedRuleList());
     ui->rulesListView->setModel(m_rulesStringListModel);
     ui->programBlockTreeWidget->setData(globalSemanticAnalyzer->mainBlock());
+    ui->threeAddressCodeTextEdit->setText(globalThreeAddressCodeGenerator->threeAddressCode());
 
 }
 
 void MainWindow::updateStatusBarSlot(int line, int pos)
 {
-    ui->statusBar->showMessage(QString("\t(%1 : %2)").arg(line).arg(pos));
+    ui->statusBar->showMessage(QString("\t(%1 : %2)").arg(pos).arg(line));
 }
 
 void MainWindow::updateSourceCodeInputTextEditSlot()
