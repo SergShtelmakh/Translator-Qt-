@@ -1,15 +1,6 @@
 #include "ThreeAddressCodeGenerator.h"
 #include "Expression.h"
 
-ThreeAddressCodeGenerator::ThreeAddressCodeGenerator()
-{
-}
-
-ThreeAddressCodeGenerator::~ThreeAddressCodeGenerator()
-{
-
-}
-
 void ThreeAddressCodeGenerator::generate(const QList<Token> &tokenList)
 {
     prepare(tokenList);
@@ -132,6 +123,7 @@ Expression ThreeAddressCodeGenerator::parseExpression(QList<Token>::iterator &cu
     m_error += exp.error();
     return exp;
 }
+
 QString ThreeAddressCodeGenerator::error() const
 {
     return m_error;

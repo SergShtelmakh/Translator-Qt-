@@ -74,6 +74,7 @@ Token::TokenCategory Token::stringToTokenCategory(const QString &string)
 
     return m_convertingStringToTokenCategoryHash.value(string);
 }
+
 Identifier *Token::identifier() const
 {
     return m_identifier;
@@ -84,6 +85,7 @@ void Token::setIdentifier(Identifier *identifier)
     m_identifier = identifier;
     m_type = identifier->type();
 }
+
 Expression::Type Token::type() const
 {
     return m_type;
@@ -125,7 +127,6 @@ QString MakeStringRepresentation(const Token &token)
     }
 }
 
-
 int GetTokenLineNumber(const Token &token)
 {
     return token.position().y();
@@ -153,26 +154,13 @@ int GetOperationPriority(const Token &token)
 
 bool isOperation(const Token &token)
 {
-    return ((token.lexeme() == "+")||
-            (token.lexeme() == "-")||
-            (token.lexeme() == "*")||
-            (token.lexeme() == "/")||
-            (token.lexeme() == ">")||
-            (token.lexeme() == "<")||
-            (token.lexeme() == "==")||
-            (token.lexeme() == ">=")||
-            (token.lexeme() == "<="));
+    return (GetOperationPriority(token) > 0);
 }
 
 bool isLogicalOperation(const Token &token)
 {
-    return ((token.lexeme() == ">")||
-            (token.lexeme() == "<")||
-            (token.lexeme() == "==")||
-            (token.lexeme() == ">=")||
-            (token.lexeme() == "<="));
+    return (GetOperationPriority(token) == 1);
 }
-
 
 Expression::Type resultType(const Token &operation, const Token &first, const Token &second)
 {

@@ -10,7 +10,6 @@ class ProgramBlockTreeWidget : public QTreeWidget
 public:
 
     explicit ProgramBlockTreeWidget(QWidget *parent = 0);
-    ~ProgramBlockTreeWidget();
     void setData(Block* mainBlock);
 
 private:

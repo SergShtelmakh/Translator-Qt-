@@ -3,7 +3,9 @@
 #include <QStringList>
 #include "ErrorGenerator.h"
 
-SemanticAnalyzer::SemanticAnalyzer() : m_mainBlock(NULL), m_identifierCount(0)
+SemanticAnalyzer::SemanticAnalyzer() :
+    m_mainBlock(NULL),
+    m_identifierCount(0)
 {}
 
 SemanticAnalyzer::~SemanticAnalyzer()

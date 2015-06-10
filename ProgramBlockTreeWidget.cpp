@@ -10,11 +10,6 @@ ProgramBlockTreeWidget::ProgramBlockTreeWidget(QWidget *parent) : QTreeWidget(pa
     setHeaderLabels(headerLabels);
 }
 
-ProgramBlockTreeWidget::~ProgramBlockTreeWidget()
-{
-
-}
-
 void ProgramBlockTreeWidget::setData(Block *mainBlock)
 {
     if (!mainBlock) {

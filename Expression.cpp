@@ -7,16 +7,6 @@ Expression::Expression(QList<Token> &tokenList)
     makeCode();
 }
 
-Expression::Expression()
-{
-
-}
-
-Expression::~Expression()
-{
-
-}
-
 void Expression::makePolishNotation(QList<Token> &tokenList)
 {
     while (!tokenList.isEmpty()) {
@@ -91,6 +81,7 @@ void Expression::makeCode()
         }
     }
 }
+
 QString Expression::error() const
 {
     return m_error;

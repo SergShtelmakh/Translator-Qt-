@@ -17,8 +17,7 @@ public:
     };
 
     Expression(QList<Token> &tokenList);
-    Expression();
-    ~Expression();
+    Expression() {}
     Token result() const;
 
     QString codeList() const;
