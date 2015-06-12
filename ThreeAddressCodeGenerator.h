@@ -52,8 +52,10 @@ private:
     void deleteIdentifierDeclaration(int index);
     void parseStatement(QList<Token>::iterator &currentToken);
     void parseAssignmentStatement(QList<Token>::iterator &currentToken);
-    void parseForStatement(QList<Token>::iterator &currentToken);
-    void parseIfStatement(QList<Token>::iterator &currentToken);
+    void parseBeginForStatement(QList<Token>::iterator &currentToken);
+    void parseEndForStatement(QList<Token>::iterator &currentToken);
+    void parseBeginIfStatement(QList<Token>::iterator &currentToken);
+    void parseEndIfStatement(QList<Token>::iterator &currentToken);
 
     Expression parseExpression(QList<Token>::iterator &currentToken);
 

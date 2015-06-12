@@ -169,27 +169,27 @@ Expression::Type resultType(const Token &operation, const Token &first, const To
 
     switch (first.type()) {
     case Expression::DOUBLE: {
-        if (second.type() == Expression::STRING)
+        if (second.type() == Expression::STRING) {
             return Expression::NONE;
-        if (isLogicalOperation(operation))
+        } else if (isLogicalOperation(operation)) {
             return Expression::BOOLEAN;
-        return Expression::DOUBLE;
+        } else return Expression::DOUBLE;
     }
     case Expression::INTEGER: {
-        if (second.type() == Expression::STRING)
+        if (second.type() == Expression::STRING) {
             return Expression::NONE;
-        if (isLogicalOperation(operation))
+        } else if (isLogicalOperation(operation)) {
             return Expression::BOOLEAN;
-        if (second.type() == Expression::DOUBLE)
+        } else if (second.type() == Expression::DOUBLE) {
             return Expression::DOUBLE;
-        return Expression::INTEGER;
+        } else return Expression::INTEGER;
     }
     case Expression::STRING: {
-        if (second.type() != Expression::STRING)
+        if (second.type() != Expression::STRING) {
             return Expression::NONE;
-        if (isLogicalOperation(operation))
+        } else if (isLogicalOperation(operation)) {
             return Expression::BOOLEAN;
-        return Expression::STRING;
+        } else return Expression::STRING;
     }
     default:
         return Expression::NONE;

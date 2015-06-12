@@ -1,5 +1,6 @@
 #include "ThreeAddressCodeGenerator.h"
 #include "Expression.h"
+#include "ErrorGenerator.h"
 
 void ThreeAddressCodeGenerator::generate(const QList<Token> &tokenList)
 {
@@ -37,34 +38,19 @@ void ThreeAddressCodeGenerator::deleteIdentifierDeclaration(int index)
 void ThreeAddressCodeGenerator::parseStatement(QList<Token>::iterator &currentToken)
 {
     while (currentToken != m_tokenList.end()) {
-    if (currentToken->category() == Token::categoryIdentifier) {
-        parseAssignmentStatement(currentToken);
-    } else if (currentToken->lexeme() == "FOR") {
-        parseForStatement(currentToken);
-    } else if (currentToken->lexeme() == "IF") {
-        parseIfStatement(currentToken);
-    } else if (currentToken->lexeme() == "NEXT"){
-        ForStatement currentFor = m_forStatementStack.takeFirst();
-        if ((++currentToken)->lexeme() != currentFor.m_id.lexeme()) {
-            m_error += QString("Incorrect id at (%1,%2)\n").arg(currentToken->position().x()).arg(currentToken->position().y());
-        }
-        ++currentToken;
-        if (currentFor.m_stepExpression.codeList().isEmpty()) {
-            m_threeAddressCode += currentFor.m_id.lexeme() + " := (+," + currentFor.m_id.lexeme() + ",1)\n";
+        if (currentToken->category() == Token::categoryIdentifier) {
+            parseAssignmentStatement(currentToken);
+        } else if (currentToken->lexeme() == "FOR") {
+            parseBeginForStatement(currentToken);
+        } else if (currentToken->lexeme() == "IF") {
+            parseBeginIfStatement(currentToken);
+        } else if (currentToken->lexeme() == "NEXT"){
+            parseEndForStatement(currentToken);
+        } else if (currentToken->lexeme() == "END"){
+            parseEndIfStatement(currentToken);
         } else {
-            m_threeAddressCode += currentFor.m_stepExpression.codeList();
-            m_threeAddressCode += currentFor.m_id.lexeme() + " := (+," + currentFor.m_id.lexeme() + "," + currentFor.m_stepExpression.result().lexeme() + ")\n";
+            ++currentToken;
         }
-        m_threeAddressCode += currentFor.m_endExpression.codeList();
-        m_threeAddressCode += "(<," + currentFor.m_id.lexeme() + "," + currentFor.m_endExpression.result().lexeme() + ")\n";
-        m_threeAddressCode += "IF true goto " + currentFor.m_label + "\n";
-    } else if (currentToken->lexeme() == "END"){
-        IfStatement currentIf = m_ifStatementStack.takeFirst();
-        m_threeAddressCode += currentIf.m_label + "\n";
-        currentToken +=2;
-    } else {
-        ++currentToken;
-    }
     }
 }
 
@@ -75,13 +61,13 @@ void ThreeAddressCodeGenerator::parseAssignmentStatement(QList<Token>::iterator 
     Expression expression = parseExpression(currentToken);
     m_threeAddressCode += expression.codeList();
     if (idToken.type() != expression.result().type()) {
-        m_error += QString("Incorrect type to assignment at (%1,%2)\n").arg(idToken.position().x()).arg(idToken.position().y());
+        m_error += ErrorGenerator::incorrectTypeToAssignment(idToken);
         return;
     }
     m_threeAddressCode += idToken.lexeme() + " := " + expression.result().lexeme() + "\n";
 }
 
-void ThreeAddressCodeGenerator::parseForStatement(QList<Token>::iterator &currentToken)
+void ThreeAddressCodeGenerator::parseBeginForStatement(QList<Token>::iterator &currentToken)
 {
     Token idToken = *(++currentToken);
     Expression beginExpression = parseExpression(++currentToken);
@@ -99,7 +85,25 @@ void ThreeAddressCodeGenerator::parseForStatement(QList<Token>::iterator &curren
     m_threeAddressCode += label + "\n";
 }
 
-void ThreeAddressCodeGenerator::parseIfStatement(QList<Token>::iterator &currentToken)
+void ThreeAddressCodeGenerator::parseEndForStatement(QList<Token>::iterator &currentToken)
+{
+    ForStatement currentFor = m_forStatementStack.takeFirst();
+    if ((++currentToken)->lexeme() != currentFor.m_id.lexeme()) {
+        m_error += ErrorGenerator::incorrectIdentifier(*currentToken);
+    }
+    ++currentToken;
+    if (currentFor.m_stepExpression.codeList().isEmpty()) {
+        m_threeAddressCode += currentFor.m_id.lexeme() + " := (+," + currentFor.m_id.lexeme() + ",1)\n";
+    } else {
+        m_threeAddressCode += currentFor.m_stepExpression.codeList();
+        m_threeAddressCode += currentFor.m_id.lexeme() + " := (+," + currentFor.m_id.lexeme() + "," + currentFor.m_stepExpression.result().lexeme() + ")\n";
+    }
+    m_threeAddressCode += currentFor.m_endExpression.codeList();
+    m_threeAddressCode += "(<," + currentFor.m_id.lexeme() + "," + currentFor.m_endExpression.result().lexeme() + ")\n";
+    m_threeAddressCode += "IF true goto " + currentFor.m_label + "\n";
+}
+
+void ThreeAddressCodeGenerator::parseBeginIfStatement(QList<Token>::iterator &currentToken)
 {
     Expression ifExpression = parseExpression(++currentToken);
     currentToken += 2;
@@ -107,7 +111,13 @@ void ThreeAddressCodeGenerator::parseIfStatement(QList<Token>::iterator &current
     m_ifStatementStack.push_front(IfStatement(ifExpression, label));
     m_threeAddressCode += ifExpression.codeList();
     m_threeAddressCode += "If false goto " + label + "\n";
+}
 
+void ThreeAddressCodeGenerator::parseEndIfStatement(QList<Token>::iterator &currentToken)
+{
+    IfStatement currentIf = m_ifStatementStack.takeFirst();
+    m_threeAddressCode += currentIf.m_label + "\n";
+    currentToken +=2;
 }
 
 Expression ThreeAddressCodeGenerator::parseExpression(QList<Token>::iterator &currentToken)

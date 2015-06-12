@@ -25,6 +25,9 @@ public:
     static QString syntacticError(const QList<Token> &tokenToParseList,const QList<SyntacticSymbol> &syntacticSymbolList);
     static QString undeclaratedIdentifierError(const Token &incorrectToken);
     static QString redeclarationOfIdentifier(const Token &identifierToken);
+    static QString incorrectTypeToAssignment(const Token &idToken);
+    static QString incorrectIdentifier(const Token &idToken);
+
 
 };
 

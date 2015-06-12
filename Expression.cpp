@@ -7,6 +7,11 @@ Expression::Expression(QList<Token> &tokenList)
     makeCode();
 }
 
+Expression::Expression()
+{
+
+}
+
 void Expression::makePolishNotation(QList<Token> &tokenList)
 {
     while (!tokenList.isEmpty()) {
@@ -67,17 +72,17 @@ void Expression::makeCode()
         if (!isOperation(currentToken)) {
             m_stack.push_front(currentToken);
         } else {
-                Token secondToken = m_stack.takeFirst();
-                Token firstToken = m_stack.takeFirst();
-                Token newToken = Token(QString("t%1").arg(m_codeList.size()),Token::categoryIdentifier);
-                Expression::Type newType = resultType(currentToken,firstToken,secondToken);
-                if (newType == Expression::NONE) {
-                    m_error += "can't do operation " + currentToken.lexeme() + " with " + firstToken.lexeme() + " " + secondToken.lexeme() + "\n";
-                    return;
-                }
-                newToken.setType(newType);
-                m_codeList.push_back(QString("%1 := (%2,%3,%4)").arg(newToken.lexeme()).arg(currentToken.lexeme()).arg(firstToken.lexeme()).arg(secondToken.lexeme()));
-                m_stack.push_front(newToken);
+            Token secondToken = m_stack.takeFirst();
+            Token firstToken = m_stack.takeFirst();
+            Token newToken = Token(QString("t%1").arg(m_codeList.size()),Token::categoryIdentifier);
+            Expression::Type newType = resultType(currentToken,firstToken,secondToken);
+            if (newType == Expression::NONE) {
+                m_error += "can't do operation " + currentToken.lexeme() + " with " + firstToken.lexeme() + " " + secondToken.lexeme() + "\n";
+                return;
+            }
+            newToken.setType(newType);
+            m_codeList.push_back(QString("%1 := (%2,%3,%4)").arg(newToken.lexeme()).arg(currentToken.lexeme()).arg(firstToken.lexeme()).arg(secondToken.lexeme()));
+            m_stack.push_front(newToken);
         }
     }
 }
