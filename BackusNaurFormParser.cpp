@@ -69,7 +69,7 @@ SyntacticSymbol BackusNaurFormParser::parseLeftPart(QString leftPartString)
 {
     DeleteWhitespaceAtBegin(leftPartString);
     if (leftPartString.indexOf("S") == 0)
-        return SyntacticSymbol("S",SyntacticSymbol::startSymbol,Token::categoryNone);
+        return SyntacticSymbol("S",SyntacticSymbol::START_SYMBOL,Token::NONE_CATEGORY);
 
     return getNonterminalSymbol(leftPartString);
 }
@@ -90,13 +90,13 @@ QList<SyntacticSymbol> BackusNaurFormParser::parseRightPart(QString rightPartSou
         } else if (rightPartSourceString.indexOf("\"") == 0) {
             currentSymbol = getTerminalSymbol(rightPartSourceString);
         } else if (rightPartSourceString.indexOf("number") == 0) {
-            currentSymbol = SyntacticSymbol ("number", SyntacticSymbol::terminalSymbol, Token::categoryNumberLiteral);
+            currentSymbol = SyntacticSymbol ("number", SyntacticSymbol::TERMINAL_SYMBOL, Token::NUMBER_LITERAL_CATEGORY);
         } else if (rightPartSourceString.indexOf("id") == 0) {
-            currentSymbol = SyntacticSymbol ("id", SyntacticSymbol::terminalSymbol, Token::categoryIdentifier);
+            currentSymbol = SyntacticSymbol ("id", SyntacticSymbol::TERMINAL_SYMBOL, Token::IDENTIFIER_CATEGORY);
         } else if (rightPartSourceString.indexOf("linefeed") == 0) {
-            currentSymbol = SyntacticSymbol ("linefeed", SyntacticSymbol::terminalSymbol, Token::categoryLineFeed);
+            currentSymbol = SyntacticSymbol ("linefeed", SyntacticSymbol::TERMINAL_SYMBOL, Token::LINE_FEED_CATEGORY);
         } else if (rightPartSourceString.indexOf("literal") == 0) {
-            currentSymbol = SyntacticSymbol ("literal", SyntacticSymbol::terminalSymbol, Token::categoryStringLiteral);
+            currentSymbol = SyntacticSymbol ("literal", SyntacticSymbol::TERMINAL_SYMBOL, Token::STRING_LITERAL_CATEGORY);
         }
         AppendListByCorrectItem(rightPart, currentSymbol);
 
@@ -132,7 +132,7 @@ SyntacticSymbol BackusNaurFormParser::getNonterminalSymbol(QString &string)
         }
         case 2: {
             if (currentChar.contains(">")) {
-                SyntacticSymbol nonterminal = SyntacticSymbol (string.mid(1,currentCharIndex - 1),SyntacticSymbol::nonterminalSymbol,Token::categoryNone);
+                SyntacticSymbol nonterminal = SyntacticSymbol (string.mid(1,currentCharIndex - 1),SyntacticSymbol::NONTERMINAL_SYMBOL,Token::NONE_CATEGORY);
                 return nonterminal;
             } else if (currentChar.contains("<")) {
                 string.remove(0,currentCharIndex);
@@ -175,9 +175,9 @@ SyntacticSymbol BackusNaurFormParser::getTerminalSymbol(QString &string)
         }
         case 2: {
             if (currentChar.contains("\"")) {
-                SyntacticSymbol terminal = SyntacticSymbol (string.mid(1,currentCharIndex - 1), SyntacticSymbol::terminalSymbol, Token::categoryKeyword);
+                SyntacticSymbol terminal = SyntacticSymbol (string.mid(1,currentCharIndex - 1), SyntacticSymbol::TERMINAL_SYMBOL, Token::KEYWORD_CATEGORY);
                 if (!string.mid(1,1).contains(QRegExp("[a-zA-Z]"))) {
-                    terminal.setCategory(Token::categoryCharToken);
+                    terminal.setCategory(Token::CHAR_TOKEN_CATEGORY);
                 }
                 return terminal;
             }
@@ -206,11 +206,11 @@ void AppendListByCorrectItem(QList<SyntacticSymbol> &list, const SyntacticSymbol
 int GetSyntacticSymbolNameLengthWithBrackets(const SyntacticSymbol &symbol)
 {
     int symbolNameLength = symbol.name().length();
-    if (symbol.category() == Token::categoryKeyword) {
+    if (symbol.category() == Token::KEYWORD_CATEGORY) {
         symbolNameLength += 2;
-    } else if (symbol.category() == Token::categoryCharToken) {
+    } else if (symbol.category() == Token::CHAR_TOKEN_CATEGORY) {
         symbolNameLength += 2;
-    } else if (symbol.type() == SyntacticSymbol::nonterminalSymbol) {
+    } else if (symbol.type() == SyntacticSymbol::NONTERMINAL_SYMBOL) {
         symbolNameLength += 2;
     }
     return symbolNameLength;

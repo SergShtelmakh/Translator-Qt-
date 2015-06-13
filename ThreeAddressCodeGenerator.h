@@ -13,7 +13,11 @@ struct ForStatement
     Expression m_stepExpression;
     QString m_label;
 
-    ForStatement(const Token &id, const Expression &beginExpression, const Expression &endExpression, const QString &label, const Expression &stepExpression = Expression())
+    ForStatement(const Token &id,
+                 const Expression &beginExpression,
+                 const Expression &endExpression,
+                 const QString &label, const
+                 Expression &stepExpression = Expression())
     {
         m_id = id;
         m_beginExpression = beginExpression;
@@ -50,12 +54,19 @@ private:
 
     void prepare(const QList<Token> &tokenList);
     void deleteIdentifierDeclaration(int index);
-    void parseStatement(QList<Token>::iterator &currentToken);
+    void parse(QList<Token>::iterator &currentToken);
     void parseAssignmentStatement(QList<Token>::iterator &currentToken);
     void parseBeginForStatement(QList<Token>::iterator &currentToken);
     void parseEndForStatement(QList<Token>::iterator &currentToken);
     void parseBeginIfStatement(QList<Token>::iterator &currentToken);
     void parseEndIfStatement(QList<Token>::iterator &currentToken);
+
+    void addAssignmentToThreeAddressCode(const Token &token, const Expression &expression);
+    void addTriade(const QString &result, const QString &first, const QString &second, const QString &third);
+    void addTriade(const QString &first, const QString &second, const QString &third);
+    void addTriade(const QString &result, const QString &first, const QString &second, const Expression &third);
+    void addTriade(const QString &first, const QString &second, const Expression &third);
+    void addGoto(const QString &reason, const QString &label);
 
     Expression parseExpression(QList<Token>::iterator &currentToken);
 

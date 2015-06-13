@@ -1,6 +1,6 @@
 /*!
  * \file Identifier.h
- * \date 2015/04/24
+ * \date 2015/06/13
  *
  * \author SergShtelmakh
  * Contact: sh.serg1993@gmail.com
@@ -18,16 +18,13 @@
  * @brief This class used to store informations about identifiers.
  */
 
-
 class Identifier
 {
 
 public:
 
-
-
-    Identifier(const Identifier &other);
     Identifier(){}
+    Identifier(const Identifier &other);
     Identifier(const QString &lexeme, Expression::Type type, int scopeBeginLineNumber, int scopeEndLineNumber);
 
     QString lexeme() const;
@@ -42,11 +39,11 @@ public:
 
 private:
 
-    QString m_lexeme;                     //!< Identifiers name.
-    Expression::Type m_type;
-    int m_scopeBeginLineNumber;
-    int m_scopeEndLineNumber;
-    int m_code;
+    QString m_lexeme;               //!< Identifiers name.
+    Expression::Type m_type;        //!< Identifiers type.
+    int m_scopeBeginLineNumber;     //!< Identifiers scope begin line number.
+    int m_scopeEndLineNumber;       //!< Identifiers scope end line number.
+    int m_code;                     //!< Identifiers code (in memory).
 };
 
 Expression::Type StringToType(QString lexeme);

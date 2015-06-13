@@ -1,5 +1,4 @@
 #include "Token.h"
-
 #include "Identifier.h"
 
 QHash<QString,Token::TokenCategory> Token::m_convertingStringToTokenCategoryHash;
@@ -13,7 +12,11 @@ Token::Token(const Token &otherToken) :
     m_type(otherToken.type())
 {}
 
-Token::Token(const QString &lexeme, Token::TokenCategory tokenCategory, const QString &errorInformation, const QPoint &position, Expression::Type type) :
+Token::Token(const QString &lexeme,
+             Token::TokenCategory tokenCategory,
+             const QString &errorInformation,
+             const QPoint &position,
+             Expression::Type type) :
     m_lexeme(lexeme),
     m_tokenCategory(tokenCategory),
     m_errorInformation(errorInformation),
@@ -29,6 +32,7 @@ Token &Token::operator=(const Token &otherToken)
 
     m_lexeme = otherToken.lexeme();
     m_tokenCategory = otherToken.category();
+    m_errorInformation = otherToken.errorInformation();
     m_position = otherToken.position();
     m_type = otherToken.type();
     return *this;
@@ -56,20 +60,20 @@ void Token::setPosition(const QPoint &value)
 
 bool Token::isCorrect() const
 {
-    return m_tokenCategory != Token::categoryNone;
+    return m_tokenCategory != Token::NONE_CATEGORY;
 }
 
 Token::TokenCategory Token::stringToTokenCategory(const QString &string)
 {
     if (m_convertingStringToTokenCategoryHash.isEmpty()) {
-        m_convertingStringToTokenCategoryHash.insert("categoryCharToken",Token::categoryCharToken);
-        m_convertingStringToTokenCategoryHash.insert("categoryIdentifier",Token::categoryIdentifier);
-        m_convertingStringToTokenCategoryHash.insert("categoryKeyword",Token::categoryKeyword);
-        m_convertingStringToTokenCategoryHash.insert("categoryLineFeed",Token::categoryLineFeed);
-        m_convertingStringToTokenCategoryHash.insert("categoryNone",Token::categoryNone);
-        m_convertingStringToTokenCategoryHash.insert("categoryNumberLiteral",Token::categoryNumberLiteral);
-        m_convertingStringToTokenCategoryHash.insert("categorySpace",Token::categorySpace);
-        m_convertingStringToTokenCategoryHash.insert("categoryStringLiteral",Token::categoryStringLiteral);
+        m_convertingStringToTokenCategoryHash.insert("categoryCharToken",       Token::CHAR_TOKEN_CATEGORY);
+        m_convertingStringToTokenCategoryHash.insert("categoryIdentifier",      Token::IDENTIFIER_CATEGORY);
+        m_convertingStringToTokenCategoryHash.insert("categoryKeyword",         Token::KEYWORD_CATEGORY);
+        m_convertingStringToTokenCategoryHash.insert("categoryLineFeed",        Token::LINE_FEED_CATEGORY);
+        m_convertingStringToTokenCategoryHash.insert("categoryNone",            Token::NONE_CATEGORY);
+        m_convertingStringToTokenCategoryHash.insert("categoryNumberLiteral",   Token::NUMBER_LITERAL_CATEGORY);
+        m_convertingStringToTokenCategoryHash.insert("categorySpace",           Token::SPACE_CATEGORY);
+        m_convertingStringToTokenCategoryHash.insert("categoryStringLiteral",   Token::STRING_LITERAL_CATEGORY);
     }
 
     return m_convertingStringToTokenCategoryHash.value(string);
@@ -98,10 +102,10 @@ void Token::setType(const Expression::Type &type)
 
 QString Token::errorInformation() const
 {
-    return m_errorInformation ;
+    return m_errorInformation;
 }
 
-QString Token::getAllErrorInformation() const
+QString Token::getErrorInformationWithLexeme() const
 {
     return m_lexeme + ": " + m_errorInformation;
 }
@@ -112,15 +116,15 @@ QString MakeStringRepresentation(const Token &token)
         return "";
 
     switch (token.category()) {
-    case Token::categoryIdentifier:
+    case Token::IDENTIFIER_CATEGORY:
         return "<id, \"" + token.lexeme() + "\">";
-    case Token::categoryNumberLiteral:
+    case Token::NUMBER_LITERAL_CATEGORY:
         return "<numb, \"" + token.lexeme() + "\">";
-    case Token::categoryStringLiteral:
+    case Token::STRING_LITERAL_CATEGORY:
         return "<literal, " + token.lexeme() + ">";
-    case Token::categorySpace:
+    case Token::SPACE_CATEGORY:
         return "";
-    case Token::categoryLineFeed:
+    case Token::LINE_FEED_CATEGORY:
         return "<linefeed>";
     default:
         return "<" + token.lexeme() + ">";
@@ -136,11 +140,11 @@ int GetOperationPriority(const Token &token)
 {
     if (token.lexeme() == "(" || token.lexeme() == ")") {
         return 0;
-    } else if (token.lexeme() == "==" ||
-               token.lexeme() == "<" ||
-               token.lexeme() == ">" ||
-               token.lexeme() == "<=" ||
-               token.lexeme() == ">=") {
+    } else if (token.lexeme() == "=="
+               || token.lexeme() == "<"
+               || token.lexeme() == ">"
+               || token.lexeme() == "<="
+               || token.lexeme() == ">=") {
         return 1;
     } else if (token.lexeme() == "+" || token.lexeme() == "-") {
         return 2;
@@ -150,7 +154,6 @@ int GetOperationPriority(const Token &token)
         return -1;
     }
 }
-
 
 bool isOperation(const Token &token)
 {
@@ -164,34 +167,40 @@ bool isLogicalOperation(const Token &token)
 
 Expression::Type resultType(const Token &operation, const Token &first, const Token &second)
 {
-    if ((first.type() == Expression::BOOLEAN) || (second.type() == Expression::BOOLEAN))
-        return Expression::NONE;
+    if ((first.type() == Expression::BOOLEAN_TYPE) || (second.type() == Expression::BOOLEAN_TYPE))
+        return Expression::NONE_TYPE;
 
     switch (first.type()) {
-    case Expression::DOUBLE: {
-        if (second.type() == Expression::STRING) {
-            return Expression::NONE;
+    case Expression::DOUBLE_TYPE: {
+        if (second.type() == Expression::STRING_TYPE) {
+            return Expression::NONE_TYPE;
         } else if (isLogicalOperation(operation)) {
-            return Expression::BOOLEAN;
-        } else return Expression::DOUBLE;
+            return Expression::BOOLEAN_TYPE;
+        } else {
+            return Expression::DOUBLE_TYPE;
+        }
     }
-    case Expression::INTEGER: {
-        if (second.type() == Expression::STRING) {
-            return Expression::NONE;
+    case Expression::INTEGER_TYPE: {
+        if (second.type() == Expression::STRING_TYPE) {
+            return Expression::NONE_TYPE;
         } else if (isLogicalOperation(operation)) {
-            return Expression::BOOLEAN;
-        } else if (second.type() == Expression::DOUBLE) {
-            return Expression::DOUBLE;
-        } else return Expression::INTEGER;
+            return Expression::BOOLEAN_TYPE;
+        } else if (second.type() == Expression::DOUBLE_TYPE) {
+            return Expression::DOUBLE_TYPE;
+        } else {
+            return Expression::INTEGER_TYPE;
+        }
     }
-    case Expression::STRING: {
-        if (second.type() != Expression::STRING) {
-            return Expression::NONE;
+    case Expression::STRING_TYPE: {
+        if (second.type() != Expression::STRING_TYPE) {
+            return Expression::NONE_TYPE;
         } else if (isLogicalOperation(operation)) {
-            return Expression::BOOLEAN;
-        } else return Expression::STRING;
+            return Expression::BOOLEAN_TYPE;
+        } else {
+            return Expression::STRING_TYPE;
+        }
     }
     default:
-        return Expression::NONE;
+        return Expression::NONE_TYPE;
     }
 }

@@ -32,7 +32,7 @@ void SyntacticAnalyzer::analyze(const QList<Token> &tokenList)
 
     while (!m_symbolToParseList.isEmpty()) {
         SyntacticSymbol symbol = m_symbolToParseList.takeFirst();
-        while (symbol.category() == Token::categoryLineFeed) {
+        while (symbol.category() == Token::LINE_FEED_CATEGORY) {
             symbol = m_symbolToParseList.takeFirst();
         }
         if (!isLambdaRuleExists(symbol)) {
@@ -77,7 +77,7 @@ void SyntacticAnalyzer::prepareToAnalysis(const QList<Token> &tokenList)
     m_tokenToParseList = tokenList;
     m_symbolToParseList.clear();
     m_errorText.clear();
-    m_symbolToParseList << SyntacticSymbol ("S",SyntacticSymbol::startSymbol);
+    m_symbolToParseList << SyntacticSymbol ("S",SyntacticSymbol::START_SYMBOL);
     m_usedRuleList.clear();
 }
 

@@ -28,11 +28,11 @@ SOURCES += main.cpp\
         BackusNaurFormParser.cpp \
         BackusNaurFormRule.cpp \
         ErrorGenerator.cpp \
-    Block.cpp \
-    SemanticAnalyzer.cpp \
-    ProgramBlockTreeWidget.cpp \
-    ThreeAddressCodeGenerator.cpp \
-    Expression.cpp
+        Block.cpp \
+        SemanticAnalyzer.cpp \
+        ProgramBlockTreeWidget.cpp \
+        ThreeAddressCodeGenerator.cpp \
+        Expression.cpp
 
 HEADERS += mainwindow.h\
         LexicalAnalyzer.h \
@@ -49,11 +49,11 @@ HEADERS += mainwindow.h\
         BackusNaurFormParser.h \
         BackusNaurFormRule.h \
         ErrorGenerator.h \
-    Block.h \
-    SemanticAnalyzer.h \
-    ProgramBlockTreeWidget.h \
-    ThreeAddressCodeGenerator.h \
-    Expression.h
+        Block.h \
+        SemanticAnalyzer.h \
+        ProgramBlockTreeWidget.h \
+        ThreeAddressCodeGenerator.h \
+        Expression.h
 
 FORMS  += mainwindow.ui
 

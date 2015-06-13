@@ -9,11 +9,11 @@ class Expression
 public:
 
     enum Type {
-        BOOLEAN,
-        DOUBLE,
-        INTEGER,
-        STRING,
-        NONE
+        BOOLEAN_TYPE,
+        DOUBLE_TYPE,
+        INTEGER_TYPE,
+        STRING_TYPE,
+        NONE_TYPE
     };
 
     Expression(QList<Token> &tokenList);

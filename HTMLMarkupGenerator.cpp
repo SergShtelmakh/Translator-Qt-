@@ -47,7 +47,7 @@ QString HTMLMarkupGenerator::getSuccessfulResultMessage(const QString &analyzerN
 {
     return QString("<font color=" + HTMLColors::darkBlue + ">"
                    + analyzerName + ":\n"
-                   + "Analysis completed successfully "
+                   + "Completed successfully "
                    + QTime::currentTime().toString() + "\n</font>");
 }
 
@@ -65,15 +65,15 @@ QString HTMLMarkupGenerator::getFailedResultMessage(const QString &analyzerName,
 QString HTMLMarkupGenerator::getTokenColorName(const Token& token) const
 {
     switch (token.category()) {
-    case Token::categoryIdentifier:
+    case Token::IDENTIFIER_CATEGORY:
         return HTMLColors::blue;
-    case Token::categoryCharToken:
+    case Token::CHAR_TOKEN_CATEGORY:
         return HTMLColors::green;
-    case Token::categoryNumberLiteral:
+    case Token::NUMBER_LITERAL_CATEGORY:
         return HTMLColors::violet;
-    case Token::categoryKeyword:
+    case Token::KEYWORD_CATEGORY:
         return HTMLColors::gold;
-    case Token::categoryStringLiteral:
+    case Token::STRING_LITERAL_CATEGORY:
         return HTMLColors::red;
     default:
         return "";
@@ -90,11 +90,11 @@ QString HTMLMarkupGenerator::getTokenHTMLRepresentation(const Token &token) cons
         return "<u>" + lexeme + "</u>";
 
     // Spaces represent without markup
-    if (token.category() == Token::categorySpace)
+    if (token.category() == Token::SPACE_CATEGORY)
         return lexeme;
 
     // In HTML <br> use as line feed
-    if (token.category() == Token::categoryLineFeed)
+    if (token.category() == Token::LINE_FEED_CATEGORY)
         return "<br>";
 
     return "<font color=" + getTokenColorName(token) + ">" + lexeme + "</font>";

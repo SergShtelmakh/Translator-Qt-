@@ -1,6 +1,6 @@
 /*!
  * \file Token.h
- * \date 2015/04/24
+ * \date 2015/06/13
  *
  * \author SergShtelmakh
  * Contact: sh.serg1993@gmail.com
@@ -28,32 +28,36 @@ public:
      * @brief This enumerate include tokens category.
      */
     enum TokenCategory {
-        categoryNone            = 0,    //!< Incorrect token.
-        categoryCharToken       = 1,    //!< Character token (e.g. +, -, *, / ...).
-        categoryIdentifier      = 2,    //!< Identifier (e.g. var1, var2 ...).
-        categoryKeyword         = 3,    //!< Keyword (e.g. int, bool, double ...).
-        categoryLineFeed        = 4,    //!< Line feed.
-        categoryNumberLiteral   = 5,    //!< Number literal (e.g. 5.54, 48.21E-45 ...).
-        categorySpace           = 6,    //!< Space token.
-        categoryStringLiteral   = 7     //!< String litaral (e.g. "literal1", "literal2" ...).
+        NONE_CATEGORY           = 0,    //!< Incorrect token.
+        CHAR_TOKEN_CATEGORY     = 1,    //!< Character token (e.g. +, -, *, / ...).
+        IDENTIFIER_CATEGORY     = 2,    //!< Identifier (e.g. var1, var2 ...).
+        KEYWORD_CATEGORY        = 3,    //!< Keyword (e.g. int, bool, double ...).
+        LINE_FEED_CATEGORY      = 4,    //!< Line feed.
+        NUMBER_LITERAL_CATEGORY = 5,    //!< Number literal (e.g. 5.54, 48.21E-45 ...).
+        SPACE_CATEGORY          = 6,    //!< Space token.
+        STRING_LITERAL_CATEGORY = 7     //!< String litaral (e.g. "literal1", "literal2" ...).
     };
 
     Token(){}
     Token(const Token &other);
-    Token(const QString &lexeme, TokenCategory category, const QString &errorInformation = "", const QPoint &position = QPoint(), Expression::Type type = Expression::NONE);
+    Token(const QString &lexeme, TokenCategory category, const QString &errorInformation = "", const QPoint &position = QPoint(), Expression::Type type = Expression::NONE_TYPE);
 
     Token& operator=(const Token& newToken);
 
     QString lexeme() const;
-
     TokenCategory category() const;
-
     QString errorInformation() const;
 
     void setPosition(const QPoint &value);
     QPoint position() const;
 
-    QString getAllErrorInformation() const;
+    Identifier *identifier() const;
+    void setIdentifier(Identifier *identifier);
+
+    Expression::Type type() const;
+    void setType(const Expression::Type &type);
+
+    QString getErrorInformationWithLexeme() const;
 
     /*!
      * This method used to check is token correct.
@@ -64,21 +68,14 @@ public:
 
     static TokenCategory stringToTokenCategory(const QString &string);
 
-    Identifier *identifier() const;
-    void setIdentifier(Identifier *identifier);
-
-    Expression::Type type() const;
-    void setType(const Expression::Type &type);
-
 private:
 
     QString m_lexeme;               //!< Tokens lexeme.
     TokenCategory m_tokenCategory;  //!< Tokens category.
     QString m_errorInformation;     //!< Tokens error information.
     QPoint m_position;              //!< Tokens position.
-    Identifier *m_identifier;
-    Expression::Type m_type;
-
+    Identifier *m_identifier;       //!< Pointer on identifer.
+    Expression::Type m_type;        //!< Tokens type (if token is result of some expression)
 
     static QHash <QString, TokenCategory> m_convertingStringToTokenCategoryHash;
 

@@ -17,11 +17,11 @@ void Expression::makePolishNotation(QList<Token> &tokenList)
     while (!tokenList.isEmpty()) {
         Token currentToken = tokenList.takeFirst();
         switch (currentToken.category()) {
-        case Token::categoryIdentifier: {
+        case Token::IDENTIFIER_CATEGORY: {
             m_polishNotation.push_back(currentToken);
             break;
         }
-        case Token::categoryCharToken: {
+        case Token::CHAR_TOKEN_CATEGORY: {
             if (currentToken.lexeme() == "(") {
                 m_stack.push_front(currentToken);
             } else if (currentToken.lexeme() == ")") {
@@ -42,15 +42,15 @@ void Expression::makePolishNotation(QList<Token> &tokenList)
             }
             break;
         }
-        case Token::categoryNumberLiteral: {
+        case Token::NUMBER_LITERAL_CATEGORY: {
             m_polishNotation.push_back(currentToken);
             break;
         }
-        case Token::categoryStringLiteral: {
+        case Token::STRING_LITERAL_CATEGORY: {
             m_polishNotation.push_back(currentToken);
             break;
         }
-        case Token::categoryKeyword: {
+        case Token::KEYWORD_CATEGORY: {
             if (currentToken.lexeme() == "TRUE" || currentToken.lexeme() == "FALSE")
                 m_polishNotation.push_back(currentToken);
             break;
@@ -74,9 +74,9 @@ void Expression::makeCode()
         } else {
             Token secondToken = m_stack.takeFirst();
             Token firstToken = m_stack.takeFirst();
-            Token newToken = Token(QString("t%1").arg(m_codeList.size()),Token::categoryIdentifier);
+            Token newToken = Token(QString("t%1").arg(m_codeList.size()),Token::IDENTIFIER_CATEGORY);
             Expression::Type newType = resultType(currentToken,firstToken,secondToken);
-            if (newType == Expression::NONE) {
+            if (newType == Expression::NONE_TYPE) {
                 m_error += "can't do operation " + currentToken.lexeme() + " with " + firstToken.lexeme() + " " + secondToken.lexeme() + "\n";
                 return;
             }

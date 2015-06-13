@@ -20,7 +20,7 @@ void ProgramBlockTreeWidget::setData(Block *mainBlock)
     rootItemStringList << "Block";
     QTreeWidgetItem *rootItem = new QTreeWidgetItem(rootItemStringList);
     QVector<Identifier *> identifierVector = mainBlock->identifiers();
-    QVector<Block *> childrenVector = mainBlock->children();
+    QVector<Block *> childrenVector = mainBlock->childrenBlocks();
     while ((!childrenVector.isEmpty())||(!identifierVector.isEmpty())) {
         addNode(rootItem, identifierVector, childrenVector);
     }
@@ -45,7 +45,7 @@ void ProgramBlockTreeWidget::addNode(QTreeWidgetItem *currentNode, QVector<Ident
         QTreeWidgetItem *currentChildItem = new QTreeWidgetItem(nodeStringList);
         currentNode->addChild(currentChildItem);
         QVector<Identifier *> identifierVector = currentChild->identifiers();
-        QVector<Block *> childrenVector = currentChild->children();
+        QVector<Block *> childrenVector = currentChild->childrenBlocks();
         while ((!childrenVector.isEmpty())||(!identifierVector.isEmpty())) {
             addNode(currentChildItem, identifierVector, childrenVector);
         }

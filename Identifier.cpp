@@ -34,6 +34,7 @@ int Identifier::scopeEndLineNumber() const
 {
     return m_scopeEndLineNumber;
 }
+
 int Identifier::code() const
 {
     return m_code;
@@ -44,7 +45,6 @@ void Identifier::setCode(int code)
     m_code = code;
 }
 
-
 QString Identifier::lexeme() const
 {
     return m_lexeme;
@@ -52,28 +52,30 @@ QString Identifier::lexeme() const
 
 Expression::Type StringToType(QString lexeme)
 {
-    if (lexeme == "INTEGER")
-        return Expression::INTEGER;
-    if (lexeme == "BOOLEAN")
-        return Expression::BOOLEAN;
-    if (lexeme == "DOUBLE")
-        return Expression::DOUBLE;
-    if (lexeme == "STRING")
-        return Expression::STRING;
-    return Expression::NONE;
+    if (lexeme == "INTEGER") {
+        return Expression::INTEGER_TYPE;
+    } else if (lexeme == "BOOLEAN") {
+        return Expression::BOOLEAN_TYPE;
+    } else if (lexeme == "DOUBLE") {
+        return Expression::DOUBLE_TYPE;
+    } else if (lexeme == "STRING") {
+        return Expression::STRING_TYPE;
+    } else {
+        return Expression::NONE_TYPE;
+    }
 }
 
 
 QString TypeToString(Expression::Type type)
 {
     switch (type) {
-    case Expression::BOOLEAN:
+    case Expression::BOOLEAN_TYPE:
         return "BOOLEAN";
-    case Expression::INTEGER:
+    case Expression::INTEGER_TYPE:
         return "INTEGER";
-    case Expression::DOUBLE:
+    case Expression::DOUBLE_TYPE:
         return "DOUBLE";
-    case Expression::STRING:
+    case Expression::STRING_TYPE:
         return "STRING";
     default:
         return QString();

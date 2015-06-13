@@ -1,7 +1,7 @@
 #include "Block.h"
 
 Block::Block() :
-    m_type(MAIN),
+    m_type(MAIN_BLOCK),
     m_scopeBeginLineNumber(0),
     m_scopeEndLineNumber(INT_MAX)
 {
@@ -20,15 +20,15 @@ Block::~Block()
         Identifier *id = m_identifiers.takeFirst();
         delete id;
     }
-    while (!m_children.isEmpty()) {
-        Block* block = m_children.takeFirst();
+    while (!m_childrenBlocks.isEmpty()) {
+        Block* block = m_childrenBlocks.takeFirst();
         delete block;
     }
 }
 
 void Block::addChildBlock(Block *child)
 {
-    m_children.push_back(child);
+    m_childrenBlocks.push_back(child);
 }
 
 void Block::setScopeEndLineNumber(const int endLine)
@@ -66,9 +66,9 @@ int Block::scopeEndLineNumber() const
     return m_scopeEndLineNumber;
 }
 
-QVector<Block *> Block::children() const
+QVector<Block *> Block::childrenBlocks() const
 {
-    return m_children;
+    return m_childrenBlocks;
 }
 
 QVector<Identifier*> Block::identifiers() const
@@ -84,9 +84,9 @@ Block::BlockType Block::type() const
 QString BlockTypeToString(Block::BlockType type)
 {
     switch (type) {
-    case Block::IF:
+    case Block::IF_BLOCK:
         return "IF";
-    case Block::FOR:
+    case Block::FOR_BLOCK:
         return "FOR";
     default:
         return QString();

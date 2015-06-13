@@ -28,8 +28,6 @@ class LexicalAnalyzer
 
 public:
 
-
-
     LexicalAnalyzer();
 
     QString errorText() const;
@@ -89,8 +87,6 @@ public:
      * @param[in] characterToken Character token.
      */
     void addCharacterToken(const QString &characterToken);
-
-
 
 protected:
 

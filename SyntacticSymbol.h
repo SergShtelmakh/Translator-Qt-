@@ -19,13 +19,13 @@ class SyntacticSymbol
 public:
 
     enum SyntacticSymbolType {
-        nonterminalSymbol   = 0,
-        startSymbol         = 1,
-        terminalSymbol      = 2
+        NONTERMINAL_SYMBOL   = 0,
+        START_SYMBOL         = 1,
+        TERMINAL_SYMBOL      = 2
     };
 
     SyntacticSymbol(){}
-    SyntacticSymbol(const QString &name, SyntacticSymbolType type, Token::TokenCategory category = Token::categoryNone);
+    SyntacticSymbol(const QString &name, SyntacticSymbolType type, Token::TokenCategory category = Token::NONE_CATEGORY);
     SyntacticSymbol(const QString &name, const QString &type, const QString &category);
 
     QString name() const;

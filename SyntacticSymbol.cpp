@@ -48,9 +48,9 @@ void SyntacticSymbol::setCategory(const Token::TokenCategory &category)
 SyntacticSymbol::SyntacticSymbolType SyntacticSymbol::stringToSyntacticSymbolType(const QString &string)
 {
     if (m_convertingStringToSyntacticSymbolTypeHash.isEmpty()) {
-        m_convertingStringToSyntacticSymbolTypeHash.insert("nonterminalSymbol",SyntacticSymbol::nonterminalSymbol);
-        m_convertingStringToSyntacticSymbolTypeHash.insert("startSymbol",SyntacticSymbol::startSymbol);
-        m_convertingStringToSyntacticSymbolTypeHash.insert("terminalSymbol",SyntacticSymbol::terminalSymbol);
+        m_convertingStringToSyntacticSymbolTypeHash.insert("nonterminalSymbol",SyntacticSymbol::NONTERMINAL_SYMBOL);
+        m_convertingStringToSyntacticSymbolTypeHash.insert("startSymbol",SyntacticSymbol::START_SYMBOL);
+        m_convertingStringToSyntacticSymbolTypeHash.insert("terminalSymbol",SyntacticSymbol::TERMINAL_SYMBOL);
     }
 
     return m_convertingStringToSyntacticSymbolTypeHash.value(string);
@@ -65,7 +65,7 @@ bool SyntacticSymbol::isCorrect() const
 
 bool operator==(const SyntacticSymbol &symbol1, const SyntacticSymbol &symbol2)
 {
-    bool areSymbolsTypeStart = (symbol1.type() == SyntacticSymbol::startSymbol)&&(symbol2.type() == SyntacticSymbol::startSymbol);
+    bool areSymbolsTypeStart = (symbol1.type() == SyntacticSymbol::START_SYMBOL)&&(symbol2.type() == SyntacticSymbol::START_SYMBOL);
     bool areSymbolsSame = (symbol1.name() == symbol2.name())&&(symbol1.type() == symbol2.type());
     return (areSymbolsSame || areSymbolsTypeStart);
 }
@@ -78,16 +78,16 @@ uint qHash(const SyntacticSymbol &symbol)
 bool operator==(const Token &token, const SyntacticSymbol &symbol)
 {
     switch (token.category()) {
-    case Token::categoryNumberLiteral:
-        return symbol.category() == Token::categoryNumberLiteral;
-    case Token::categoryStringLiteral:
-        return symbol.category() == Token::categoryStringLiteral;
-    case Token::categoryIdentifier:
-        return symbol.category() == Token::categoryIdentifier;
-    case Token::categoryLineFeed:
-        return symbol.category() == Token::categoryLineFeed;
+    case Token::NUMBER_LITERAL_CATEGORY:
+        return symbol.category() == Token::NUMBER_LITERAL_CATEGORY;
+    case Token::STRING_LITERAL_CATEGORY:
+        return symbol.category() == Token::STRING_LITERAL_CATEGORY;
+    case Token::IDENTIFIER_CATEGORY:
+        return symbol.category() == Token::IDENTIFIER_CATEGORY;
+    case Token::LINE_FEED_CATEGORY:
+        return symbol.category() == Token::LINE_FEED_CATEGORY;
     default:
-        return(token.lexeme() == symbol.name())&&(symbol.type() == SyntacticSymbol::terminalSymbol); //compare by lexemes
+        return(token.lexeme() == symbol.name())&&(symbol.type() == SyntacticSymbol::TERMINAL_SYMBOL); //compare by lexemes
     }
 }
 
@@ -112,16 +112,16 @@ QString MakeStringRepresentation(const QList<SyntacticSymbol> &syntacticSymbolLi
 QString MakeStringRepresentation(const SyntacticSymbol &syntacticSymbol)
 {
     switch (syntacticSymbol.type()) {
-    case SyntacticSymbol::nonterminalSymbol:
+    case SyntacticSymbol::NONTERMINAL_SYMBOL:
         return QString("<" + syntacticSymbol.name() + ">");
-    case SyntacticSymbol::terminalSymbol: {
-       if ((syntacticSymbol.category() == Token::categoryKeyword)||(syntacticSymbol.category() == Token::categoryCharToken)) {
+    case SyntacticSymbol::TERMINAL_SYMBOL: {
+       if ((syntacticSymbol.category() == Token::KEYWORD_CATEGORY)||(syntacticSymbol.category() == Token::CHAR_TOKEN_CATEGORY)) {
            return QString("\"" + syntacticSymbol.name() + "\"");
        } else {
            return syntacticSymbol.name();
        }
     }
-    case SyntacticSymbol::startSymbol:
+    case SyntacticSymbol::START_SYMBOL:
         return "S";
     default:
         return QString();

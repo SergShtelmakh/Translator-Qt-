@@ -31,11 +31,11 @@ void SemanticAnalyzer::makeBlocks(const QList<Token> &tokenList)
     while(tokenIterator != tokenList.end()) {
         Token currentToken = *tokenIterator;
         if (currentToken.lexeme() == "FOR") {
-            Block *newChildBlock = new Block(Block::FOR, GetTokenLineNumber(currentToken), currentBlock);
+            Block *newChildBlock = new Block(Block::FOR_BLOCK, GetTokenLineNumber(currentToken), currentBlock);
             currentBlock->addChildBlock(newChildBlock);
             currentBlock = newChildBlock;
         } else if (currentToken.lexeme() == "IF"){
-            Block *newChildBlock = new Block(Block::IF, GetTokenLineNumber(currentToken), currentBlock);
+            Block *newChildBlock = new Block(Block::IF_BLOCK, GetTokenLineNumber(currentToken), currentBlock);
             currentBlock->addChildBlock(newChildBlock);
             currentBlock = newChildBlock;
         } else if ((currentToken.lexeme() == "END")||(currentToken.lexeme() == "NEXT")){
@@ -70,7 +70,7 @@ void SemanticAnalyzer::findIdentifiersDeclaration(QList<Token> &tokenList)
                 identifierToken->setIdentifier(newId);
             }
         } else {
-            if (currentToken.category() == Token::categoryIdentifier) {
+            if (currentToken.category() == Token::IDENTIFIER_CATEGORY) {
                 tokenList[index].setType(getIdentifierByToken(currentToken)->type());
             }
         }
@@ -83,7 +83,7 @@ void SemanticAnalyzer::checkIdentifiersScope(const QList<Token> &tokenList)
     QList<Token>::const_iterator tokenIterator = tokenList.begin();
     while(tokenIterator != tokenList.end()) {
         Token currentToken = *tokenIterator;
-        if (currentToken.category() == Token::categoryIdentifier) {
+        if (currentToken.category() == Token::IDENTIFIER_CATEGORY) {
             if (!isIdentifierDeclarate(currentToken)) {
                 addError(ErrorGenerator::undeclaratedIdentifierError(currentToken));
             }
@@ -97,7 +97,7 @@ Block *SemanticAnalyzer::getBlockByLineNumber(const int lineNumber)
     Block *currentBlock = m_mainBlock;
     for (;;) {
         Block *foundChildBlock = NULL;
-        foreach (Block *currentChildBlock, currentBlock->children()) {
+        foreach (Block *currentChildBlock, currentBlock->childrenBlocks()) {
             if (AtRange(currentChildBlock->scopeBeginLineNumber(),
                         currentChildBlock->scopeEndLineNumber(),
                         lineNumber)) {
