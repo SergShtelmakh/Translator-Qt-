@@ -7,9 +7,9 @@ SourceCodeInputTextEdit::SourceCodeInputTextEdit(QWidget *parent) :
     QTextEdit(parent),
     m_textUpdateTimer(new QTimer)
 {
-    connect(this,SIGNAL(textChanged()),SLOT(onTextChangedSlot()));
-    connect(this,SIGNAL(cursorPositionChanged()),SLOT(onCursorPositionChangedSlot()));
-    connect(m_textUpdateTimer,SIGNAL(timeout()),SLOT(onTextUpdateTimerTimeoutSlot()));
+    connect(this, SIGNAL(textChanged()), SLOT(onTextChangedSlot()));
+    connect(this, SIGNAL(cursorPositionChanged()), SLOT(onCursorPositionChangedSlot()));
+    connect(m_textUpdateTimer, SIGNAL(timeout()), SLOT(onTextUpdateTimerTimeoutSlot()));
 
     this->setFont(QFont("Courier New", 16));
     this->setTabStopWidth(40);
@@ -26,10 +26,10 @@ QPoint SourceCodeInputTextEdit::getCursorCoordinate() const
     QString plainText = toPlainText();
     int currentCharIndex = textCursor().position();
 
-    plainText.remove(currentCharIndex,plainText.length() - currentCharIndex);
+    plainText.remove(currentCharIndex, plainText.length() - currentCharIndex);
     cursorCoordinate.setY(plainText.count("\n"));
 
-    plainText.remove(0,plainText.lastIndexOf("\n") + 1);
+    plainText.remove(0, plainText.lastIndexOf("\n") + 1);
     cursorCoordinate.setX(plainText.length());
 
     return cursorCoordinate;
@@ -38,7 +38,7 @@ QPoint SourceCodeInputTextEdit::getCursorCoordinate() const
 void SourceCodeInputTextEdit::onCursorPositionChangedSlot()
 {
     QPoint cursorCoordinate = getCursorCoordinate();
-    emit updateStatusBarSignal(cursorCoordinate.y(),cursorCoordinate.x());
+    emit updateStatusBarSignal(cursorCoordinate.y(), cursorCoordinate.x());
 }
 
 void SourceCodeInputTextEdit::onTextChangedSlot()

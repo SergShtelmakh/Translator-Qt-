@@ -20,7 +20,7 @@ void SyntacticAnalyzer::analyze(const QList<Token> &tokenList)
         } else {
             Production production = findCongruentRule(firstSymbolToParse, firstTokenToParse);
             if (production.syntacticSymbolList().isEmpty()&&(!isLambdaRuleExists(firstSymbolToParse))) {
-                addError(ErrorGenerator::syntacticError(m_tokenToParseList,m_symbolToParseList));
+                addError(ErrorGenerator::syntacticError(m_tokenToParseList, m_symbolToParseList));
                 m_tokenToParseList.takeFirst();
                 return;
             }
@@ -36,7 +36,7 @@ void SyntacticAnalyzer::analyze(const QList<Token> &tokenList)
             symbol = m_symbolToParseList.takeFirst();
         }
         if (!isLambdaRuleExists(symbol)) {
-            addError(ErrorGenerator::syntacticError(m_tokenToParseList,m_symbolToParseList));
+            addError(ErrorGenerator::syntacticError(m_tokenToParseList, m_symbolToParseList));
             return;
         }
     }
@@ -77,7 +77,7 @@ void SyntacticAnalyzer::prepareToAnalysis(const QList<Token> &tokenList)
     m_tokenToParseList = tokenList;
     m_symbolToParseList.clear();
     m_errorText.clear();
-    m_symbolToParseList << SyntacticSymbol ("S",SyntacticSymbol::START_SYMBOL);
+    m_symbolToParseList << SyntacticSymbol ("S", SyntacticSymbol::START_SYMBOL);
     m_usedRuleList.clear();
 }
 

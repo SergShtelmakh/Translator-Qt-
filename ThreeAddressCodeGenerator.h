@@ -52,9 +52,9 @@ public:
 
 private:
 
-    void prepare(const QList<Token> &tokenList);
+    void prepareToCodeGeneration(const QList<Token> &tokenList);
     void deleteIdentifierDeclaration(int index);
-    void parse(QList<Token>::iterator &currentToken);
+    void generateCode(QList<Token>::iterator &currentToken);
     void parseAssignmentStatement(QList<Token>::iterator &currentToken);
     void parseBeginForStatement(QList<Token>::iterator &currentToken);
     void parseEndForStatement(QList<Token>::iterator &currentToken);
@@ -67,8 +67,9 @@ private:
     void addTriade(const QString &result, const QString &first, const QString &second, const Expression &third);
     void addTriade(const QString &first, const QString &second, const Expression &third);
     void addGoto(const QString &reason, const QString &label);
+    void addLabel(const QString &label);
 
-    Expression parseExpression(QList<Token>::iterator &currentToken);
+    Expression getNextExpression(QList<Token>::iterator &currentToken);
 
     QList<Token> m_tokenList;
     QString m_threeAddressCode;

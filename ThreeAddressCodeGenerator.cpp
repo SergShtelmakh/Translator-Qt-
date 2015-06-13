@@ -4,12 +4,12 @@
 
 void ThreeAddressCodeGenerator::generate(const QList<Token> &tokenList)
 {
-    prepare(tokenList);
+    prepareToCodeGeneration(tokenList);
     QList<Token>::iterator currentToken = m_tokenList.begin();
-    parse(currentToken);
+    generateCode(currentToken);
 }
 
-void ThreeAddressCodeGenerator::prepare(const QList<Token> &tokenList)
+void ThreeAddressCodeGenerator::prepareToCodeGeneration(const QList<Token> &tokenList)
 {
     m_labelCount = 0;
     m_tokenList = tokenList;
@@ -35,7 +35,7 @@ void ThreeAddressCodeGenerator::deleteIdentifierDeclaration(int index)
     m_tokenList.removeAt(index);
 }
 
-void ThreeAddressCodeGenerator::parse(QList<Token>::iterator &currentToken)
+void ThreeAddressCodeGenerator::generateCode(QList<Token>::iterator &currentToken)
 {
     while (currentToken != m_tokenList.end()) {
         if (currentToken->category() == Token::IDENTIFIER_CATEGORY) {
@@ -56,40 +56,63 @@ void ThreeAddressCodeGenerator::parse(QList<Token>::iterator &currentToken)
 
 void ThreeAddressCodeGenerator::parseAssignmentStatement(QList<Token>::iterator &currentToken)
 {
+    // currentToken
+    //  |
+    // <ID> = <EXP>
     Token idToken = *currentToken;
-    currentToken += 2;
-    Expression expression = parseExpression(currentToken);
+    Expression expression = getNextExpression(currentToken += 2);
     if (idToken.type() != expression.result().type()) {
         m_error += ErrorGenerator::incorrectTypeToAssignment(idToken);
         return;
     }
     this->addAssignmentToThreeAddressCode(idToken, expression);
+
+    ++currentToken;
 }
 
 void ThreeAddressCodeGenerator::parseBeginForStatement(QList<Token>::iterator &currentToken)
 {
+    // currentToken
+    //  |
+    // FOR <ID> = <EXP> TO <EXP> (STEP <EXP>)?
     Token idToken = *(++currentToken);
-    Expression beginExpression = parseExpression(++currentToken);
-    Expression endExpression = parseExpression(++currentToken);
 
+    //    currentToken
+    //       |
+    // FOR <ID> = <EXP> TO <EXP> (STEP <EXP>)?
+    Expression beginExpression = getNextExpression(currentToken +=2);
+
+    //             currentToken
+    //                  |
+    // FOR <ID> = <EXP> TO <EXP> (STEP <EXP>)?
+    Expression endExpression = getNextExpression(++currentToken);
+
+    //                        currentToken
+    //                             |
+    // FOR <ID> = <EXP> TO <EXP> (STEP <EXP>)?
     Expression stepExpression;
     if ((++currentToken)->lexeme() == "STEP") {
-        stepExpression = parseExpression(++currentToken);
-        ++currentToken;
+        stepExpression = getNextExpression(++currentToken);
     }
+
     QString label = QString("A%1:").arg(m_labelCount++);
     m_forStatementStack.push_front(ForStatement(idToken, beginExpression, endExpression, label, stepExpression));
     this->addAssignmentToThreeAddressCode(idToken, beginExpression);
-    m_threeAddressCode += label + "\n";
+    this->addLabel(label);
+
+    ++currentToken;
 }
 
 void ThreeAddressCodeGenerator::parseEndForStatement(QList<Token>::iterator &currentToken)
 {
     ForStatement currentFor = m_forStatementStack.takeFirst();
+    // currentToken
+    //  |
+    // NEXT <ID>
     if ((++currentToken)->lexeme() != currentFor.m_id.lexeme()) {
         m_error += ErrorGenerator::incorrectIdentifier(*currentToken);
     }
-    ++currentToken;
+
     if (currentFor.m_stepExpression.codeList().isEmpty()) {
         this->addTriade(currentFor.m_id.lexeme(), "+", currentFor.m_id.lexeme(), "1");
     } else {
@@ -97,22 +120,33 @@ void ThreeAddressCodeGenerator::parseEndForStatement(QList<Token>::iterator &cur
     }
     this->addTriade("<",  currentFor.m_id.lexeme(), currentFor.m_endExpression);
     this->addGoto("true", currentFor.m_label);
+
+    ++currentToken;
 }
 
 void ThreeAddressCodeGenerator::parseBeginIfStatement(QList<Token>::iterator &currentToken)
 {
-    Expression ifExpression = parseExpression(++currentToken);
-    currentToken += 2;
+    // currentToken
+    // |
+    // IF <EXP> THEN
+    Expression ifExpression = getNextExpression(++currentToken);
+
     QString label = QString("A%1:").arg(m_labelCount++);
     m_ifStatementStack.push_front(IfStatement(ifExpression, label));
     m_threeAddressCode += ifExpression.codeList();
     this->addGoto("false", label);
+
+    currentToken += 2;
 }
 
 void ThreeAddressCodeGenerator::parseEndIfStatement(QList<Token>::iterator &currentToken)
 {
+    // currentToken
+    //  |
+    // END IF
     IfStatement currentIf = m_ifStatementStack.takeFirst();
-    m_threeAddressCode += currentIf.m_label + "\n";
+    this->addLabel(currentIf.m_label);
+
     currentToken +=2;
 }
 
@@ -149,7 +183,12 @@ void ThreeAddressCodeGenerator::addGoto(const QString &reason, const QString &la
     m_threeAddressCode += "If " + reason + " goto " + label + "\n";
 }
 
-Expression ThreeAddressCodeGenerator::parseExpression(QList<Token>::iterator &currentToken)
+void ThreeAddressCodeGenerator::addLabel(const QString &label)
+{
+    m_threeAddressCode += label + "\n";
+}
+
+Expression ThreeAddressCodeGenerator::getNextExpression(QList<Token>::iterator &currentToken)
 {
     QList<Token> currentList;
     bool keyWordButNotTrueFalse = false;
@@ -158,8 +197,11 @@ Expression ThreeAddressCodeGenerator::parseExpression(QList<Token>::iterator &cu
            &&(!keyWordButNotTrueFalse)) {
         currentList.push_back(*currentToken);
         ++currentToken;
-        keyWordButNotTrueFalse = (currentToken->category() == Token::KEYWORD_CATEGORY)&&(currentToken->lexeme() != "TRUE")&&(currentToken->lexeme() != "FALSE");
+        keyWordButNotTrueFalse = (currentToken->category() == Token::KEYWORD_CATEGORY)
+                                &&(currentToken->lexeme() != "TRUE")
+                                &&(currentToken->lexeme() != "FALSE");
     }
+
     Expression exp = Expression(currentList);
     m_error += exp.error();
     return exp;

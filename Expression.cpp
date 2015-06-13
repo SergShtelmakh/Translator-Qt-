@@ -1,16 +1,15 @@
 #include "Expression.h"
+#include "ErrorGenerator.h"
 #include "Token.h"
 
 Expression::Expression(QList<Token> &tokenList)
 {
     makePolishNotation(tokenList);
-    makeCode();
+    makeThreeAddressCode();
 }
 
 Expression::Expression()
-{
-
-}
+{}
 
 void Expression::makePolishNotation(QList<Token> &tokenList)
 {
@@ -65,7 +64,7 @@ void Expression::makePolishNotation(QList<Token> &tokenList)
     }
 }
 
-void Expression::makeCode()
+void Expression::makeThreeAddressCode()
 {
     while (!m_polishNotation.isEmpty()) {
         Token currentToken = m_polishNotation.takeFirst();
@@ -74,14 +73,18 @@ void Expression::makeCode()
         } else {
             Token secondToken = m_stack.takeFirst();
             Token firstToken = m_stack.takeFirst();
-            Token newToken = Token(QString("t%1").arg(m_codeList.size()),Token::IDENTIFIER_CATEGORY);
-            Expression::Type newType = resultType(currentToken,firstToken,secondToken);
+            Token newToken = Token(QString("t%1").arg(m_codeList.size()), Token::IDENTIFIER_CATEGORY);
+            Expression::Type newType = resultType(currentToken, firstToken, secondToken);
             if (newType == Expression::NONE_TYPE) {
-                m_error += "can't do operation " + currentToken.lexeme() + " with " + firstToken.lexeme() + " " + secondToken.lexeme() + "\n";
+                m_error +=  ErrorGenerator::cantDoOperation(currentToken, firstToken, secondToken);
                 return;
             }
             newToken.setType(newType);
-            m_codeList.push_back(QString("%1 := (%2,%3,%4)").arg(newToken.lexeme()).arg(currentToken.lexeme()).arg(firstToken.lexeme()).arg(secondToken.lexeme()));
+            m_codeList.push_back(QString("%1 := (%2,%3,%4)")
+                                 .arg(newToken.lexeme())
+                                 .arg(currentToken.lexeme())
+                                 .arg(firstToken.lexeme())
+                                 .arg(secondToken.lexeme()));
             m_stack.push_front(newToken);
         }
     }

@@ -19,11 +19,13 @@ void ProgramBlockTreeWidget::setData(Block *mainBlock)
     QStringList rootItemStringList;
     rootItemStringList << "Block";
     QTreeWidgetItem *rootItem = new QTreeWidgetItem(rootItemStringList);
+
     QVector<Identifier *> identifierVector = mainBlock->identifiers();
     QVector<Block *> childrenVector = mainBlock->childrenBlocks();
     while ((!childrenVector.isEmpty())||(!identifierVector.isEmpty())) {
         addNode(rootItem, identifierVector, childrenVector);
     }
+
     addTopLevelItem(rootItem);
     this->expandAll();
 }

@@ -12,13 +12,13 @@
 #include <QFileDialog>
 #include <QTime>
 
-Q_GLOBAL_STATIC(LexicalAnalyzer,globalLexicalAnalyzer)
+Q_GLOBAL_STATIC(LexicalAnalyzer, globalLexicalAnalyzer)
 
-Q_GLOBAL_STATIC(SyntacticAnalyzer,globalSyntacticAnalyzer)
+Q_GLOBAL_STATIC(SyntacticAnalyzer, globalSyntacticAnalyzer)
 
-Q_GLOBAL_STATIC(SemanticAnalyzer,globalSemanticAnalyzer)
+Q_GLOBAL_STATIC(SemanticAnalyzer, globalSemanticAnalyzer)
 
-Q_GLOBAL_STATIC(ThreeAddressCodeGenerator,globalThreeAddressCodeGenerator)
+Q_GLOBAL_STATIC(ThreeAddressCodeGenerator, globalThreeAddressCodeGenerator)
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ui->sourceCodeInputTextEdit, SIGNAL(updateStatusBarSignal(int,int)), SLOT(updateStatusBarSlot(int,int)));
+    connect(ui->sourceCodeInputTextEdit, SIGNAL(updateStatusBarSignal(int, int)), SLOT(updateStatusBarSlot(int, int)));
     connect(ui->sourceCodeInputTextEdit, SIGNAL(updateTextByTimerSignal()), SLOT(updateSourceCodeInputTextEditSlot()));
 
     ui->tokenSequenceTextEdit->setFont(QFont("Courier New", 12));
@@ -91,24 +91,24 @@ HTMLMarkupGenerator* MainWindow::getMarkupGenerator() const
 void MainWindow::loadSettings()
 {
     if (!FileReader::isFileExist(m_lexicalAnalyzerSettingsFileName))
-        m_lexicalAnalyzerSettingsFileName = QFileDialog::getOpenFileName(this, tr("Open Settings File"),"LexicalAnalyzersSettings.json", tr("JSON (*.json)"));
-    FileReader::loadLexicalAnalyzerSettings(m_lexicalAnalyzerSettingsFileName,*globalLexicalAnalyzer);
+        m_lexicalAnalyzerSettingsFileName = QFileDialog::getOpenFileName(this, tr("Open Settings File"), "LexicalAnalyzersSettings.json", tr("JSON (*.json)"));
+    FileReader::loadLexicalAnalyzerSettings(m_lexicalAnalyzerSettingsFileName, *globalLexicalAnalyzer);
 
     if (!FileReader::isFileExist(m_syntacticAnalyzerSettingsFileName))
-        m_syntacticAnalyzerSettingsFileName = QFileDialog::getOpenFileName(this, tr("Open Rules File"),"SyntacticAnalyzersSetting.rules", tr("RULES (*.rules)"));
-    FileReader::loadSyntacticAnalyzerRules(m_syntacticAnalyzerSettingsFileName,*globalSyntacticAnalyzer);
+        m_syntacticAnalyzerSettingsFileName = QFileDialog::getOpenFileName(this, tr("Open Rules File"), "SyntacticAnalyzersSetting.rules", tr("RULES (*.rules)"));
+    FileReader::loadSyntacticAnalyzerRules(m_syntacticAnalyzerSettingsFileName, *globalSyntacticAnalyzer);
 
 }
 
 void MainWindow::on_actionSave_triggered()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),"sourceCode.txt",tr(" (*.txt)"));
-    FileReader::writeTextToFile(fileName,ui->sourceCodeInputTextEdit->toPlainText());
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "sourceCode.txt", tr(" (*.txt)"));
+    FileReader::writeTextToFile(fileName, ui->sourceCodeInputTextEdit->toPlainText());
 }
 
 void MainWindow::on_actionOpen_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),"", tr(" (*.txt)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr(" (*.txt)"));
     if (!fileName.isEmpty()) {
         QString text = FileReader::getTextFromFile(fileName);
         ui->sourceCodeInputTextEdit->clear();

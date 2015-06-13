@@ -27,7 +27,7 @@ public:
     static QString redeclarationOfIdentifier(const Token &identifierToken);
     static QString incorrectTypeToAssignment(const Token &idToken);
     static QString incorrectIdentifier(const Token &idToken);
-
+    static QString cantDoOperation(const Token &operation, const Token &token1, const Token &token2);
 
 };
 

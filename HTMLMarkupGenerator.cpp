@@ -83,7 +83,7 @@ QString HTMLMarkupGenerator::getTokenColorName(const Token& token) const
 QString HTMLMarkupGenerator::getTokenHTMLRepresentation(const Token &token) const
 {
     // In HTML &lt; and &gt; use to represent < and >
-    QString lexeme = token.lexeme().replace("<","&lt;").replace(">","&gt;");
+    QString lexeme = token.lexeme().replace("<", "&lt;").replace(">", "&gt;");
 
     // Underlining incorrect lexeme
     if (!token.isCorrect())
@@ -116,6 +116,6 @@ QString PlainTextToHTML(const QString &plainText)
     QString html = "<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body>"
             + plainText
             + "</body></html>";
-    html.replace("\n","<br>");
+    html.replace("\n", "<br>");
     return html;
 }

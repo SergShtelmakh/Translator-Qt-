@@ -27,7 +27,7 @@ public:
 private:
 
     void makePolishNotation(QList<Token> &tokenList);
-    void makeCode();
+    void makeThreeAddressCode();
 
     Type m_type;
     QList<Token> m_polishNotation;

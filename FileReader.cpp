@@ -38,7 +38,7 @@ void FileReader::loadLexicalAnalyzerSettings(const QString &fileName, LexicalAna
     QJsonDocument jsonDocument = loadJson(fileName);
     QJsonObject mainObject = jsonDocument.object();
     QJsonObject lexicalAnalyzerJsonObject = mainObject["LexicalAnalyser"].toObject();
-    loadLexicalAnalyzerSettings(lexicalAnalyzerJsonObject,lexicalAnalyzer);
+    loadLexicalAnalyzerSettings(lexicalAnalyzerJsonObject, lexicalAnalyzer);
 }
 
 void FileReader::loadSyntacticAnalyzerRules(const QString &fileName, SyntacticAnalyzer &syntacticAnalyzer)
@@ -47,7 +47,7 @@ void FileReader::loadSyntacticAnalyzerRules(const QString &fileName, SyntacticAn
     QList <BackusNaurFormRule> rulesList;
     rulesList = BackusNaurFormParser::parse(sourceText);
     foreach (BackusNaurFormRule rule, rulesList) {
-        syntacticAnalyzer.addProductRule(rule.leftPart(),rule.rightPart());
+        syntacticAnalyzer.addProductRule(rule.leftPart(), rule.rightPart());
     }
 }
 

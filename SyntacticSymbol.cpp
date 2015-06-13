@@ -48,9 +48,9 @@ void SyntacticSymbol::setCategory(const Token::TokenCategory &category)
 SyntacticSymbol::SyntacticSymbolType SyntacticSymbol::stringToSyntacticSymbolType(const QString &string)
 {
     if (m_convertingStringToSyntacticSymbolTypeHash.isEmpty()) {
-        m_convertingStringToSyntacticSymbolTypeHash.insert("nonterminalSymbol",SyntacticSymbol::NONTERMINAL_SYMBOL);
-        m_convertingStringToSyntacticSymbolTypeHash.insert("startSymbol",SyntacticSymbol::START_SYMBOL);
-        m_convertingStringToSyntacticSymbolTypeHash.insert("terminalSymbol",SyntacticSymbol::TERMINAL_SYMBOL);
+        m_convertingStringToSyntacticSymbolTypeHash.insert("nonterminalSymbol", SyntacticSymbol::NONTERMINAL_SYMBOL);
+        m_convertingStringToSyntacticSymbolTypeHash.insert("startSymbol",       SyntacticSymbol::START_SYMBOL);
+        m_convertingStringToSyntacticSymbolTypeHash.insert("terminalSymbol",    SyntacticSymbol::TERMINAL_SYMBOL);
     }
 
     return m_convertingStringToSyntacticSymbolTypeHash.value(string);
