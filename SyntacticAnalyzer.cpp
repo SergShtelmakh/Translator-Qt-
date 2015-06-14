@@ -18,15 +18,15 @@ void SyntacticAnalyzer::analyze(const QList<Token> &tokenList)
             m_tokenToParseList.takeFirst();
             m_symbolToParseList.takeFirst();
         } else {
-            Production production = findCongruentRule(firstSymbolToParse, firstTokenToParse);
-            if (production.syntacticSymbolList().isEmpty()&&(!isLambdaRuleExists(firstSymbolToParse))) {
-                addError(ErrorGenerator::syntacticError(m_tokenToParseList, m_symbolToParseList));
+            Production production = this->findCongruentRule(firstSymbolToParse, firstTokenToParse);
+            if (production.syntacticSymbolList().isEmpty() && (!isLambdaRuleExists(firstSymbolToParse))) {
+                this->addError(ErrorGenerator::syntacticError(m_tokenToParseList, m_symbolToParseList));
                 m_tokenToParseList.takeFirst();
                 return;
             }
             m_symbolToParseList.takeFirst();
             m_symbolToParseList = production.syntacticSymbolList() + m_symbolToParseList;
-            useRule(production.number() + 1, firstSymbolToParse, production.syntacticSymbolList());
+            this->useRule(production.number() + 1, firstSymbolToParse, production.syntacticSymbolList());
         }
     }
 
@@ -36,7 +36,7 @@ void SyntacticAnalyzer::analyze(const QList<Token> &tokenList)
             symbol = m_symbolToParseList.takeFirst();
         }
         if (!isLambdaRuleExists(symbol)) {
-            addError(ErrorGenerator::syntacticError(m_tokenToParseList, m_symbolToParseList));
+            this->addError(ErrorGenerator::syntacticError(m_tokenToParseList, m_symbolToParseList));
             return;
         }
     }
@@ -51,7 +51,7 @@ Production SyntacticAnalyzer::findCongruentRule(const SyntacticSymbol &firstSymb
             }
         }
     }
-    return findLambdaRule(firstSymbol);
+    return this->findLambdaRule(firstSymbol);
 }
 
 Production SyntacticAnalyzer::findLambdaRule(const SyntacticSymbol &firstSymbol) const

@@ -29,6 +29,9 @@ void BackusNaurFormParser::deleteComments(QString &oldString)
 
 int BackusNaurFormParser::findCommentBeginIndex(const QString &string, int startIndex)
 {
+
+    // /* comments in BackusNaur files */
+
     int beginCommentIndex = string.indexOf("/*", startIndex);
     if (beginCommentIndex > 0) {
         if (!string.mid(beginCommentIndex - 1, 1).contains("\"")) {
@@ -55,6 +58,10 @@ int BackusNaurFormParser::findCommentEndIndex(const QString &string, int startIn
 
 BackusNaurFormRule BackusNaurFormParser::parseRule(const QString &ruleSourceString)
 {
+
+    // rules in BackusNaur files
+    // <left> ::= <right1> <right2> <right3> ...
+
     int separatorIndex = ruleSourceString.indexOf("::=");
 
     if (separatorIndex < 0) {

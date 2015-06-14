@@ -19,6 +19,7 @@ QString ErrorGenerator::syntacticError(const QList<Token> &tokenToParseList,cons
         QString tokenPosition = QString("(%1:%2)\t ")
                                 .arg(tokenToParseList.first().position().x())
                                 .arg(tokenToParseList.first().position().y());
+
         if (syntacticSymbolList.isEmpty()) {
             return tokenPosition + " Can't find rule to parse from " + MakeStringRepresentation(tokenToParseList.first());
         } else {

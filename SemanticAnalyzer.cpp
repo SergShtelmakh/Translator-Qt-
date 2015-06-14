@@ -54,7 +54,7 @@ void SemanticAnalyzer::findIdentifiersDeclaration(QList<Token> &tokenList)
     while(index < tokenList.size()) {
         Token currentToken = tokenList[index];
         if (currentToken.lexeme() == "DIM") {
-            Block *currentBlock = getBlockByLineNumber(GetTokenLineNumber(currentToken));
+            Block *currentBlock = this->getBlockByLineNumber(GetTokenLineNumber(currentToken));
             Token *identifierToken = &tokenList[index+2];
             const Token identifierTypeToken = tokenList[index+6];
             Identifier *newId = new Identifier(identifierToken->lexeme(),
@@ -63,7 +63,7 @@ void SemanticAnalyzer::findIdentifiersDeclaration(QList<Token> &tokenList)
                                           currentBlock->scopeEndLineNumber());
 
             if (currentBlock->isIdentifierDeclared(newId)) {
-                addError(ErrorGenerator::redeclarationOfIdentifier(*identifierToken));
+                this->addError(ErrorGenerator::redeclarationOfIdentifier(*identifierToken));
             } else {
                 newId->setCode(m_identifierCount++);
                 currentBlock->addIdentifier(newId);
@@ -85,7 +85,7 @@ void SemanticAnalyzer::checkIdentifiersScope(const QList<Token> &tokenList)
         Token currentToken = *tokenIterator;
         if (currentToken.category() == Token::IDENTIFIER_CATEGORY) {
             if (!isIdentifierDeclarate(currentToken)) {
-                addError(ErrorGenerator::undeclaratedIdentifierError(currentToken));
+                this->addError(ErrorGenerator::undeclaratedIdentifierError(currentToken));
             }
         }
         tokenIterator++;
@@ -114,7 +114,7 @@ Block *SemanticAnalyzer::getBlockByLineNumber(const int lineNumber)
 
 bool SemanticAnalyzer::isIdentifierDeclarate(const Token &identifierToken)
 {
-    Block* currentBlock = getBlockByLineNumber(GetTokenLineNumber(identifierToken));
+    Block* currentBlock = this->getBlockByLineNumber(GetTokenLineNumber(identifierToken));
     while (currentBlock) {
         foreach (Identifier *currentIdentifier, currentBlock->identifiers()) {
             if (currentIdentifier->lexeme() == identifierToken.lexeme()) {
@@ -148,7 +148,7 @@ void SemanticAnalyzer::prepareToAnalysis(const QList<Token> &tokenList)
 
 Identifier *SemanticAnalyzer::getIdentifierByToken(const Token &identifierToken)
 {
-    Block* currentBlock = getBlockByLineNumber(GetTokenLineNumber(identifierToken));
+    Block* currentBlock = this->getBlockByLineNumber(GetTokenLineNumber(identifierToken));
     while (currentBlock) {
         foreach (Identifier *currentIdentifier, currentBlock->identifiers()) {
             if (currentIdentifier->lexeme() == identifierToken.lexeme()) {

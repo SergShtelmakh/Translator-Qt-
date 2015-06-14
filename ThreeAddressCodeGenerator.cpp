@@ -4,9 +4,9 @@
 
 void ThreeAddressCodeGenerator::generate(const QList<Token> &tokenList)
 {
-    prepareToCodeGeneration(tokenList);
+    this->prepareToCodeGeneration(tokenList);
     QList<Token>::iterator currentToken = m_tokenList.begin();
-    generateCode(currentToken);
+    this->generateCode(currentToken);
 }
 
 void ThreeAddressCodeGenerator::prepareToCodeGeneration(const QList<Token> &tokenList)
@@ -39,15 +39,15 @@ void ThreeAddressCodeGenerator::generateCode(QList<Token>::iterator &currentToke
 {
     while (currentToken != m_tokenList.end()) {
         if (currentToken->category() == Token::IDENTIFIER_CATEGORY) {
-            parseAssignmentStatement(currentToken);
+            this->parseAssignmentStatement(currentToken);
         } else if (currentToken->lexeme() == "FOR") {
-            parseBeginForStatement(currentToken);
+            this->parseBeginForStatement(currentToken);
         } else if (currentToken->lexeme() == "IF") {
-            parseBeginIfStatement(currentToken);
+            this->parseBeginIfStatement(currentToken);
         } else if (currentToken->lexeme() == "NEXT"){
-            parseEndForStatement(currentToken);
+            this->parseEndForStatement(currentToken);
         } else if (currentToken->lexeme() == "END"){
-            parseEndIfStatement(currentToken);
+            this->parseEndIfStatement(currentToken);
         } else {
             ++currentToken;
         }
@@ -80,19 +80,19 @@ void ThreeAddressCodeGenerator::parseBeginForStatement(QList<Token>::iterator &c
     //    currentToken
     //       |
     // FOR <ID> = <EXP> TO <EXP> (STEP <EXP>)?
-    Expression beginExpression = getNextExpression(currentToken +=2);
+    Expression beginExpression = this->getNextExpression(currentToken +=2);
 
     //             currentToken
     //                  |
     // FOR <ID> = <EXP> TO <EXP> (STEP <EXP>)?
-    Expression endExpression = getNextExpression(++currentToken);
+    Expression endExpression = this->getNextExpression(++currentToken);
 
     //                        currentToken
     //                             |
     // FOR <ID> = <EXP> TO <EXP> (STEP <EXP>)?
     Expression stepExpression;
     if ((++currentToken)->lexeme() == "STEP") {
-        stepExpression = getNextExpression(++currentToken);
+        stepExpression = this->getNextExpression(++currentToken);
     }
 
     QString label = QString("A%1:").arg(m_labelCount++);
@@ -129,7 +129,7 @@ void ThreeAddressCodeGenerator::parseBeginIfStatement(QList<Token>::iterator &cu
     // currentToken
     // |
     // IF <EXP> THEN
-    Expression ifExpression = getNextExpression(++currentToken);
+    Expression ifExpression = this->getNextExpression(++currentToken);
 
     QString label = QString("A%1:").arg(m_labelCount++);
     m_ifStatementStack.push_front(IfStatement(ifExpression, label));

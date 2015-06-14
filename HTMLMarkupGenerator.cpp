@@ -25,7 +25,7 @@ QString HTMLMarkupGenerator::getMessageForLog(const LexicalAnalyzer& lexicalAnal
         messageForLog += this->getFailedResultMessage("Syntactic analyzer", syntacticAnalyzer.errorText());
     }
 
-    if (lexicalAnalyzer.errorText().isEmpty()&&syntacticAnalyzer.errorText().isEmpty()) {
+    if (lexicalAnalyzer.errorText().isEmpty() && syntacticAnalyzer.errorText().isEmpty()) {
         if (semanticAnalyzer.errorText().isEmpty()) {
             messageForLog += this->getSuccessfulResultMessage("Semantic analyzer");
         } else {
@@ -97,7 +97,7 @@ QString HTMLMarkupGenerator::getTokenHTMLRepresentation(const Token &token) cons
     if (token.category() == Token::LINE_FEED_CATEGORY)
         return "<br>";
 
-    return "<font color=" + getTokenColorName(token) + ">" + lexeme + "</font>";
+    return "<font color=" + this->getTokenColorName(token) + ">" + lexeme + "</font>";
 }
 
 QString HTMLMarkupGenerator::getSourceCodeHTMLMarkup(const LexicalAnalyzer& analyzer) const
@@ -105,7 +105,7 @@ QString HTMLMarkupGenerator::getSourceCodeHTMLMarkup(const LexicalAnalyzer& anal
     QString plainTextWithMarkedUpTokens;
 
     foreach (Token currentToken, analyzer.tokenList()) {
-        plainTextWithMarkedUpTokens += getTokenHTMLRepresentation(currentToken);
+        plainTextWithMarkedUpTokens += this->getTokenHTMLRepresentation(currentToken);
     }
     return PlainTextToHTML(plainTextWithMarkedUpTokens);
 }

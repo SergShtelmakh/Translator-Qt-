@@ -56,7 +56,7 @@ void SourceCodeInputTextEdit::onTextUpdateTimerTimeoutSlot()
 
     QTextCursor cursor = textCursor();
     cursor.setPosition(cursorPosBackup, QTextCursor::MoveAnchor);
-    setTextCursor(cursor);
+    this->setTextCursor(cursor);
 
     QScrollBar *scrollBar = verticalScrollBar();
     scrollBar->setValue(scrollPosBackup);

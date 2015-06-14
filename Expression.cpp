@@ -4,8 +4,8 @@
 
 Expression::Expression(QList<Token> &tokenList)
 {
-    makePolishNotation(tokenList);
-    makeThreeAddressCode();
+    this->makePolishNotation(tokenList);
+    this->makeThreeAddressCode();
 }
 
 Expression::Expression()
@@ -13,6 +13,12 @@ Expression::Expression()
 
 void Expression::makePolishNotation(QList<Token> &tokenList)
 {
+    // Expression:
+    // 2+6*87+(8-9)*(4-9/7)
+
+    // PolishNotation:
+    // 2 6 87 * + 8 9 - 4 9 7 / - * +
+
     while (!tokenList.isEmpty()) {
         Token currentToken = tokenList.takeFirst();
         switch (currentToken.category()) {
@@ -66,6 +72,19 @@ void Expression::makePolishNotation(QList<Token> &tokenList)
 
 void Expression::makeThreeAddressCode()
 {
+
+    // PolishNotation:
+    // 2 6 87 * + 8 9 - 4 9 7 / - * +
+
+    // ThreeAddressCode:
+    // t0 := (*, 6, 87)
+    // t1 := (+, 2, t0)
+    // t2 := (-, 8, 9)
+    // t3 := (/, 9, 7)
+    // t4 := (-, 4, t3)
+    // t5 := (*, t2, t4)
+    // t6 := (+, t1, t5)
+
     while (!m_polishNotation.isEmpty()) {
         Token currentToken = m_polishNotation.takeFirst();
         if (!isOperation(currentToken)) {

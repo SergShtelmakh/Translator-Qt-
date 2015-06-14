@@ -65,7 +65,6 @@ Expression::Type StringToType(QString lexeme)
     }
 }
 
-
 QString TypeToString(Expression::Type type)
 {
     switch (type) {

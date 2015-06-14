@@ -12,7 +12,7 @@ void LexicalAnalyzer::analyzeLine(const QString &line, int lineNumber)
 {
     int tokenBeginIndexInLine = 0;
     while (tokenBeginIndexInLine < line.length()) {
-        Token nextToken = getNextToken(QPoint(tokenBeginIndexInLine, lineNumber), line.mid(tokenBeginIndexInLine));
+        Token nextToken = this->getNextToken(QPoint(tokenBeginIndexInLine, lineNumber), line.mid(tokenBeginIndexInLine));
         m_tokenList.append(nextToken);
         tokenBeginIndexInLine += nextToken.lexeme().length();
     }
@@ -76,18 +76,18 @@ Token LexicalAnalyzer::getNextToken(const QPoint currentPosition, const QString 
     QString firstChar = sourceString.mid(0, 1);
     Token nextToken;
     if (firstChar.contains(m_spaceRegExp)) {
-        nextToken = getSpaceToken(sourceString);
+        nextToken = this->getSpaceToken(sourceString);
     } else if (firstChar.contains(QRegExp("[0-9\\.]"))) {
-        nextToken = getNumberLiteralToken(sourceString);
+        nextToken = this->getNumberLiteralToken(sourceString);
     } else if (firstChar.contains(QRegExp("[A-Za-z_]"))) {
-        nextToken = getKeywordToken(sourceString);
+        nextToken = this->getKeywordToken(sourceString);
         if (!nextToken.isCorrect()) {
-            nextToken = getIdentifierToken(sourceString);
+            nextToken = this->getIdentifierToken(sourceString);
         }
     } else if (sourceString.indexOf(m_beginStringLiteral) == 0) {
-        nextToken =  getStringLiteralToken(sourceString);
+        nextToken =  this->getStringLiteralToken(sourceString);
     } else {
-        nextToken = getCharacterToken(sourceString);
+        nextToken = this->getCharacterToken(sourceString);
     }
 
     nextToken.setPosition(currentPosition);
@@ -95,7 +95,7 @@ Token LexicalAnalyzer::getNextToken(const QPoint currentPosition, const QString 
     if (!nextToken.isCorrect()) {
         QString wrongLexema = sourceString.mid(0, sourceString.indexOf(m_possibleTokenEndRegExp, 1));
         nextToken = Token(wrongLexema, Token::NONE_CATEGORY, "Unknown string", currentPosition);
-        addError(ErrorGenerator::lexicalError(nextToken));
+        this->addError(ErrorGenerator::lexicalError(nextToken));
     }
     return nextToken;
 }
@@ -172,13 +172,13 @@ QString LexicalAnalyzer::errorText() const
 
 void LexicalAnalyzer::analyze(const QString &sourceCode)
 {
-    clearAllAnalyzingData();
+    this->clearAllAnalyzingData();
     QStringList plainTextList = sourceCode.split("\n");
     for ( int i = 0; i < plainTextList.count() - 1; i++) {
         plainTextList[i] += "\n";
     }
     for (int lineIndex = 0; lineIndex < plainTextList.count(); lineIndex ++)
-        analyzeLine(plainTextList[lineIndex], lineIndex);
+        this->analyzeLine(plainTextList[lineIndex], lineIndex);
 }
 
 Token LexicalAnalyzer::getNumberLiteralToken(const QString &sourceString)
@@ -200,7 +200,7 @@ Token LexicalAnalyzer::getNumberLiteralToken(const QString &sourceString)
             } else if (currentChar.contains("E")) {
                 state = 3;
             } else if (currentChar.contains(m_possibleTokenEndRegExp)||currentChar.isEmpty()) {
-                return getNumberLiteralTokenWithCorrectLength(possibleLexeme, Expression::INTEGER_TYPE);
+                return this->getNumberLiteralTokenWithCorrectLength(possibleLexeme, Expression::INTEGER_TYPE);
             } else {
                 return Token(possibleLexeme, Token::NONE_CATEGORY, "Wrong number literal. After digits might be \".\" or \"E\".");
             }
@@ -211,7 +211,7 @@ Token LexicalAnalyzer::getNumberLiteralToken(const QString &sourceString)
             if (currentChar.contains(QRegExp("[0-9]"))) {
                 state = 2;
             } else if (currentChar.contains(m_possibleTokenEndRegExp)||currentChar.isEmpty()) {
-                return getNumberLiteralTokenWithCorrectLength(possibleLexeme, Expression::DOUBLE_TYPE);
+                return this->getNumberLiteralTokenWithCorrectLength(possibleLexeme, Expression::DOUBLE_TYPE);
             } else {
                 return Token(possibleLexeme, Token::NONE_CATEGORY, "Wrong number literal. After \".\" must be digit!");
             }
@@ -224,7 +224,7 @@ Token LexicalAnalyzer::getNumberLiteralToken(const QString &sourceString)
             } else if (currentChar.contains("E")) {
                 state = 3;
             } else if (currentChar.contains(m_possibleTokenEndRegExp)||currentChar.isEmpty()) {
-                return getNumberLiteralTokenWithCorrectLength(possibleLexeme, Expression::DOUBLE_TYPE);
+                return this->getNumberLiteralTokenWithCorrectLength(possibleLexeme, Expression::DOUBLE_TYPE);
             } else {
                 return Token(possibleLexeme, Token::NONE_CATEGORY, "Wrong number literal.");
             }
@@ -255,7 +255,7 @@ Token LexicalAnalyzer::getNumberLiteralToken(const QString &sourceString)
             if (currentChar.contains(QRegExp("[0-9]"))) {
                 state = 5;
             } else if (currentChar.contains(m_possibleTokenEndRegExp)||currentChar.isEmpty()) {
-                return getNumberLiteralTokenWithCorrectLength(possibleLexeme, Expression::DOUBLE_TYPE);
+                return this->getNumberLiteralTokenWithCorrectLength(possibleLexeme, Expression::DOUBLE_TYPE);
             } else {
                 return Token(possibleLexeme, Token::NONE_CATEGORY, "Wrong number literal.");
             }

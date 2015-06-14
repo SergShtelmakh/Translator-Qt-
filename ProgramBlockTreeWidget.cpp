@@ -4,10 +4,10 @@
 
 ProgramBlockTreeWidget::ProgramBlockTreeWidget(QWidget *parent) : QTreeWidget(parent)
 {
-    setColumnCount(5);
+    this->setColumnCount(5);
     QStringList headerLabels;
     headerLabels << "Type" << "Name" << "Code" << "Data type" << "Scope begin" << "Scope end";
-    setHeaderLabels(headerLabels);
+    this->setHeaderLabels(headerLabels);
 }
 
 void ProgramBlockTreeWidget::setData(Block *mainBlock)
@@ -23,10 +23,10 @@ void ProgramBlockTreeWidget::setData(Block *mainBlock)
     QVector<Identifier *> identifierVector = mainBlock->identifiers();
     QVector<Block *> childrenVector = mainBlock->childrenBlocks();
     while ((!childrenVector.isEmpty())||(!identifierVector.isEmpty())) {
-        addNode(rootItem, identifierVector, childrenVector);
+        this->addNode(rootItem, identifierVector, childrenVector);
     }
 
-    addTopLevelItem(rootItem);
+    this->addTopLevelItem(rootItem);
     this->expandAll();
 }
 
@@ -49,7 +49,7 @@ void ProgramBlockTreeWidget::addNode(QTreeWidgetItem *currentNode, QVector<Ident
         QVector<Identifier *> identifierVector = currentChild->identifiers();
         QVector<Block *> childrenVector = currentChild->childrenBlocks();
         while ((!childrenVector.isEmpty())||(!identifierVector.isEmpty())) {
-            addNode(currentChildItem, identifierVector, childrenVector);
+            this->addNode(currentChildItem, identifierVector, childrenVector);
         }
         break;
     }
