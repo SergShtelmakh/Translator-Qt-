@@ -33,6 +33,8 @@ public:
      * @param[in] newString Identifier name.
      * @return Index of identifier in table or -1 when identifier not exists.
      */
+public slots:
+
     void addHTMLString(const QString& newString);
 
 };

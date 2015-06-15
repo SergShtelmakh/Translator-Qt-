@@ -1,42 +1,40 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "HTMLMarkupGenerator.h"
-#include "Identifier.h"
 #include "FileReader.h"
-#include "LexicalAnalyzer.h"
-#include "SyntacticAnalyzer.h"
-#include "SemanticAnalyzer.h"
-#include "ThreeAddressCodeGenerator.h"
+#include "Translator.h"
 #include <QTextStream>
 #include <QFile>
 #include <QFileDialog>
 #include <QTime>
-#include "Translator.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_markupGenerator(new HTMLMarkupGenerator),
     m_rulesStringListModel(new QStringListModel),
-    m_lexicalAnalyzerSettingsFileName("LexicalAnalyzersSettings.json"),
-    m_syntacticAnalyzerSettingsFileName("SyntacticAnalyzersSetting.rules"),
+    m_lexicalAnalyzerSettingsFileName(Translator::defaultLexicalAnalyzerSettingsFileName),
+    m_syntacticAnalyzerSettingsFileName(Translator::defaultSyntacticAnalyzerSettingsFileName),
     m_translator(new Translator)
 {
     ui->setupUi(this);
 
     connect(ui->sourceCodeInputTextEdit, SIGNAL(updateStatusBarSignal(int, int)), SLOT(updateStatusBarSlot(int, int)));
     connect(ui->sourceCodeInputTextEdit, SIGNAL(updateTextByTimerSignal()), SLOT(updateSourceCodeInputTextEditSlot()));
+    connect(m_translator, SIGNAL(addToLog(QString)), this, SLOT(addToLog(QString)));
+    connect(m_translator, SIGNAL(setTokenList(QString)), ui->tokenSequenceTextEdit, SLOT(setText(QString)));
+    connect(m_translator, SIGNAL(setRuleList(QStringList)), this, SLOT(setRuleList(QStringList)));
+    connect(m_translator, SIGNAL(setBlockTree(Block*)), this, SLOT(setBlockTree(Block*)));
+    connect(m_translator, SIGNAL(setThreeAddressCode(QString)), ui->threeAddressCodeTextEdit, SLOT(setText(QString)));
 
     ui->tokenSequenceTextEdit->setFont(QFont("Courier New", 12));
     ui->rulesListView->setFont(QFont("Courier New", 12));
     ui->threeAddressCodeTextEdit->setFont(QFont("Courier New", 12));
+    ui->rulesListView->setModel(m_rulesStringListModel);
 
     loadSettings();
 }
 
 MainWindow::~MainWindow()
 {
-    delete m_markupGenerator;
     delete m_rulesStringListModel;
     delete m_translator;
     delete ui;
@@ -45,17 +43,6 @@ MainWindow::~MainWindow()
 void MainWindow::on_actionRun_triggered()
 {
     m_translator->translate(ui->sourceCodeInputTextEdit->toPlainText());
-
-    // Add new message to log
-    ui->compileOutputTextEdit->addHTMLString(this->getMarkupGenerator()->getMessageForLog(m_translator));
-
-    // Write information about tokens
-    ui->tokenSequenceTextEdit->setText(MakeStringRepresentation(m_translator->lexicalAnalyzer()->tokenList()));
-    m_rulesStringListModel->setStringList(m_translator->syntacticAnalyzer()->usedRuleList());
-    ui->rulesListView->setModel(m_rulesStringListModel);
-    ui->programBlockTreeWidget->setData(m_translator->semanticAnalyzer()->mainBlock());
-    ui->threeAddressCodeTextEdit->setText(m_translator->threeAddressCodeGenerator()->threeAddressCode());
-
 }
 
 void MainWindow::updateStatusBarSlot(int line, int pos)
@@ -65,14 +52,24 @@ void MainWindow::updateStatusBarSlot(int line, int pos)
 
 void MainWindow::updateSourceCodeInputTextEditSlot()
 {
-    m_translator->lexicalAnalyzer()->analyze(ui->sourceCodeInputTextEdit->toPlainText().toUpper());
-
-    ui->sourceCodeInputTextEdit->setHtml(this->getMarkupGenerator()->getSourceCodeHTMLMarkup(m_translator->lexicalAnalyzer()));
+    QString sourceCode = ui->sourceCodeInputTextEdit->toPlainText().toUpper();
+    QString markedUpSourceCode = m_translator->getMarkedUpSourceCode(sourceCode);
+    ui->sourceCodeInputTextEdit->setHtml(markedUpSourceCode);
 }
 
-HTMLMarkupGenerator* MainWindow::getMarkupGenerator() const
+void MainWindow::addToLog(const QString &log)
 {
-    return m_markupGenerator;
+    ui->compileOutputTextEdit->addHTMLString(log);
+}
+
+void MainWindow::setRuleList(const QStringList &ruleList)
+{
+    m_rulesStringListModel->setStringList(ruleList);
+}
+
+void MainWindow::setBlockTree(Block *block)
+{
+    ui->programBlockTreeWidget->setData(block);
 }
 
 void MainWindow::loadSettings()

@@ -14,7 +14,7 @@
 #include <QStringListModel>
 
 class Translator;
-class HTMLMarkupGenerator;
+class Block;
 
 namespace Ui {
 class MainWindow;
@@ -55,6 +55,10 @@ private slots:
      */
     void updateSourceCodeInputTextEditSlot();
 
+    void addToLog(const QString& log);
+    void setRuleList(const QStringList& ruleList);
+    void setBlockTree(Block *block);
+
 private:
 
     /*!
@@ -63,11 +67,9 @@ private:
      * @return Markup generator.
      */
 
-    HTMLMarkupGenerator* getMarkupGenerator() const;
     void loadSettings();
 
     Ui::MainWindow *ui;                             //!< Main window.
-    HTMLMarkupGenerator* m_markupGenerator;         //!< Markup generator.
     QStringListModel* m_rulesStringListModel;
     QString m_lexicalAnalyzerSettingsFileName;
     QString m_syntacticAnalyzerSettingsFileName;
