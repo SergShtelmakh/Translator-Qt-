@@ -1,24 +1,17 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "HTMLMarkupGenerator.h"
-#include "SyntacticAnalyzer.h"
-#include "SemanticAnalyzer.h"
-#include "LexicalAnalyzer.h"
-#include "ThreeAddressCodeGenerator.h"
 #include "Identifier.h"
 #include "FileReader.h"
+#include "LexicalAnalyzer.h"
+#include "SyntacticAnalyzer.h"
+#include "SemanticAnalyzer.h"
+#include "ThreeAddressCodeGenerator.h"
 #include <QTextStream>
 #include <QFile>
 #include <QFileDialog>
 #include <QTime>
-
-Q_GLOBAL_STATIC(LexicalAnalyzer, globalLexicalAnalyzer)
-
-Q_GLOBAL_STATIC(SyntacticAnalyzer, globalSyntacticAnalyzer)
-
-Q_GLOBAL_STATIC(SemanticAnalyzer, globalSemanticAnalyzer)
-
-Q_GLOBAL_STATIC(ThreeAddressCodeGenerator, globalThreeAddressCodeGenerator)
+#include "Translator.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -26,7 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_markupGenerator(new HTMLMarkupGenerator),
     m_rulesStringListModel(new QStringListModel),
     m_lexicalAnalyzerSettingsFileName("LexicalAnalyzersSettings.json"),
-    m_syntacticAnalyzerSettingsFileName("SyntacticAnalyzersSetting.rules")
+    m_syntacticAnalyzerSettingsFileName("SyntacticAnalyzersSetting.rules"),
+    m_translator(new Translator)
 {
     ui->setupUi(this);
 
@@ -44,30 +38,23 @@ MainWindow::~MainWindow()
 {
     delete m_markupGenerator;
     delete m_rulesStringListModel;
+    delete m_translator;
     delete ui;
 }
 
 void MainWindow::on_actionRun_triggered()
 {
-    globalLexicalAnalyzer->analyze(ui->sourceCodeInputTextEdit->toPlainText());
-
-    globalSyntacticAnalyzer->analyze(globalLexicalAnalyzer->getTokenListWithoutSpaces());
-
-    if (globalLexicalAnalyzer->errorText().isEmpty() && globalSyntacticAnalyzer->errorText().isEmpty()) {
-        QList<Token> tokenList = globalLexicalAnalyzer->tokenList();
-        globalSemanticAnalyzer->analyze(tokenList);
-        globalThreeAddressCodeGenerator->generate(tokenList);
-    }
+    m_translator->translate(ui->sourceCodeInputTextEdit->toPlainText());
 
     // Add new message to log
-    ui->compileOutputTextEdit->addHTMLString(this->getMarkupGenerator()->getMessageForLog(*globalLexicalAnalyzer, *globalSyntacticAnalyzer, *globalSemanticAnalyzer, *globalThreeAddressCodeGenerator));
+    ui->compileOutputTextEdit->addHTMLString(this->getMarkupGenerator()->getMessageForLog(m_translator));
 
     // Write information about tokens
-    ui->tokenSequenceTextEdit->setText(MakeStringRepresentation(globalLexicalAnalyzer->tokenList()));
-    m_rulesStringListModel->setStringList(globalSyntacticAnalyzer->usedRuleList());
+    ui->tokenSequenceTextEdit->setText(MakeStringRepresentation(m_translator->lexicalAnalyzer()->tokenList()));
+    m_rulesStringListModel->setStringList(m_translator->syntacticAnalyzer()->usedRuleList());
     ui->rulesListView->setModel(m_rulesStringListModel);
-    ui->programBlockTreeWidget->setData(globalSemanticAnalyzer->mainBlock());
-    ui->threeAddressCodeTextEdit->setText(globalThreeAddressCodeGenerator->threeAddressCode());
+    ui->programBlockTreeWidget->setData(m_translator->semanticAnalyzer()->mainBlock());
+    ui->threeAddressCodeTextEdit->setText(m_translator->threeAddressCodeGenerator()->threeAddressCode());
 
 }
 
@@ -78,9 +65,9 @@ void MainWindow::updateStatusBarSlot(int line, int pos)
 
 void MainWindow::updateSourceCodeInputTextEditSlot()
 {
-    globalLexicalAnalyzer->analyze(ui->sourceCodeInputTextEdit->toPlainText().toUpper());
+    m_translator->lexicalAnalyzer()->analyze(ui->sourceCodeInputTextEdit->toPlainText().toUpper());
 
-    ui->sourceCodeInputTextEdit->setHtml(this->getMarkupGenerator()->getSourceCodeHTMLMarkup(*globalLexicalAnalyzer));
+    ui->sourceCodeInputTextEdit->setHtml(this->getMarkupGenerator()->getSourceCodeHTMLMarkup(m_translator->lexicalAnalyzer()));
 }
 
 HTMLMarkupGenerator* MainWindow::getMarkupGenerator() const
@@ -92,11 +79,11 @@ void MainWindow::loadSettings()
 {
     if (!FileReader::isFileExist(m_lexicalAnalyzerSettingsFileName))
         m_lexicalAnalyzerSettingsFileName = QFileDialog::getOpenFileName(this, tr("Open Settings File"), "LexicalAnalyzersSettings.json", tr("JSON (*.json)"));
-    FileReader::loadLexicalAnalyzerSettings(m_lexicalAnalyzerSettingsFileName, *globalLexicalAnalyzer);
+    FileReader::loadLexicalAnalyzerSettings(m_lexicalAnalyzerSettingsFileName, m_translator);
 
     if (!FileReader::isFileExist(m_syntacticAnalyzerSettingsFileName))
         m_syntacticAnalyzerSettingsFileName = QFileDialog::getOpenFileName(this, tr("Open Rules File"), "SyntacticAnalyzersSetting.rules", tr("RULES (*.rules)"));
-    FileReader::loadSyntacticAnalyzerRules(m_syntacticAnalyzerSettingsFileName, *globalSyntacticAnalyzer);
+    FileReader::loadSyntacticAnalyzerRules(m_syntacticAnalyzerSettingsFileName, m_translator);
 
 }
 

@@ -13,7 +13,7 @@
 #include <QMainWindow>
 #include <QStringListModel>
 
-class LexicalAnalyzer;
+class Translator;
 class HTMLMarkupGenerator;
 
 namespace Ui {
@@ -71,6 +71,7 @@ private:
     QStringListModel* m_rulesStringListModel;
     QString m_lexicalAnalyzerSettingsFileName;
     QString m_syntacticAnalyzerSettingsFileName;
+    Translator *m_translator;
 
 };
 

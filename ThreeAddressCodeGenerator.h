@@ -48,7 +48,7 @@ public:
 
     QString threeAddressCode() const;
 
-    QString error() const;
+    QString errorText() const;
 
 private:
 

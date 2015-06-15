@@ -8,38 +8,36 @@
 #include "ThreeAddressCodeGenerator.h"
 #include "HTMLMarkupGenerator.h"
 #include "HTMLColors.h"
+#include "Translator.h"
 
-QString HTMLMarkupGenerator::getMessageForLog(const LexicalAnalyzer& lexicalAnalyzer, const SyntacticAnalyzer &syntacticAnalyzer, const SemanticAnalyzer &semanticAnalyzer, const ThreeAddressCodeGenerator &codeGenerator) const
+QString HTMLMarkupGenerator::getMessageForLog(Translator *translator)
 {
     QString messageForLog;
 
-    if (lexicalAnalyzer.errorText().isEmpty()) {
+    if (translator->lexicalAnalyzerComplete()) {
         messageForLog += this->getSuccessfulResultMessage("Lexical analyzer");
     } else {
-        messageForLog += this->getFailedResultMessage("Lexical analyzer", lexicalAnalyzer.errorText());
+        messageForLog += this->getFailedResultMessage("Lexical analyzer", translator->lexicalAnalyzer()->errorText());
     }
 
-    if (syntacticAnalyzer.errorText().isEmpty()) {
+    if (translator->syntacticAnalyzerComplete()) {
         messageForLog += this->getSuccessfulResultMessage("Syntactic analyzer");
     } else {
-        messageForLog += this->getFailedResultMessage("Syntactic analyzer", syntacticAnalyzer.errorText());
+        messageForLog += this->getFailedResultMessage("Syntactic analyzer", translator->syntacticAnalyzer()->errorText());
     }
 
-    if (lexicalAnalyzer.errorText().isEmpty() && syntacticAnalyzer.errorText().isEmpty()) {
-        if (semanticAnalyzer.errorText().isEmpty()) {
-            messageForLog += this->getSuccessfulResultMessage("Semantic analyzer");
-        } else {
-            messageForLog += this->getFailedResultMessage("Semantic analyzer", semanticAnalyzer.errorText());
-        }
+    if (translator->semanticAnalyzerComplete()) {
+        messageForLog += this->getSuccessfulResultMessage("Semantic analyzer");
+    } else {
+        messageForLog += this->getFailedResultMessage("Semantic analyzer", translator->semanticAnalyzer()->errorText());
     }
 
-    if (lexicalAnalyzer.errorText().isEmpty()&&syntacticAnalyzer.errorText().isEmpty()&&semanticAnalyzer.errorText().isEmpty()) {
-        if (codeGenerator.error().isEmpty()) {
-            messageForLog += this->getSuccessfulResultMessage("Code generator");
-        } else {
-            messageForLog += this->getFailedResultMessage("Code generator", codeGenerator.error());
-        }
+    if (translator->threeAddressCodeGeneratorComplete()) {
+        messageForLog += this->getSuccessfulResultMessage("Code generator");
+    } else {
+        messageForLog += this->getFailedResultMessage("Code generator", translator->threeAddressCodeGenerator()->errorText());
     }
+
     return messageForLog;
 }
 
@@ -100,11 +98,11 @@ QString HTMLMarkupGenerator::getTokenHTMLRepresentation(const Token &token) cons
     return "<font color=" + this->getTokenColorName(token) + ">" + lexeme + "</font>";
 }
 
-QString HTMLMarkupGenerator::getSourceCodeHTMLMarkup(const LexicalAnalyzer& analyzer) const
+QString HTMLMarkupGenerator::getSourceCodeHTMLMarkup(LexicalAnalyzer* analyzer) const
 {
     QString plainTextWithMarkedUpTokens;
 
-    foreach (Token currentToken, analyzer.tokenList()) {
+    foreach (Token currentToken, analyzer->tokenList()) {
         plainTextWithMarkedUpTokens += this->getTokenHTMLRepresentation(currentToken);
     }
     return PlainTextToHTML(plainTextWithMarkedUpTokens);

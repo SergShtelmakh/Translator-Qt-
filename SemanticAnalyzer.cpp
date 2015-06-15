@@ -71,7 +71,12 @@ void SemanticAnalyzer::findIdentifiersDeclaration(QList<Token> &tokenList)
             }
         } else {
             if (currentToken.category() == Token::IDENTIFIER_CATEGORY) {
-                tokenList[index].setType(getIdentifierByToken(currentToken)->type());
+                Identifier *id = getIdentifierByToken(currentToken);
+                if (!id) {
+                    return;
+                } else {
+                    tokenList[index].setType(id->type());
+                }
             }
         }
         ++index ;
@@ -148,6 +153,10 @@ void SemanticAnalyzer::prepareToAnalysis(const QList<Token> &tokenList)
 
 Identifier *SemanticAnalyzer::getIdentifierByToken(const Token &identifierToken)
 {
+    if (identifierToken.type() == Expression::NONE_TYPE) {
+        return NULL;
+    }
+
     Block* currentBlock = this->getBlockByLineNumber(GetTokenLineNumber(identifierToken));
     while (currentBlock) {
         foreach (Identifier *currentIdentifier, currentBlock->identifiers()) {

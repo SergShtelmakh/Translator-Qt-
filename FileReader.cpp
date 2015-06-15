@@ -8,6 +8,7 @@
 #include "BackusNaurFormParser.h"
 #include "LexicalAnalyzer.h"
 #include "SyntacticAnalyzer.h"
+#include "Translator.h"
 
 QString FileReader::getTextFromFile(const QString &fileName)
 {
@@ -33,21 +34,22 @@ void FileReader::writeTextToFile(const QString &fileName, const QString &text)
     out << text;
 }
 
-void FileReader::loadLexicalAnalyzerSettings(const QString &fileName, LexicalAnalyzer& lexicalAnalyzer)
+void FileReader::loadLexicalAnalyzerSettings(const QString &fileName, Translator *translator)
 {
     QJsonDocument jsonDocument = loadJson(fileName);
     QJsonObject mainObject = jsonDocument.object();
     QJsonObject lexicalAnalyzerJsonObject = mainObject["LexicalAnalyser"].toObject();
-    loadLexicalAnalyzerSettings(lexicalAnalyzerJsonObject, lexicalAnalyzer);
+    loadLexicalAnalyzerSettings(lexicalAnalyzerJsonObject, translator);
 }
 
-void FileReader::loadSyntacticAnalyzerRules(const QString &fileName, SyntacticAnalyzer &syntacticAnalyzer)
+void FileReader::loadSyntacticAnalyzerRules(const QString &fileName, Translator *translator)
 {
     QString sourceText = getTextFromFile(fileName);
     QList <BackusNaurFormRule> rulesList;
     rulesList = BackusNaurFormParser::parse(sourceText);
+    SyntacticAnalyzer *syntacticAnalyzer = translator->syntacticAnalyzer();
     foreach (BackusNaurFormRule rule, rulesList) {
-        syntacticAnalyzer.addProductRule(rule.leftPart(), rule.rightPart());
+        syntacticAnalyzer->addProductRule(rule.leftPart(), rule.rightPart());
     }
 }
 
@@ -59,23 +61,24 @@ bool FileReader::isFileExist(const QString &fileName)
     return true;
 }
 
-void FileReader::loadLexicalAnalyzerSettings(const QJsonObject &jsonObject, LexicalAnalyzer& lexicalAnalyzer)
+void FileReader::loadLexicalAnalyzerSettings(const QJsonObject &jsonObject, Translator *translator)
 {
-    lexicalAnalyzer.setMaxNumberLiteralLenght(jsonObject["maxNumberLiteralLenght"].toInt());
-    lexicalAnalyzer.setMaxIdentifierNameLenght(jsonObject["maxIdentifierNameLenght"].toInt());
-    lexicalAnalyzer.setMaxStringLiteralLenght(jsonObject["maxStringLiteralLenght"].toInt());
-    lexicalAnalyzer.setIdentifierRegExp(QRegExp(jsonObject["identifierRegExp"].toString()));
-    lexicalAnalyzer.setSpaceRegExp(QRegExp(jsonObject["spaceRegExp"].toString()));
-    lexicalAnalyzer.setBeginStringLiteral(jsonObject["beginStringLiteral"].toString());
+    LexicalAnalyzer *lexicalAnalyzer = translator->lexicalAnalyzer();
+    lexicalAnalyzer->setMaxNumberLiteralLenght(jsonObject["maxNumberLiteralLenght"].toInt());
+    lexicalAnalyzer->setMaxIdentifierNameLenght(jsonObject["maxIdentifierNameLenght"].toInt());
+    lexicalAnalyzer->setMaxStringLiteralLenght(jsonObject["maxStringLiteralLenght"].toInt());
+    lexicalAnalyzer->setIdentifierRegExp(QRegExp(jsonObject["identifierRegExp"].toString()));
+    lexicalAnalyzer->setSpaceRegExp(QRegExp(jsonObject["spaceRegExp"].toString()));
+    lexicalAnalyzer->setBeginStringLiteral(jsonObject["beginStringLiteral"].toString());
 
     QJsonArray keywordsArray = jsonObject["keywords"].toArray();
     foreach (const QJsonValue& value, keywordsArray) {
-        lexicalAnalyzer.addKeyword(value.toString());
+        lexicalAnalyzer->addKeyword(value.toString());
     }
 
     QJsonArray characterTokenArray = jsonObject["characterToken"].toArray();
     foreach (const QJsonValue& value, characterTokenArray) {
-        lexicalAnalyzer.addCharacterToken(value.toString());
+        lexicalAnalyzer->addCharacterToken(value.toString());
     }
 }
 

@@ -40,6 +40,8 @@ void SyntacticAnalyzer::analyze(const QList<Token> &tokenList)
             return;
         }
     }
+    if (!m_tokenToParseList.isEmpty())
+        this->addError(ErrorGenerator::syntacticError(m_tokenToParseList, m_symbolToParseList));
 }
 
 Production SyntacticAnalyzer::findCongruentRule(const SyntacticSymbol &firstSymbol, const Token &firstProductSymbol) const

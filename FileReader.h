@@ -15,6 +15,7 @@
 
 class LexicalAnalyzer;
 class SyntacticAnalyzer;
+class Translator;
 
 class FileReader
 {
@@ -25,9 +26,9 @@ public:
 
     static void writeTextToFile(const QString &fileName, const QString &text);
 
-    static void loadLexicalAnalyzerSettings(const QString &fileName, LexicalAnalyzer &lexicalAnalyzer);
+    static void loadLexicalAnalyzerSettings(const QString &fileName, Translator *translator);
 
-    static void loadSyntacticAnalyzerRules(const QString &fileName, SyntacticAnalyzer &syntacticAnalyzer);
+    static void loadSyntacticAnalyzerRules(const QString &fileName, Translator *translator);
 
     static bool isFileExist(const QString &fileName);
 
@@ -35,7 +36,7 @@ private:
 
     static QJsonDocument loadJson(const QString &fileName);
 
-    static void loadLexicalAnalyzerSettings(const QJsonObject &lexicalAnalyzerJsonObject, LexicalAnalyzer &lexicalAnalyzer);
+    static void loadLexicalAnalyzerSettings(const QJsonObject &lexicalAnalyzerJsonObject, Translator *translator);
 
 };
 

@@ -17,6 +17,8 @@ class SyntacticAnalyzer;
 class SemanticAnalyzer;
 class ThreeAddressCodeGenerator;
 class Token;
+class Translator;
+
 
 /*!
  * @brief This class provides HTML markup.
@@ -26,13 +28,7 @@ class HTMLMarkupGenerator
 
 public:
 
-    /*!
-     * This method returns result of lexical analysis.
-     *
-     * @param[in] analyzer Lexical analyzer.
-     * @return Result of lexical analysis.
-     */
-    QString getMessageForLog(const LexicalAnalyzer &lexicalAnalyzer, const SyntacticAnalyzer &syntacticAnalyzer, const SemanticAnalyzer &semanticAnalyzer, const ThreeAddressCodeGenerator &codeGenerator) const;
+    QString getMessageForLog(Translator *translator);
 
     /*!
      * This method returns marked up source code.
@@ -40,7 +36,7 @@ public:
      * @param[in] analyzer Lexixal analyzer.
      * @return Marked up source code.
      */
-    QString getSourceCodeHTMLMarkup(const LexicalAnalyzer &analyzer) const;
+    QString getSourceCodeHTMLMarkup(LexicalAnalyzer *analyzer) const;
 
 private:
 

@@ -207,7 +207,7 @@ Expression ThreeAddressCodeGenerator::getNextExpression(QList<Token>::iterator &
     return exp;
 }
 
-QString ThreeAddressCodeGenerator::error() const
+QString ThreeAddressCodeGenerator::errorText() const
 {
     return m_error;
 }
