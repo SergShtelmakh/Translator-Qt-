@@ -11,53 +11,55 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Translator
 TEMPLATE = app
 
+INCLUDEPATH += gui
+INCLUDEPATH += translator
 
 SOURCES += main.cpp\
-        mainwindow.cpp\
-        LexicalAnalyzer.cpp \
-        Identifier.cpp \
-        Token.cpp \
-        SourceCodeInputTextEdit.cpp \
-        CompileOutputTextEdit.cpp \
-        HTMLColors.cpp \
-        SyntacticAnalyzer.cpp \
-        SyntacticSymbol.cpp \
-        Production.cpp \
+        gui/mainwindow.cpp\
+        gui/SourceCodeInputTextEdit.cpp \
+        gui/CompileOutputTextEdit.cpp \
+        gui/HTMLColors.cpp \
+        gui/HTMLMarkupGenerator.cpp \
+        gui/ProgramBlockTreeWidget.cpp \
+        translator/LexicalAnalyzer.cpp \
+        translator/Identifier.cpp \
+        translator/Token.cpp \
+        translator/SyntacticAnalyzer.cpp \
+        translator/SyntacticSymbol.cpp \
+        translator/Production.cpp \
+        translator/Block.cpp \
+        translator/SemanticAnalyzer.cpp \
+        translator/ThreeAddressCodeGenerator.cpp \
+        translator/Expression.cpp \
+        translator/Translator.cpp \
         FileReader.cpp \
-        HTMLMarkupGenerator.cpp \
         BackusNaurFormParser.cpp \
         BackusNaurFormRule.cpp \
-        ErrorGenerator.cpp \
-        Block.cpp \
-        SemanticAnalyzer.cpp \
-        ProgramBlockTreeWidget.cpp \
-        ThreeAddressCodeGenerator.cpp \
-        Expression.cpp \
-        Translator.cpp
+        ErrorGenerator.cpp
 
-HEADERS += mainwindow.h\
-        LexicalAnalyzer.h \
-        Identifier.h \
-        Token.h \
-        SourceCodeInputTextEdit.h \
-        CompileOutputTextEdit.h \
-        HTMLColors.h \
-        SyntacticAnalyzer.h \
-        SyntacticSymbol.h \
-        Production.h \
+HEADERS += gui/mainwindow.h\
+        gui/SourceCodeInputTextEdit.h \
+        gui/CompileOutputTextEdit.h \
+        gui/HTMLColors.h \
+        gui/HTMLMarkupGenerator.h \
+        gui/ProgramBlockTreeWidget.h \
+        translator/LexicalAnalyzer.h \
+        translator/Identifier.h \
+        translator/Token.h \
+        translator/SyntacticAnalyzer.h \
+        translator/SyntacticSymbol.h \
+        translator/Production.h \
+        translator/Block.h \
+        translator/SemanticAnalyzer.h \
+        translator/ThreeAddressCodeGenerator.h \
+        translator/Expression.h \
+        translator/Translator.h \
         FileReader.h \
-        HTMLMarkupGenerator.h \
         BackusNaurFormParser.h \
         BackusNaurFormRule.h \
-        ErrorGenerator.h \
-        Block.h \
-        SemanticAnalyzer.h \
-        ProgramBlockTreeWidget.h \
-        ThreeAddressCodeGenerator.h \
-        Expression.h \
-        Translator.h
+        ErrorGenerator.h
 
-FORMS  += mainwindow.ui
+FORMS  += gui/mainwindow.ui
 
 CONFIG += mobility
 
